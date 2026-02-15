@@ -20,20 +20,17 @@ Acre Radio Manager is a client-side Arma 3 mod that allows players to manage the
 
 ### 3. Namespace Usage
 
-#### `missionNamespace` (Session State)
-Used for state that should persist across dialog opens/closes during a mission:
-- **Last Radio Settings**: Cached settings from previous dialog session
-- **Current Radios**: List of radios in player's inventory
-
 #### `uiNamespace` (Dialog State)
-Used for state that is ephemeral and tied to the dialog session:
+Used for state that is ephemeral and tied to the dialog session (persists until game restart):
 - **UI Preferences**: Font size, selected radio
 - **Radio Settings Cache**: Temporary cache of radio settings being edited
+- **Current Radios**: List of radios in player's inventory (queried fresh from ACRE each dialog open)
 
 #### `profileNamespace` (Persistent State)
-Used for state that persists across game sessions:
+Used for state that persists across game sessions and survives crashes:
 - **Presets**: Saved radio configurations
 - **Last Preset**: Name of most recently used preset
+- **Last Radio Settings**: Cached settings from last session for crash recovery
 
 ## Function Architecture
 
@@ -112,7 +109,7 @@ Used for state that persists across game sessions:
 3. UI population function
    - Query ACRE for radios in inventory
    - Populate radios inventory listbox
-   - Load cached settings from uiNamespace
+   - Load last radio settings from profileNamespace (if available)
    ↓
 4. Display ready for user interaction
 ```

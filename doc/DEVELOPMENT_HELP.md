@@ -41,27 +41,32 @@ Notes
 
 This section documents the runtime namespaces and variables used by Acre Radio Manager.
 
-### Namespace `missionNamespace`
-
-Since this is a client-side only mod for managing personal radio settings, most state will be local. However, some variables may be stored in missionNamespace for persistence across dialog opens/closes.
-
-#### Radio State (Planned)
-- `AcreRadioManager_lastRadioSettings`: HashMap — Cached radio settings from last dialog session. Used to restore settings when reopening dialog.
-- `AcreRadioManager_currentRadios`: Array — Array of radio class names currently in player's inventory.
-
 ### Namespace `uiNamespace`
 
 #### UI State
 - `AcreRadioManager_fontSizeLevel`: Number — Current font size level for UI elements. Range: 0-4, where 2 is default size.
 - `AcreRadioManager_selectedRadioIdx`: Number — Index of currently selected radio in the inventory listbox. -1 when no selection.
 - `AcreRadioManager_selectedRadio`: String — Class name of currently selected radio. Empty string when no selection.
+- `AcreRadioManager_currentRadios`: Array or String — Array of radio info arrays, or "" if no radios. Queried fresh from ACRE on each dialog open via `fn_getRadioList`.
+  - Each radio info array contains (in order):
+    - 0: String — Radio instance ID (e.g., "ACRE_PRC343_ID_1")
+    - 1: String — Icon path
+    - 2: String — Display name/type (e.g., "AN/PRC-343")
+    - 3: Number — PTT assignment (0 = none, 1-3 = PTT keys)
+    - 4: Number — Channel number
+    - 5: String — Channel name/label
+    - 6: Number — Frequency in MHz
+    - 7: String — Ear assignment ("left", "right", "center")
+    - 8: Number — Volume (0.0 to 1.0)
+    - 9: Boolean — Power state (true = on, false = off)
 
 #### Radio Settings Cache
-- `AcreRadioManager_radioSettings`: HashMap — Cached settings for all radios. Map of radio class name → settings hashmap.
+- `AcreRadioManager_radioSettings`: HashMap — Cached settings for all radios during dialog session. Map of radio class name → settings hashmap.
   - Each settings hashmap contains:
     - "ear": String — "left" or "right" - which ear the radio is on
     - "channel": Number — Current channel number
     - "volume": Number — Current volume level (0.0 to 1.0)
+    - "ptt": Number — PTT key assignment (0 = none, 1-3 = PTT 1-3)
 
 ### Namespace `profileNamespace`
 
@@ -70,8 +75,11 @@ Since this is a client-side only mod for managing personal radio settings, most 
   - Each preset contains an array of radio configurations
 - `AcreRadioManager_lastPreset`: String — Name of the last used preset. Used for quick reload.
 
+#### Crash Recovery
+- `AcreRadioManager_lastRadioSettings`: HashMap — Cached radio settings from last session. Used to restore settings after game crashes or restarts. Saved whenever settings change.
+
 ## Notes
-- **uiNamespace** is used for state that persists during the dialog session (UI preferences, cached radio data).
-- **missionNamespace** is used for state that should persist across dialog sessions (last known radio settings).
-- **profileNamespace** is used for persistent state across game sessions (saved presets).
+- **uiNamespace** is used for temporary state during the game session (UI preferences, dialog state, current radio list). Persists until game restart.
+- **profileNamespace** is used for persistent state across game sessions (saved presets, last settings for crash recovery). Survives game crashes and restarts.
+- **missionNamespace** is not used in this mod since all state is either temporary (uiNamespace) or permanent (profileNamespace).
 - All mod runtime variables use the `AcreRadioManager_` prefix.

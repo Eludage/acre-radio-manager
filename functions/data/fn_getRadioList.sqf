@@ -1,0 +1,210 @@
+/*
+ * Author: Eludage
+ * Retrieves detailed information for all ACRE radios in player's inventory and stores in uiNamespace.
+ *
+ * Arguments:
+ * None
+ *
+ * Return Value:
+ * Array of Arrays - Each array contains radio information [id, icon, name, ptt, channel, channelName, frequency, ear, volume, isOn]
+ * Returns empty string "" if no radios found
+ *
+ * Example:
+ * private _radios = [] call AcreRadioManager_fnc_getRadioList;
+ */
+
+// Color constants for formatting
+#define COLOR_WHITE "#FFFFFF"
+#define COLOR_GREY "#CCCCCC"
+#define COLOR_YELLOW "#FFFF00"
+
+// Check if ACRE is loaded
+if (isNil "acre_api_fnc_getCurrentRadioList") exitWith {
+	uiNamespace setVariable ["AcreRadioManager_currentRadios", ""];
+	""
+};
+
+// Get all radios in player's inventory
+private _radios = [] call acre_api_fnc_getCurrentRadioList;
+
+diag_log format ["DEBUG - Got %1 radios from ACRE", count _radios];
+
+// If no radios, set variable to empty string and exit
+if (count _radios == 0) exitWith {
+	diag_log "DEBUG - No radios found, exiting";
+	uiNamespace setVariable ["AcreRadioManager_currentRadios", ""];
+	""
+};
+
+diag_log "DEBUG - Starting PTT assignment retrieval";
+
+// Get PTT assignments once (more efficient than querying per radio)
+// Returns nested array: [[ptt1_radios], [ptt2_radios], [ptt3_radios]]
+private _pttAssignments = [] call acre_api_fnc_getMultiPushToTalkAssignment;
+
+diag_log format ["DEBUG - PTT Assignments type: %1", typeName _pttAssignments];
+diag_log format ["DEBUG - PTT Assignments: %1", _pttAssignments];
+
+private _ptt1Radios = if (!isNil "_pttAssignments" && {typeName _pttAssignments == "ARRAY"} && {count _pttAssignments > 0}) then { _pttAssignments select 0 } else { [] };
+private _ptt2Radios = if (!isNil "_pttAssignments" && {typeName _pttAssignments == "ARRAY"} && {count _pttAssignments > 1}) then { _pttAssignments select 1 } else { [] };
+private _ptt3Radios = if (!isNil "_pttAssignments" && {typeName _pttAssignments == "ARRAY"} && {count _pttAssignments > 2}) then { _pttAssignments select 2 } else { [] };
+
+diag_log format ["DEBUG - PTT1 radios: %1", _ptt1Radios];
+diag_log format ["DEBUG - PTT2 radios: %1", _ptt2Radios];
+diag_log format ["DEBUG - PTT3 radios: %1", _ptt3Radios];
+
+// Process each radio and build array
+private _radioData = [];
+
+{
+	private _radioId = _x;
+	
+	// Get radio base class (e.g., "ACRE_PRC343" from "ACRE_PRC343_ID_1")
+	private _baseClass = [_radioId] call acre_api_fnc_getBaseRadio;
+	
+	// Get display name from config (e.g., "AN/PRC-343")
+	private _displayName = getText (configFile >> "CfgWeapons" >> _baseClass >> "displayName");
+	
+	// Get radio icon/picture from config
+	private _icon = getText (configFile >> "CfgWeapons" >> _baseClass >> "picture");
+	
+	// Determine PTT assignment (0 = none, 1-3 = PTT keys)
+	private _ptt = 0;
+	if (_radioId in _ptt1Radios) then { _ptt = 1; };
+	if (_radioId in _ptt2Radios) then { _ptt = 2; };
+	if (_radioId in _ptt3Radios) then { _ptt = 3; };
+	
+	// Debug PTT
+	diag_log format ["DEBUG %1 - PTT: %2 (ptt1: %3, ptt2: %4, ptt3: %5)", _radioId, _ptt, _radioId in _ptt1Radios, _radioId in _ptt2Radios, _radioId in _ptt3Radios];
+	
+	// Get current channel number (1-based)
+	private _channel = [_radioId] call acre_api_fnc_getRadioChannel;
+	// Convert to number if string, default to 1 if nil
+	if (typeName _channel == "STRING") then {
+		_channel = parseNumber _channel;
+	};
+	if (isNil "_channel") then {
+		_channel = 1;
+	};
+	
+	// Get channel name (label) if available
+	private _channelName = "";
+	// Note: getPresetChannelData expects 0-based channel index, but getRadioChannel returns 1-based
+	private _channelData = [_baseClass, "default", _channel - 1] call acre_api_fnc_getPresetChannelData;
+	diag_log format ["DEBUG %1 - Channel data: %2 (type: %3)", _radioId, _channelData, typeName _channelData];
+	if (!isNil "_channelData") then {
+		if (typeName _channelData == "LOCATION") then {
+			// Channel data is stored in location namespace - use "description" for channel name
+			_channelName = _channelData getVariable ["description", ""];
+			diag_log format ["DEBUG %1 - Extracted description: %2", _radioId, _channelName];
+		} else {
+			if (typeName _channelData == "HASHMAP") then {
+				_channelName = _channelData getOrDefault ["label", ""];
+			} else {
+				if (typeName _channelData == "ARRAY" && {count _channelData > 0}) then {
+					_channelName = str (_channelData select 0);
+				};
+			};
+		};
+	};
+	if (_channelName == "") then {
+		_channelName = format ["Channel %1", _channel];
+	};
+	
+	// Get frequency in MHz - try getting from channel data first
+	private _frequency = 0;
+	if (!isNil "_channelData") then {
+		if (typeName _channelData == "LOCATION") then {
+			// Extract from location namespace (note: key is lowercase "frequencytx")
+			_frequency = _channelData getVariable ["frequencytx", 0];
+		} else {
+			if (typeName _channelData == "HASHMAP") then {
+				_frequency = _channelData getOrDefault ["frequencyTX", 0];
+			};
+		};
+	};
+	// Fallback to direct API call
+	if (_frequency == 0) then {
+		private _freqRaw = [_radioId] call acre_api_fnc_getRadioFrequency;
+		diag_log format ["DEBUG %1 - Frequency raw: %2 (type: %3)", _radioId, _freqRaw, typeName _freqRaw];
+		if (!isNil "_freqRaw") then {
+			if (typeName _freqRaw == "STRING") then {
+				_frequency = parseNumber _freqRaw;
+			} else {
+				if (typeName _freqRaw == "SCALAR") then {
+					_frequency = _freqRaw;
+				};
+			};
+		};
+	};
+	
+	// Get spatial positioning and convert to ear string
+	private _spatial = [_radioId] call acre_api_fnc_getRadioSpatial;
+	diag_log format ["DEBUG %1 - Spatial raw: %2 (type: %3)", _radioId, _spatial, typeName _spatial];
+	private _ear = "center";
+	if (!isNil "_spatial") then {
+		if (typeName _spatial == "STRING") then {
+			_spatial = toUpper _spatial;
+			if (_spatial == "LEFT") then { _ear = "left"; };
+			if (_spatial == "RIGHT") then { _ear = "right"; };
+			if (_spatial == "CENTER" || _spatial == "CENTRE") then { _ear = "center"; };
+		} else {
+			// Handle numeric spatial
+			if (typeName _spatial == "SCALAR") then {
+				if (_spatial < -0.5) then { _ear = "left"; };
+				if (_spatial > 0.5) then { _ear = "right"; };
+			};
+		};
+	};
+	
+	// Get volume (0.0 to 1.0)
+	private _volume = [_radioId] call acre_api_fnc_getRadioVolume;
+	// Convert to number if string or nil
+	if (isNil "_volume") then {
+		_volume = 0.5;
+	} else {
+		if (typeName _volume == "STRING") then {
+			_volume = parseNumber _volume;
+		};
+	};
+	
+	// Check if radio is powered on
+	private _isOn = [_radioId] call acre_api_fnc_getRadioOnOffState;
+	diag_log format ["DEBUG %1 - Power raw: %2 (type: %3)", _radioId, _isOn, typeName _isOn];
+	// Convert to boolean (ACRE returns 1 for ON, 0 for OFF)
+	if (isNil "_isOn") then {
+		_isOn = true; // Assume on if can't determine
+	} else {
+		if (typeName _isOn == "SCALAR") then {
+			_isOn = (_isOn == 1); // Convert 1/0 to true/false
+		} else {
+			if (typeName _isOn != "BOOL") then {
+				_isOn = true; // Assume on if unexpected type
+			};
+		};
+	};
+	
+	// Build radio info array
+	// [id, icon, name, ptt, channel, channelName, frequency, ear, volume, isOn]
+	private _radioInfo = [
+		_radioId,        // 0: Radio instance ID
+		_icon,           // 1: Icon path
+		_displayName,    // 2: Display name (type)
+		_ptt,            // 3: PTT assignment (0-3)
+		_channel,        // 4: Channel number
+		_channelName,    // 5: Channel name/label
+		_frequency,      // 6: Frequency in MHz
+		_ear,            // 7: Ear assignment
+		_volume,         // 8: Volume (0.0-1.0)
+		_isOn            // 9: Power state
+	];
+	
+	_radioData pushBack _radioInfo;
+	
+} forEach _radios;
+
+// Store in uiNamespace for access by other functions
+uiNamespace setVariable ["AcreRadioManager_currentRadios", _radioData];
+
+// Return the radio data array
+_radioData

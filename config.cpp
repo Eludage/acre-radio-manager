@@ -43,6 +43,12 @@ class CfgFunctions
             file = "AcreRadioManager\functions\core";
             class openRadioSettings {}; // Opens the main dialog
         };
+        // ===== Data / ACRE Interface =====
+        class data
+        {
+            file = "AcreRadioManager\functions\data";
+            class getRadioList {}; // Retrieves all radios and their settings from ACRE
+        };
     };
 };
 
