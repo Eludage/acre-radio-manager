@@ -194,7 +194,7 @@ class AcreRadioManager_Dialog
         class RadiosInventoryTitle: ARM_RscBoxTitle
         {
             idc = -1;
-            text = "Radios in inventory";
+            text = "Radios in Inventory";
             x = 0.16 * safezoneW + safezoneX;
             y = 0.11 * safezoneH + safezoneY;
             w = 0.1 * safezoneW;
