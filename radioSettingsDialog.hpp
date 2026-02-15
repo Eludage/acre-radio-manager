@@ -190,10 +190,128 @@ class AcreRadioManager_Dialog
 
     class Controls
     {
+        // ============== RADIOS IN INVENTORY SECTION ==============
+        class RadiosInventoryTitle: ARM_RscBoxTitle
+        {
+            idc = -1;
+            text = "Radios in inventory";
+            x = 0.16 * safezoneW + safezoneX;
+            y = 0.11 * safezoneH + safezoneY;
+            w = 0.1 * safezoneW;
+            h = 0.025 * safezoneH;
+        };
+
+        class RadiosInventoryBackground: ARM_RscPanel
+        {
+            idc = -1;
+            x = 0.16 * safezoneW + safezoneX;
+            y = 0.14 * safezoneH + safezoneY;
+            w = 0.68 * safezoneW;
+            h = 0.31 * safezoneH;
+            colorBackground[] = COLOR_GREY_15;
+        };
+
+        class RadiosInventoryList: ARM_RscListbox
+        {
+            idc = 16010;
+            x = 0.16 * safezoneW + safezoneX;
+            y = 0.14 * safezoneH + safezoneY;
+            w = 0.68 * safezoneW;
+            h = 0.31 * safezoneH;
+            rowHeight = 0.06;
+        };
+
+        // ============== Radio Preview SECTION ==============
+        class RadioPreviewTitle: ARM_RscBoxTitle
+        {
+            idc = -1;
+            text = "Radio Preview";
+            x = 0.16 * safezoneW + safezoneX;
+            y = 0.46 * safezoneH + safezoneY;
+            w = 0.1 * safezoneW;
+            h = 0.025 * safezoneH;
+        };
+
+        class RadioPreviewBackground: ARM_RscPanel
+        {
+            idc = -1;
+            x = 0.16 * safezoneW + safezoneX;
+            y = 0.49 * safezoneH + safezoneY;
+            w = 0.68 * safezoneW;
+            h = 0.31 * safezoneH;
+            colorBackground[] = COLOR_GREY_15;
+        };
+
+        class RadioPreviewList: ARM_RscListbox
+        {
+            idc = 16020;
+            x = 0.16 * safezoneW + safezoneX;
+            y = 0.49 * safezoneH + safezoneY;
+            w = 0.43 * safezoneW;
+            h = 0.31 * safezoneH;
+            rowHeight = 0.06;
+        };
+
+        // ============== OPTIONS SECTION ==============
+        class OptionsTitle: ARM_RscBoxTitle
+        {
+            idc = -1;
+            text = "Options";
+            x = 0.16 * safezoneW + safezoneX;
+            y = 0.81 * safezoneH + safezoneY;
+            w = 0.1 * safezoneW;
+            h = 0.025 * safezoneH;
+        };
+
+        class OptionsBackground: ARM_RscPanel
+        {
+            idc = -1;
+            x = 0.16 * safezoneW + safezoneX;
+            y = 0.84 * safezoneH + safezoneY;
+            w = 0.15 * safezoneW;
+            h = 0.04 * safezoneH;
+            colorBackground[] = COLOR_GREY_15;
+        };
+
+        class FontSizeLabel: ARM_RscTextLabel
+        {
+            idc = 15401;
+            text = "Font Size";
+            x = 0.17 * safezoneW + safezoneX;
+            y = 0.85 * safezoneH + safezoneY;
+            w = 0.04 * safezoneW;
+            h = 0.025 * safezoneH;
+            colorText[] = COLOR_GREY_70;
+        };
+        class FontSizeDecrease: ARM_RscButton
+        {
+            idc = 15402;
+            text = "-";
+            x = 0.24 * safezoneW + safezoneX;
+            y = 0.85 * safezoneH + safezoneY;
+            w = 0.025 * safezoneW;
+            h = 0.025 * safezoneH;
+            colorBackground[] = COLOR_GREY_30;
+            colorFocused[] = COLOR_GREY_30;
+            colorBackgroundActive[] = COLOR_GREY_50;
+        };
+        class FontSizeIncrease: ARM_RscButton
+        {
+            idc = 15403;
+            text = "+";
+            x = 0.275 * safezoneW + safezoneX;
+            y = 0.85 * safezoneH + safezoneY;
+            w = 0.025 * safezoneW;
+            h = 0.025 * safezoneH;
+            colorBackground[] = COLOR_GREY_30;
+            colorFocused[] = COLOR_GREY_30;
+            colorBackgroundActive[] = COLOR_GREY_50;
+        };
+
         // ============== CLOSE BUTTON ==============
         class CloseButton: ARM_RscButton
         {
-            idc = 16001;
+            idc = 16011;
             text = "Close";
             x = 0.74 * safezoneW + safezoneX;
             y = 0.84 * safezoneH + safezoneY;
