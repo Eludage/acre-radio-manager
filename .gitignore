@@ -1,0 +1,44 @@
+# Arma 3 Mod Files
+*.pbo
+*.bisign
+*.biprivatekey
+*.bikey
+
+# Build and Release directories
+releases/
+build/
+addons/
+
+# Editor and IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Windows
+Thumbs.db
+desktop.ini
+ehthumbs.db
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Logs
+*.log
+*.rpt
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+
+# Archives
+*.zip
+*.rar
+*.7z
+*.tar
+*.gz
