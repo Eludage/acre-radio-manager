@@ -49,6 +49,12 @@ class CfgFunctions
             file = "AcreRadioManager\functions\data";
             class getRadioList {}; // Retrieves all radios and their settings from ACRE
         };
+        // ===== UI / Interface Updates =====
+        class ui
+        {
+            file = "AcreRadioManager\functions\ui";
+            class updateRadioInventory {}; // Dynamically creates radio inventory controls
+        };
     };
 };
 

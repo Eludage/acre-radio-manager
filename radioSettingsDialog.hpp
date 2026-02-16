@@ -171,6 +171,39 @@ class ARM_RscEdit // Base class for edit fields, see https://community.bistudio.
     canModify = 1;
 };
 
+class ARM_RscControlsGroup // Base class for scrollable control groups, see https://community.bistudio.com/wiki/CT_CONTROLS_GROUP
+{
+    access = 0;
+    type = 15; // CT_CONTROLS_GROUP
+    idc = -1;
+    style = 16; // ST_MULTI
+    x = 0;
+    y = 0;
+    w = 1;
+    h = 1;
+    shadow = 0;
+    class VScrollbar
+    {
+        width = 0.021;
+        autoScrollSpeed = -1;
+        autoScrollDelay = 5;
+        autoScrollRewind = 0;
+        shadow = 0;
+        color[] = COLOR_WHITE_100;
+        colorActive[] = COLOR_WHITE_100;
+        colorDisabled[] = COLOR_WHITE_10;
+        thumb = "\A3\ui_f\data\gui\cfg\scrollbar\thumb_ca.paa";
+        arrowFull = "\A3\ui_f\data\gui\cfg\scrollbar\arrowFull_ca.paa";
+        arrowEmpty = "\A3\ui_f\data\gui\cfg\scrollbar\arrowEmpty_ca.paa";
+        border = "\A3\ui_f\data\gui\cfg\scrollbar\border_ca.paa";
+    };
+    class HScrollbar
+    {
+        height = 0;
+    };
+    class Controls {};
+};
+
 class AcreRadioManager_Dialog
 {
     idd = 16000;
@@ -211,14 +244,18 @@ class AcreRadioManager_Dialog
             colorBackground[] = COLOR_GREY_15;
         };
 
-        class RadiosInventoryList: ARM_RscListbox
+        class RadiosInventoryGroup: ARM_RscControlsGroup
         {
             idc = 16010;
             x = 0.16 * safezoneW + safezoneX;
             y = 0.14 * safezoneH + safezoneY;
             w = 0.68 * safezoneW;
             h = 0.31 * safezoneH;
-            rowHeight = 0.06;
+            
+            class Controls
+            {
+                // Controls will be created dynamically at runtime
+            };
         };
 
         // ============== Radio Preview SECTION ==============

@@ -45,5 +45,10 @@ diag_log "======================";
 // Open the radio settings dialog
 private _dialogOpened = createDialog "AcreRadioManager_Dialog";
 
+// If dialog opened successfully, populate the radio inventory
+if (_dialogOpened) then {
+	[] call AcreRadioManager_fnc_updateRadioInventory;
+};
+
 // Return success/failure
 _dialogOpened
