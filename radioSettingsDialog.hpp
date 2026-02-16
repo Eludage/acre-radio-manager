@@ -289,62 +289,6 @@ class AcreRadioManager_Dialog
             rowHeight = 0.06;
         };
 
-        // ============== OPTIONS SECTION ==============
-        class OptionsTitle: ARM_RscBoxTitle
-        {
-            idc = -1;
-            text = "Options";
-            x = 0.16 * safezoneW + safezoneX;
-            y = 0.81 * safezoneH + safezoneY;
-            w = 0.1 * safezoneW;
-            h = 0.025 * safezoneH;
-        };
-
-        class OptionsBackground: ARM_RscPanel
-        {
-            idc = -1;
-            x = 0.16 * safezoneW + safezoneX;
-            y = 0.84 * safezoneH + safezoneY;
-            w = 0.15 * safezoneW;
-            h = 0.04 * safezoneH;
-            colorBackground[] = COLOR_GREY_15;
-        };
-
-        class FontSizeLabel: ARM_RscTextLabel
-        {
-            idc = 15401;
-            text = "Font Size";
-            x = 0.17 * safezoneW + safezoneX;
-            y = 0.85 * safezoneH + safezoneY;
-            w = 0.04 * safezoneW;
-            h = 0.025 * safezoneH;
-            colorText[] = COLOR_GREY_70;
-        };
-        class FontSizeDecrease: ARM_RscButton
-        {
-            idc = 15402;
-            text = "-";
-            x = 0.24 * safezoneW + safezoneX;
-            y = 0.85 * safezoneH + safezoneY;
-            w = 0.025 * safezoneW;
-            h = 0.025 * safezoneH;
-            colorBackground[] = COLOR_GREY_30;
-            colorFocused[] = COLOR_GREY_30;
-            colorBackgroundActive[] = COLOR_GREY_50;
-        };
-        class FontSizeIncrease: ARM_RscButton
-        {
-            idc = 15403;
-            text = "+";
-            x = 0.275 * safezoneW + safezoneX;
-            y = 0.85 * safezoneH + safezoneY;
-            w = 0.025 * safezoneW;
-            h = 0.025 * safezoneH;
-            colorBackground[] = COLOR_GREY_30;
-            colorFocused[] = COLOR_GREY_30;
-            colorBackgroundActive[] = COLOR_GREY_50;
-        };
-
         // ============== CLOSE BUTTON ==============
         class CloseButton: ARM_RscButton
         {
