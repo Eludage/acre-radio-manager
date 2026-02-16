@@ -244,12 +244,23 @@ private _yOffset = 0;
 	_xPos = _xPos + BUTTON_WIDTH + 0.004;
 	
 	// Volume Display (Edit field)
-	private _ctrlVolumeEdit = _display ctrlCreate ["RscEdit", _baseIDC + 41, _group];
+	private _ctrlVolumeEdit = _display ctrlCreate ["ARM_RscEditCentered", _baseIDC + 41, _group];
 	_ctrlVolumeEdit ctrlSetPosition [_xPos, _yRow, 0.07, BUTTON_HEIGHT];
 	_ctrlVolumeEdit ctrlSetText (str (round (_volume * 100)));
 	_ctrlVolumeEdit ctrlSetTextColor COLOR_WHITE_100;
 	_ctrlVolumeEdit ctrlSetBackgroundColor COLOR_GREY_30;
 	_ctrlVolumeEdit ctrlCommit 0;
+	
+	// Add validation event handler
+	_ctrlVolumeEdit ctrlAddEventHandler ["KeyUp", {
+		params ["_ctrl"];
+		[_ctrl] call AcreRadioManager_fnc_validateVolumeInput;
+	}];
+	_ctrlVolumeEdit ctrlAddEventHandler ["KillFocus", {
+		params ["_ctrl"];
+		[_ctrl] call AcreRadioManager_fnc_validateVolumeInput;
+	}];
+	
 	_xPos = _xPos + 0.07 + 0.004;
 	
 	// Volume Increase Button

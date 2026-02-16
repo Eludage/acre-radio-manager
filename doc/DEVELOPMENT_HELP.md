@@ -20,9 +20,9 @@ This section lists the main dialog ID (IDD) and the control IDCs used in the Rad
     - RadioPreviewBackground — radio preview section background
     - OptionsBackground — options section background
   - Radios in Inventory controls
-    - 16010 → RadiosInventoryList — listbox displaying all ACRE radios in player's inventory
+    - 16010 → RadiosInventoryGroup — control group for dynamically created radio inventory controls
   - Radio Preview controls
-    - 16020 → RadioPreviewList — listbox displaying detailed settings for selected radio
+    - 16020 → RadioPreviewGroup — control group for dynamically created radio preview controls
   - Options controls
     - 15401 → FontSizeLabel — label "Font Size"
     - 15402 → FontSizeDecrease — font size decrease button (-)
@@ -32,8 +32,9 @@ This section lists the main dialog ID (IDD) and the control IDCs used in the Rad
 
 Notes
 - Access controls in scripts like this:
-  - `_disp = findDisplay 16000; _ctrl = _disp displayCtrl 16010;` (gets the Radios Inventory listbox)
-  - Then operate on the control: `_ctrl lbAdd "AN/PRC-343";` or `_ctrl ctrlSetText "...";`
+  - `_disp = findDisplay 16000; _ctrl = _disp displayCtrl 16010;` (gets the Radios Inventory control group)
+  - `_disp = findDisplay 16000; _ctrl = _disp displayCtrl 16020;` (gets the Radio Preview control group)
+  - Then operate on the control: create child controls dynamically using `ctrlCreate`
 - Only controls with idc >= 0 can be accessed via `displayCtrl`.
 - Controls with idc = -1 are decorative elements (titles, backgrounds) and cannot be accessed directly.
 

@@ -24,6 +24,7 @@ private _dialogOpened = createDialog "AcreRadioManager_Dialog";
 // If dialog opened successfully, populate the radio inventory
 if (_dialogOpened) then {
 	[] call AcreRadioManager_fnc_updateRadioInventory;
+	[] call AcreRadioManager_fnc_updateRadioPreview;
 };
 
 // Return success/failure

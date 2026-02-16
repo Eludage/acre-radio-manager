@@ -54,12 +54,14 @@ class CfgFunctions
         {
             file = "AcreRadioManager\functions\ui";
             class updateRadioInventory {}; // Dynamically creates radio inventory controls
+            class updateRadioPreview {}; // Dynamically creates radio preview controls
         };
         // ===== Utilities / Helpers =====
         class utilities
         {
             file = "AcreRadioManager\functions\utilities";
             class debugLogRadioList {}; // Logs radio list to debug console
+            class validateVolumeInput {}; // Validates and clamps volume input (0-100)
         };
     };
 };

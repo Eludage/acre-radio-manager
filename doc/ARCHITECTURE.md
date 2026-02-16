@@ -22,7 +22,6 @@ Acre Radio Manager is a client-side Arma 3 mod that allows players to manage the
 
 #### `uiNamespace` (Dialog State)
 Used for state that is ephemeral and tied to the dialog session (persists until game restart):
-- **UI Preferences**: Font size, selected radio
 - **Radio Settings Cache**: Temporary cache of radio settings being edited
 - **Current Radios**: List of radios in player's inventory (queried fresh from ACRE each dialog open)
 

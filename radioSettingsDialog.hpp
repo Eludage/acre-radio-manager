@@ -79,6 +79,15 @@ class ARM_RscTextLabel: ARM_RscStatic // Intended for normal text labels
     shadow = 1;
 };
 
+class ARM_RscTextCentered: ARM_RscStatic // Centered text variant
+{
+    style = 2; // ST_CENTER
+    colorText[] = COLOR_WHITE_100;
+    font = "RobotoCondensed";
+    sizeEx = 0.03;
+    shadow = 1;
+};
+
 class ARM_RscButton // Base class for buttons, see https://community.bistudio.com/wiki/CT_BUTTON
 {
     access = 0;
@@ -169,6 +178,11 @@ class ARM_RscEdit // Base class for edit fields, see https://community.bistudio.
     shadow = 0;
     maxChars = 10000;
     canModify = 1;
+};
+
+class ARM_RscEditCentered: ARM_RscEdit // Centered edit field variant
+{
+    style = 66; // ST_NO_RECT + ST_CENTER (64 + 2)
 };
 
 class ARM_RscControlsGroup // Base class for scrollable control groups, see https://community.bistudio.com/wiki/CT_CONTROLS_GROUP
@@ -279,14 +293,18 @@ class AcreRadioManager_Dialog
             colorBackground[] = COLOR_GREY_15;
         };
 
-        class RadioPreviewList: ARM_RscListbox
+        class RadioPreviewGroup: ARM_RscControlsGroup
         {
             idc = 16020;
             x = 0.16 * safezoneW + safezoneX;
             y = 0.49 * safezoneH + safezoneY;
-            w = 0.43 * safezoneW;
+            w = 0.50 * safezoneW;
             h = 0.31 * safezoneH;
-            rowHeight = 0.06;
+            
+            class Controls
+            {
+                // Controls will be created dynamically at runtime
+            };
         };
 
         // ============== CLOSE BUTTON ==============
