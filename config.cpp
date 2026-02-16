@@ -55,6 +55,12 @@ class CfgFunctions
             file = "AcreRadioManager\functions\ui";
             class updateRadioInventory {}; // Dynamically creates radio inventory controls
         };
+        // ===== Utilities / Helpers =====
+        class utilities
+        {
+            file = "AcreRadioManager\functions\utilities";
+            class debugLogRadioList {}; // Logs radio list to debug console
+        };
     };
 };
 
