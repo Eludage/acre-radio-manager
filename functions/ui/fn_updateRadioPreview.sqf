@@ -56,11 +56,8 @@ if (isNull _group) exitWith {
 // Get radio data from uiNamespace
 private _radios = uiNamespace getVariable ["AcreRadioManager_currentRadios", []];
 if (_radios isEqualTo "") exitWith {
-	diag_log "No radios to display in preview";
 	true
 };
-
-diag_log format ["Creating preview UI for %1 radios", count _radios];
 
 private _yOffset = 0;
 
@@ -229,7 +226,5 @@ private _yOffset = 0;
 	_yOffset = _yOffset + ITEM_HEIGHT;
 	
 } forEach _radios;
-
-diag_log "Radio preview UI created successfully";
 
 true

@@ -59,11 +59,8 @@ if (isNull _group) exitWith {
 // Get radio data from uiNamespace
 private _radios = uiNamespace getVariable ["AcreRadioManager_currentRadios", []];
 if (_radios isEqualTo "") exitWith {
-	diag_log "No radios to display";
 	true
 };
-
-diag_log format ["Creating UI for %1 radios", count _radios];
 
 // Create IDC to radio ID mapping in uiNamespace for event handlers
 private _idcToRadioMap = createHashMap;
@@ -253,6 +250,21 @@ private _yOffset = 0;
 		};
 		
 		_ctrlEar ctrlCommit 0;
+		
+		// Add event handler for ear button
+		_ctrlEar ctrlAddEventHandler ["ButtonClick", {
+			params ["_ctrl"];
+			private _radioIdFromBtn = _ctrl getVariable ["radioId", ""];
+			private _earValue = _ctrl getVariable ["earValue", ""];
+			private _baseIDCFromBtn = _ctrl getVariable ["baseIDC", 0];
+			if (_radioIdFromBtn != "" && _earValue != "" && _baseIDCFromBtn > 0) then {
+				[_radioIdFromBtn, _earValue, _baseIDCFromBtn] call AcreRadioManager_fnc_changeRadioEar;
+			};
+		}];
+		_ctrlEar setVariable ["radioId", _radioId];
+		_ctrlEar setVariable ["earValue", _btnValue];
+		_ctrlEar setVariable ["baseIDC", _baseIDC];
+		
 		_xPos = _xPos + BUTTON_WIDTH + 0.004;
 	} forEach _earButtons;
 	
@@ -327,7 +339,5 @@ private _yOffset = 0;
 
 // Store IDC to radio ID mapping in uiNamespace for event handlers to use
 uiNamespace setVariable ["AcreRadioManager_idcToRadioMap", _idcToRadioMap];
-
-diag_log "Radio inventory UI created successfully";
 
 true

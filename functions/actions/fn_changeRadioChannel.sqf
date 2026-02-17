@@ -93,8 +93,6 @@ if (_maxChannel == 0) then {
 	// Cache the result
 	_channelCache set [_baseClass, _maxChannel];
 	uiNamespace setVariable ["AcreRadioManager_channelCountCache", _channelCache];
-	
-	diag_log format ["Cached channel count for %1: %2 channels", _baseClass, _maxChannel];
 };
 
 // Calculate new channel
@@ -114,8 +112,6 @@ if (_newChannel > _maxChannel) then {
 if (_newChannel != _currentChannel) then {
 	// Set new channel via ACRE API
 	private _result = [_radioId, _newChannel] call acre_api_fnc_setRadioChannel;
-	
-	diag_log format ["Changed radio %1 channel from %2 to %3 (max: %4, result: %5)", _radioId, _currentChannel, _newChannel, _maxChannel, _result];
 	
 	// Get channel name - ensure channel index is valid (0-based, so max is _maxChannel - 1)
 	private _channelName = "";

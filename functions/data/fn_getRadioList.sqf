@@ -27,31 +27,19 @@ if (isNil "acre_api_fnc_getCurrentRadioList") exitWith {
 // Get all radios in player's inventory
 private _radios = [] call acre_api_fnc_getCurrentRadioList;
 
-diag_log format ["DEBUG - Got %1 radios from ACRE", count _radios];
-
 // If no radios, set variable to empty string and exit
 if (count _radios == 0) exitWith {
-	diag_log "DEBUG - No radios found, exiting";
 	uiNamespace setVariable ["AcreRadioManager_currentRadios", ""];
 	""
 };
-
-diag_log "DEBUG - Starting PTT assignment retrieval";
 
 // Get PTT assignments once (more efficient than querying per radio)
 // Returns nested array: [[ptt1_radios], [ptt2_radios], [ptt3_radios]]
 private _pttAssignments = [] call acre_api_fnc_getMultiPushToTalkAssignment;
 
-diag_log format ["DEBUG - PTT Assignments type: %1", typeName _pttAssignments];
-diag_log format ["DEBUG - PTT Assignments: %1", _pttAssignments];
-
 private _ptt1Radios = if (!isNil "_pttAssignments" && {typeName _pttAssignments == "ARRAY"} && {count _pttAssignments > 0}) then { _pttAssignments select 0 } else { [] };
 private _ptt2Radios = if (!isNil "_pttAssignments" && {typeName _pttAssignments == "ARRAY"} && {count _pttAssignments > 1}) then { _pttAssignments select 1 } else { [] };
 private _ptt3Radios = if (!isNil "_pttAssignments" && {typeName _pttAssignments == "ARRAY"} && {count _pttAssignments > 2}) then { _pttAssignments select 2 } else { [] };
-
-diag_log format ["DEBUG - PTT1 radios: %1", _ptt1Radios];
-diag_log format ["DEBUG - PTT2 radios: %1", _ptt2Radios];
-diag_log format ["DEBUG - PTT3 radios: %1", _ptt3Radios];
 
 // Process each radio and build array
 private _radioData = [];
@@ -74,9 +62,6 @@ private _radioData = [];
 	if (_radioId in _ptt2Radios) then { _ptt = 2; };
 	if (_radioId in _ptt3Radios) then { _ptt = 3; };
 	
-	// Debug PTT
-	diag_log format ["DEBUG %1 - PTT: %2 (ptt1: %3, ptt2: %4, ptt3: %5)", _radioId, _ptt, _radioId in _ptt1Radios, _radioId in _ptt2Radios, _radioId in _ptt3Radios];
-	
 	// Get current channel number (1-based)
 	private _channel = [_radioId] call acre_api_fnc_getRadioChannel;
 	// Convert to number if string, default to 1 if nil or invalid
@@ -95,12 +80,10 @@ private _radioData = [];
 	// Note: getPresetChannelData expects 0-based channel index, but getRadioChannel returns 1-based
 	private _channelIndex = (_channel - 1) max 0;
 	private _channelData = [_baseClass, "default", _channelIndex] call acre_api_fnc_getPresetChannelData;
-	diag_log format ["DEBUG %1 - Channel data: %2 (type: %3)", _radioId, _channelData, typeName _channelData];
 	if (!isNil "_channelData") then {
 		if (typeName _channelData == "LOCATION") then {
 			// Channel data is stored in location namespace - use "description" for channel name
 			_channelName = _channelData getVariable ["description", ""];
-			diag_log format ["DEBUG %1 - Extracted description: %2", _radioId, _channelName];
 		} else {
 			if (typeName _channelData == "HASHMAP") then {
 				_channelName = _channelData getOrDefault ["label", ""];
@@ -130,7 +113,6 @@ private _radioData = [];
 	// Fallback to direct API call
 	if (_frequency == 0) then {
 		private _freqRaw = [_radioId] call acre_api_fnc_getRadioFrequency;
-		diag_log format ["DEBUG %1 - Frequency raw: %2 (type: %3)", _radioId, _freqRaw, typeName _freqRaw];
 		if (!isNil "_freqRaw") then {
 			if (typeName _freqRaw == "STRING") then {
 				_frequency = parseNumber _freqRaw;
@@ -144,7 +126,6 @@ private _radioData = [];
 	
 	// Get spatial positioning and convert to ear string
 	private _spatial = [_radioId] call acre_api_fnc_getRadioSpatial;
-	diag_log format ["DEBUG %1 - Spatial raw: %2 (type: %3)", _radioId, _spatial, typeName _spatial];
 	private _ear = "center";
 	if (!isNil "_spatial") then {
 		if (typeName _spatial == "STRING") then {
@@ -174,7 +155,6 @@ private _radioData = [];
 	
 	// Check if radio is powered on
 	private _isOn = [_radioId] call acre_api_fnc_getRadioOnOffState;
-	diag_log format ["DEBUG %1 - Power raw: %2 (type: %3)", _radioId, _isOn, typeName _isOn];
 	// Convert to boolean (ACRE returns 1 for ON, 0 for OFF)
 	if (isNil "_isOn") then {
 		_isOn = true; // Assume on if can't determine

@@ -48,6 +48,7 @@ class CfgFunctions
         {
             file = "AcreRadioManager\functions\actions";
             class changeRadioChannel {}; // Changes radio channel and updates UI
+            class changeRadioEar {}; // Changes radio ear/spatial assignment and updates UI
         };
         // ===== Data / ACRE Interface =====
         class data
