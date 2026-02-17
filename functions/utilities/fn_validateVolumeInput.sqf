@@ -1,18 +1,21 @@
 /*
  * Author: Eludage
  * Validates and clamps volume input to numeric values between 0 and 100.
+ * Automatically rounds to nearest 10 when value has 2+ digits (>= 10).
  *
  * Arguments:
  * 0: _ctrl <CONTROL> - The edit control to validate
+ * 1: _shouldRound <BOOLEAN> - (Optional, default: false) Force rounding regardless of digit count
  *
  * Return Value:
  * Boolean: true on success, false on failure
  *
  * Example:
- * [_volumeEditCtrl] call AcreRadioManager_fnc_validateVolumeInput;
+ * [_volumeEditCtrl, false] call AcreRadioManager_fnc_validateVolumeInput; // Auto-round if >= 10
+ * [_volumeEditCtrl, true] call AcreRadioManager_fnc_validateVolumeInput; // Force round
  */
 
-params ["_ctrl"];
+params ["_ctrl", ["_shouldRound", false]];
 
 if (isNull _ctrl) exitWith {
 	diag_log "ERROR: Invalid control passed to validateVolumeInput";
@@ -39,6 +42,11 @@ if (_cleanText != "") then {
 
 // Clamp between 0 and 100
 _value = _value max 0 min 100;
+
+// Round to nearest 10 if requested, or if value has 2+ digits (>= 10)
+if (_shouldRound || _value >= 10) then {
+	_value = round (_value / 10) * 10;
+};
 
 // Update control text with validated value
 _ctrl ctrlSetText (str _value);

@@ -49,6 +49,7 @@ class CfgFunctions
             file = "AcreRadioManager\functions\actions";
             class changeRadioChannel {}; // Changes radio channel and updates UI
             class changeRadioEar {}; // Changes radio ear/spatial assignment and updates UI
+            class changeRadioVolume {}; // Changes radio volume and updates UI
         };
         // ===== Data / ACRE Interface =====
         class data
@@ -68,7 +69,7 @@ class CfgFunctions
         {
             file = "AcreRadioManager\functions\utilities";
             class debugLogRadioList {}; // Logs radio list to debug console
-            class validateVolumeInput {}; // Validates and clamps volume input (0-100)
+            class validateVolumeInput {}; // Validates and clamps volume input (0-100), optionally rounds to nearest 10
         };
     };
 };

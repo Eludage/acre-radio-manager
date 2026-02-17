@@ -62,8 +62,10 @@ The mod provides different levels of functionality depending on the radio type:
 3. **Adjust Settings**: Use the controls in the Radio Preview section:
    - Change ear assignment (Left/Right buttons)
    - Adjust channel (channel selector)
-   - Modify volume (volume slider)
+   - Modify volume (use +/- buttons for 10% steps, or type a value and press Enter or click away)
 4. **Changes Apply Immediately**: No need to click "Save" or "Apply"
+
+**Note**: Volume is adjusted in 10% increments (0, 10, 20, ..., 100). Manual entries are automatically rounded to the nearest 10%.
 
 ### Working with Presets
 1. **Save Current Configuration**:

@@ -294,6 +294,23 @@ private _yOffset = 0;
 	_ctrlVolumeDec ctrlSetTextColor COLOR_WHITE_100;
 	_ctrlVolumeDec ctrlSetBackgroundColor COLOR_GREY_40;
 	_ctrlVolumeDec ctrlCommit 0;
+	
+	// Add button click handler to decrease volume by 10%
+	_ctrlVolumeDec ctrlAddEventHandler ["ButtonClick", {
+		params ["_ctrl"];
+		private _btnBaseIDC = ctrlIDC _ctrl - 16;
+		private _btnDisplay = ctrlParent _ctrl;
+		private _editCtrl = _btnDisplay displayCtrl (_btnBaseIDC + 17);
+		private _currentVolume = parseNumber (ctrlText _editCtrl);
+		private _newVolume = (_currentVolume - 10) max 0 min 100;
+		
+		private _btnRadioId = _ctrl getVariable ["radioId", ""];
+		if (_btnRadioId != "") then {
+			[_btnRadioId, _newVolume, _btnBaseIDC] call AcreRadioManager_fnc_changeRadioVolume;
+		};
+	}];
+	_ctrlVolumeDec setVariable ["radioId", _radioId];
+	
 	_xPos = _xPos + BUTTON_WIDTH + 0.004;
 	
 	// Volume Display (Edit field)
@@ -307,12 +324,39 @@ private _yOffset = 0;
 	// Add validation event handler
 	_ctrlVolumeEdit ctrlAddEventHandler ["KeyUp", {
 		params ["_ctrl"];
-		[_ctrl] call AcreRadioManager_fnc_validateVolumeInput;
+		[_ctrl, false] call AcreRadioManager_fnc_validateVolumeInput; // Don't round while typing
 	}];
 	_ctrlVolumeEdit ctrlAddEventHandler ["KillFocus", {
 		params ["_ctrl"];
-		[_ctrl] call AcreRadioManager_fnc_validateVolumeInput;
+		[_ctrl, true] call AcreRadioManager_fnc_validateVolumeInput; // Round when done editing
+		
+		// Apply the volume change when field loses focus
+		private _editBaseIDC = ctrlIDC _ctrl - 17;
+		private _newVolume = parseNumber (ctrlText _ctrl);
+		
+		private _editRadioId = _ctrl getVariable ["radioId", ""];
+		if (_editRadioId != "") then {
+			[_editRadioId, _newVolume, _editBaseIDC] call AcreRadioManager_fnc_changeRadioVolume;
+		};
 	}];
+	
+	// Add Enter key handler to apply volume
+	_ctrlVolumeEdit ctrlAddEventHandler ["KeyDown", {
+		params ["_ctrl", "_key"];
+		// Enter key code is 28 (0x1C)
+		if (_key == 28) then {
+			[_ctrl, true] call AcreRadioManager_fnc_validateVolumeInput; // Round when Enter is pressed
+			
+			private _editBaseIDC = ctrlIDC _ctrl - 17;
+			private _newVolume = parseNumber (ctrlText _ctrl);
+			
+			private _editRadioId = _ctrl getVariable ["radioId", ""];
+			if (_editRadioId != "") then {
+				[_editRadioId, _newVolume, _editBaseIDC] call AcreRadioManager_fnc_changeRadioVolume;
+			};
+		};
+	}];
+	_ctrlVolumeEdit setVariable ["radioId", _radioId];
 	
 	_xPos = _xPos + 0.07 + 0.004;
 	
@@ -323,6 +367,23 @@ private _yOffset = 0;
 	_ctrlVolumeInc ctrlSetTextColor COLOR_WHITE_100;
 	_ctrlVolumeInc ctrlSetBackgroundColor COLOR_GREY_40;
 	_ctrlVolumeInc ctrlCommit 0;
+	
+	// Add button click handler to increase volume by 10%
+	_ctrlVolumeInc ctrlAddEventHandler ["ButtonClick", {
+		params ["_ctrl"];
+		private _btnBaseIDC = ctrlIDC _ctrl - 18;
+		private _btnDisplay = ctrlParent _ctrl;
+		private _editCtrl = _btnDisplay displayCtrl (_btnBaseIDC + 17);
+		private _currentVolume = parseNumber (ctrlText _editCtrl);
+		private _newVolume = (_currentVolume + 10) max 0 min 100;
+		
+		private _btnRadioId = _ctrl getVariable ["radioId", ""];
+		if (_btnRadioId != "") then {
+			[_btnRadioId, _newVolume, _btnBaseIDC] call AcreRadioManager_fnc_changeRadioVolume;
+		};
+	}];
+	_ctrlVolumeInc setVariable ["radioId", _radioId];
+	
 	_xPos = _xPos + BUTTON_WIDTH + 0.01;
 	
 	// === POWER BUTTON ===
