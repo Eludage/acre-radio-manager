@@ -21,8 +21,10 @@ This section lists the main dialog ID (IDD) and the control IDCs used in the Rad
     - OptionsBackground — options section background
   - Radios in Inventory controls
     - 16010 → RadiosInventoryGroup — control group for dynamically created radio inventory controls
+    - 16100-16399 → Dynamic radio controls (max 12 radios, 25 IDCs per radio)
   - Radio Preview controls
     - 16020 → RadioPreviewGroup — control group for dynamically created radio preview controls
+    - 16400-16699 → Dynamic radio preview controls (max 12 radios, 25 IDCs per radio)
   - Options controls
     - 15401 → FontSizeLabel — label "Font Size"
     - 15402 → FontSizeDecrease — font size decrease button (-)

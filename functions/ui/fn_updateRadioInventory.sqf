@@ -12,19 +12,20 @@
  * [] call AcreRadioManager_fnc_updateRadioInventory;
  *
  * IDC Naming Convention:
- * Each radio gets a base IDC: 16100 + (radioIndex * 100)
- * - Radio 0 base: 16100, Radio 1 base: 16200, Radio 2 base: 16300, etc.
+ * Each radio gets a base IDC: 16100 + (radioIndex * 25)
+ * - Radio 0 base: 16100, Radio 1 base: 16125, Radio 2 base: 16150, etc.
+ * - Maximum 12 radios supported (IDC range: 16100-16399)
  * - Icon: baseIDC + 0
  * - Name: baseIDC + 1
- * - PTT Label: baseIDC + 9
- * - PTT Buttons 1-4: baseIDC + 10 to 13
- * - Channel Label: baseIDC + 19
- * - Channel Dec/Display/Inc: baseIDC + 20, 21, 22
- * - Ear Label: baseIDC + 29
- * - Ear Buttons L/B/R: baseIDC + 30, 31, 32
- * - Volume Label: baseIDC + 39
- * - Volume Dec/Edit/Inc: baseIDC + 40, 41, 42
- * - Power Button: baseIDC + 50
+ * - PTT Label: baseIDC + 2
+ * - PTT Buttons 1-4: baseIDC + 3 to 6
+ * - Channel Label: baseIDC + 7
+ * - Channel Dec/Display/Inc: baseIDC + 8, 9, 10
+ * - Ear Label: baseIDC + 11
+ * - Ear Buttons L/B/R: baseIDC + 12, 13, 14
+ * - Volume Label: baseIDC + 15
+ * - Volume Dec/Edit/Inc: baseIDC + 16, 17, 18
+ * - Power Button: baseIDC + 19
  */
 
 // Color constants
@@ -62,6 +63,12 @@ if (_radios isEqualTo "") exitWith {
 	true
 };
 
+// Limit to maximum 12 radios to prevent IDC overflow
+private _maxRadios = 12 min (count _radios);
+if (count _radios > _maxRadios) then {
+	_radios = _radios select [0, _maxRadios];
+};
+
 // Create IDC to radio ID mapping in uiNamespace for event handlers
 private _idcToRadioMap = createHashMap;
 
@@ -83,8 +90,8 @@ private _yOffset = 0;
 	private _volume = _radioData select 8;
 	private _isOn = _radioData select 9;
 	
-	// Calculate base IDC for this radio (16500 for first radio, 16550 for second, etc.)
-	private _baseIDC = 16500 + (_radioIndex * 50);
+	// Calculate base IDC for this radio (16100 for first radio, 16125 for second, etc.)
+	private _baseIDC = 16100 + (_radioIndex * 25);
 	
 	// Store mapping for event handlers
 	_idcToRadioMap set [_baseIDC, _radioId];
@@ -111,7 +118,7 @@ private _yOffset = 0;
 	
 	// === PTT SECTION ===
 	// PTT Label
-	private _ctrlPTTLabel = _display ctrlCreate ["RscText", _baseIDC + 9, _group];
+	private _ctrlPTTLabel = _display ctrlCreate ["RscText", _baseIDC + 2, _group];
 	_ctrlPTTLabel ctrlSetPosition [_xPos, _yRow, 0.056, BUTTON_HEIGHT];
 	_ctrlPTTLabel ctrlSetText "PTT";
 	_ctrlPTTLabel ctrlSetTextColor COLOR_GREY_70;
@@ -126,7 +133,7 @@ private _yOffset = 0;
 		private _btnText = _x;
 		private _pttNum = _btnIndex + 1; // 1, 2, 3, 4
 		
-		private _ctrlPTT = _display ctrlCreate ["RscButton", _baseIDC + 10 + _btnIndex, _group];
+		private _ctrlPTT = _display ctrlCreate ["RscButton", _baseIDC + 3 + _btnIndex, _group];
 		_ctrlPTT ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
 		_ctrlPTT ctrlSetText _btnText;
 		_ctrlPTT ctrlSetTextColor COLOR_WHITE_100;
@@ -154,7 +161,7 @@ private _yOffset = 0;
 	private _isRadioSupported = (_baseClass find "ACRE_PRC117F" >= 0) || (_baseClass find "ACRE_PRC152" >= 0);
 	
 	// Channel Label
-	private _ctrlChannelLabel = _display ctrlCreate ["RscText", _baseIDC + 19, _group];
+	private _ctrlChannelLabel = _display ctrlCreate ["RscText", _baseIDC + 7, _group];
 	_ctrlChannelLabel ctrlSetPosition [_xPos, _yRow, 0.05, BUTTON_HEIGHT];
 	_ctrlChannelLabel ctrlSetText "CH";
 	_ctrlChannelLabel ctrlSetTextColor COLOR_GREY_70;
@@ -163,7 +170,7 @@ private _yOffset = 0;
 	_xPos = _xPos + 0.054;
 	
 	// Channel Decrease Button
-	private _ctrlChannelDec = _display ctrlCreate ["RscButton", _baseIDC + 20, _group];
+	private _ctrlChannelDec = _display ctrlCreate ["RscButton", _baseIDC + 8, _group];
 	_ctrlChannelDec ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
 	_ctrlChannelDec ctrlSetText "-";
 	_ctrlChannelDec ctrlSetTextColor COLOR_WHITE_100;
@@ -173,7 +180,7 @@ private _yOffset = 0;
 	_xPos = _xPos + BUTTON_WIDTH + 0.004;
 	
 	// Channel Display
-	private _ctrlChannelDisplay = _display ctrlCreate ["RscText", _baseIDC + 21, _group];
+	private _ctrlChannelDisplay = _display ctrlCreate ["RscText", _baseIDC + 9, _group];
 	_ctrlChannelDisplay ctrlSetPosition [_xPos, _yRow, 0.26, BUTTON_HEIGHT];
 	if (_isRadioSupported) then {
 		_ctrlChannelDisplay ctrlSetText format ["%1: %2", _channel, _channelName];
@@ -186,7 +193,7 @@ private _yOffset = 0;
 	_xPos = _xPos + 0.26 + 0.004;
 	
 	// Channel Increase Button
-	private _ctrlChannelInc = _display ctrlCreate ["RscButton", _baseIDC + 22, _group];
+	private _ctrlChannelInc = _display ctrlCreate ["RscButton", _baseIDC + 10, _group];
 	_ctrlChannelInc ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
 	_ctrlChannelInc ctrlSetText "+";
 	_ctrlChannelInc ctrlSetTextColor COLOR_WHITE_100;
@@ -221,7 +228,7 @@ private _yOffset = 0;
 	
 	// === EAR SECTION ===
 	// Ear Label
-	private _ctrlEarLabel = _display ctrlCreate ["RscText", _baseIDC + 29, _group];
+	private _ctrlEarLabel = _display ctrlCreate ["RscText", _baseIDC + 11, _group];
 	_ctrlEarLabel ctrlSetPosition [_xPos, _yRow, 0.056, BUTTON_HEIGHT];
 	_ctrlEarLabel ctrlSetText "Ear";
 	_ctrlEarLabel ctrlSetTextColor COLOR_GREY_70;
@@ -237,7 +244,7 @@ private _yOffset = 0;
 		private _btnValue = _btnData select 1;
 		private _btnIndex = _forEachIndex;
 		
-		private _ctrlEar = _display ctrlCreate ["RscButton", _baseIDC + 30 + _btnIndex, _group];
+		private _ctrlEar = _display ctrlCreate ["RscButton", _baseIDC + 12 + _btnIndex, _group];
 		_ctrlEar ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
 		_ctrlEar ctrlSetText _btnText;
 		_ctrlEar ctrlSetTextColor COLOR_WHITE_100;
@@ -272,7 +279,7 @@ private _yOffset = 0;
 	
 	// === VOLUME SECTION ===
 	// Volume Label  
-	private _ctrlVolumeLabel = _display ctrlCreate ["RscText", _baseIDC + 39, _group];
+	private _ctrlVolumeLabel = _display ctrlCreate ["RscText", _baseIDC + 15, _group];
 	_ctrlVolumeLabel ctrlSetPosition [_xPos, _yRow, 0.06, BUTTON_HEIGHT];
 	_ctrlVolumeLabel ctrlSetText "Vol";
 	_ctrlVolumeLabel ctrlSetTextColor COLOR_GREY_70;
@@ -281,7 +288,7 @@ private _yOffset = 0;
 	_xPos = _xPos + 0.064;
 	
 	// Volume Decrease Button
-	private _ctrlVolumeDec = _display ctrlCreate ["RscButton", _baseIDC + 40, _group];
+	private _ctrlVolumeDec = _display ctrlCreate ["RscButton", _baseIDC + 16, _group];
 	_ctrlVolumeDec ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
 	_ctrlVolumeDec ctrlSetText "-";
 	_ctrlVolumeDec ctrlSetTextColor COLOR_WHITE_100;
@@ -290,7 +297,7 @@ private _yOffset = 0;
 	_xPos = _xPos + BUTTON_WIDTH + 0.004;
 	
 	// Volume Display (Edit field)
-	private _ctrlVolumeEdit = _display ctrlCreate ["ARM_RscEditCentered", _baseIDC + 41, _group];
+	private _ctrlVolumeEdit = _display ctrlCreate ["ARM_RscEditCentered", _baseIDC + 17, _group];
 	_ctrlVolumeEdit ctrlSetPosition [_xPos, _yRow, 0.07, BUTTON_HEIGHT];
 	_ctrlVolumeEdit ctrlSetText (str (round (_volume * 100)));
 	_ctrlVolumeEdit ctrlSetTextColor COLOR_WHITE_100;
@@ -310,7 +317,7 @@ private _yOffset = 0;
 	_xPos = _xPos + 0.07 + 0.004;
 	
 	// Volume Increase Button
-	private _ctrlVolumeInc = _display ctrlCreate ["RscButton", _baseIDC + 42, _group];
+	private _ctrlVolumeInc = _display ctrlCreate ["RscButton", _baseIDC + 18, _group];
 	_ctrlVolumeInc ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
 	_ctrlVolumeInc ctrlSetText "+";
 	_ctrlVolumeInc ctrlSetTextColor COLOR_WHITE_100;
@@ -320,7 +327,7 @@ private _yOffset = 0;
 	
 	// === POWER BUTTON ===
 	// Power Button (Toggle On/Off)
-	private _ctrlPower = _display ctrlCreate ["RscButton", _baseIDC + 50, _group];
+	private _ctrlPower = _display ctrlCreate ["RscButton", _baseIDC + 19, _group];
 	_ctrlPower ctrlSetPosition [_xPos, _yRow, 0.09, BUTTON_HEIGHT];
 	if (_isOn) then {
 		_ctrlPower ctrlSetText "ON";

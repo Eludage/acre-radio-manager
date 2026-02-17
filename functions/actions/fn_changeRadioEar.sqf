@@ -11,7 +11,7 @@
  * Boolean: true on success, false on failure
  *
  * Example:
- * [_radioId, "left", 16500] call AcreRadioManager_fnc_changeRadioEar;
+ * [_radioId, "left", 16100] call AcreRadioManager_fnc_changeRadioEar;
  */
 
 params ["_radioId", "_newEar", "_baseIDC"];
@@ -48,9 +48,9 @@ private _result = [_radioId, _acreSpatial] call acre_api_fnc_setRadioSpatial;
 private _display = findDisplay 16000;
 if (!isNull _display) then {
 	private _earButtons = [
-		[_baseIDC + 30, "left"],
-		[_baseIDC + 31, "center"],
-		[_baseIDC + 32, "right"]
+		[_baseIDC + 12, "left"],
+		[_baseIDC + 13, "center"],
+		[_baseIDC + 14, "right"]
 	];
 	
 	{

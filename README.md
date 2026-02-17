@@ -121,6 +121,7 @@ Build the mod using Arma 3 Tools (Addon Builder) or compatible PBO packing tools
 
 ## Known Limitations
 
+- **Maximum 12 radios**: The UI displays a maximum of 12 radios at once. If you carry more than 12 radios, only the first 12 will be shown in the manager
 - **Client-side only**: Settings are not saved server-side and reset on mission restart
 - **ACRE dependency**: Requires ACRE2 to be loaded and functional
 - **No undo**: Setting changes cannot be undone (but presets can be reloaded)

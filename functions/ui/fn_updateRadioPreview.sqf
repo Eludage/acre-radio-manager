@@ -12,20 +12,21 @@
  * [] call AcreRadioManager_fnc_updateRadioPreview;
  *
  * IDC Naming Convention:
- * Each radio gets a base IDC: 17500 + (radioIndex * 50)
- * - Radio 0 base: 17500, Radio 1 base: 17550, Radio 2 base: 17600, etc.
+ * Each radio gets a base IDC: 16400 + (radioIndex * 25)
+ * - Radio 0 base: 16400, Radio 1 base: 16425, Radio 2 base: 16450, etc.
+ * - Maximum 12 radios supported (IDC range: 16400-16699)
  * - Icon: baseIDC + 0
  * - Name: baseIDC + 1
- * - PTT Label: baseIDC + 9
- * - PTT Display: baseIDC + 10
- * - Channel Label: baseIDC + 19
- * - Channel Display: baseIDC + 21
- * - Ear Label: baseIDC + 29
- * - Ear Display: baseIDC + 30
- * - Volume Label: baseIDC + 39
- * - Volume Display: baseIDC + 41
- * - Power Display: baseIDC + 50
- * - Copy Button: baseIDC + 51
+ * - PTT Label: baseIDC + 2
+ * - PTT Display: baseIDC + 3
+ * - Channel Label: baseIDC + 7
+ * - Channel Display: baseIDC + 9
+ * - Ear Label: baseIDC + 11
+ * - Ear Display: baseIDC + 12
+ * - Volume Label: baseIDC + 15
+ * - Volume Display: baseIDC + 17
+ * - Power Display: baseIDC + 19
+ * - Copy Button: baseIDC + 20
  */
 
 // Color constants
@@ -59,6 +60,12 @@ if (_radios isEqualTo "") exitWith {
 	true
 };
 
+// Limit to maximum 12 radios to prevent IDC overflow
+private _maxRadios = 12 min (count _radios);
+if (count _radios > _maxRadios) then {
+	_radios = _radios select [0, _maxRadios];
+};
+
 private _yOffset = 0;
 
 {
@@ -77,8 +84,8 @@ private _yOffset = 0;
 	private _volume = _radioData select 8;
 	private _isOn = _radioData select 9;
 	
-	// Calculate base IDC for this radio (17500 for first radio, 17550 for second, etc.)
-	private _baseIDC = 17500 + (_radioIndex * 50);
+	// Calculate base IDC for this radio (16400 for first radio, 16425 for second, etc.)
+	private _baseIDC = 16400 + (_radioIndex * 25);
 	
 	// All controls on same Y position for single row
 	private _yRow = _yOffset + 0.006;
@@ -102,7 +109,7 @@ private _yOffset = 0;
 	
 	// === PTT SECTION ===
 	// PTT Label
-	private _ctrlPTTLabel = _display ctrlCreate ["RscText", _baseIDC + 9, _group];
+	private _ctrlPTTLabel = _display ctrlCreate ["RscText", _baseIDC + 2, _group];
 	_ctrlPTTLabel ctrlSetPosition [_xPos, _yRow, 0.056, BUTTON_HEIGHT];
 	_ctrlPTTLabel ctrlSetText "PTT";
 	_ctrlPTTLabel ctrlSetTextColor COLOR_GREY_70;
@@ -118,7 +125,7 @@ private _yOffset = 0;
 		_pttColor = COLOR_GREEN;
 	};
 	
-	private _ctrlPTTDisplay = _display ctrlCreate ["RscButton", _baseIDC + 10, _group];
+	private _ctrlPTTDisplay = _display ctrlCreate ["RscButton", _baseIDC + 3, _group];
 	_ctrlPTTDisplay ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
 	_ctrlPTTDisplay ctrlSetText _pttText;
 	_ctrlPTTDisplay ctrlSetTextColor COLOR_WHITE_100;
@@ -133,7 +140,7 @@ private _yOffset = 0;
 	private _isRadioSupported = (_baseClass find "ACRE_PRC117F" >= 0) || (_baseClass find "ACRE_PRC152" >= 0);
 	
 	// Channel Label
-	private _ctrlChannelLabel = _display ctrlCreate ["RscText", _baseIDC + 19, _group];
+	private _ctrlChannelLabel = _display ctrlCreate ["RscText", _baseIDC + 7, _group];
 	_ctrlChannelLabel ctrlSetPosition [_xPos, _yRow, 0.05, BUTTON_HEIGHT];
 	_ctrlChannelLabel ctrlSetText "CH";
 	_ctrlChannelLabel ctrlSetTextColor COLOR_GREY_70;
@@ -142,7 +149,7 @@ private _yOffset = 0;
 	_xPos = _xPos + 0.054;
 	
 	// Channel Display
-	private _ctrlChannelDisplay = _display ctrlCreate ["RscText", _baseIDC + 21, _group];
+	private _ctrlChannelDisplay = _display ctrlCreate ["RscText", _baseIDC + 9, _group];
 	_ctrlChannelDisplay ctrlSetPosition [_xPos, _yRow, 0.26, BUTTON_HEIGHT];
 	if (_isRadioSupported) then {
 		_ctrlChannelDisplay ctrlSetText format ["%1: %2", _channel, _channelName];
@@ -156,7 +163,7 @@ private _yOffset = 0;
 	
 	// === EAR SECTION ===
 	// Ear Label
-	private _ctrlEarLabel = _display ctrlCreate ["RscText", _baseIDC + 29, _group];
+	private _ctrlEarLabel = _display ctrlCreate ["RscText", _baseIDC + 11, _group];
 	_ctrlEarLabel ctrlSetPosition [_xPos, _yRow, 0.056, BUTTON_HEIGHT];
 	_ctrlEarLabel ctrlSetText "Ear";
 	_ctrlEarLabel ctrlSetTextColor COLOR_GREY_70;
@@ -169,7 +176,7 @@ private _yOffset = 0;
 	if (_ear == "left") then { _earText = "L"; };
 	if (_ear == "right") then { _earText = "R"; };
 	
-	private _ctrlEarDisplay = _display ctrlCreate ["RscButton", _baseIDC + 30, _group];
+	private _ctrlEarDisplay = _display ctrlCreate ["RscButton", _baseIDC + 12, _group];
 	_ctrlEarDisplay ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
 	_ctrlEarDisplay ctrlSetText _earText;
 	_ctrlEarDisplay ctrlSetTextColor COLOR_WHITE_100;
@@ -179,8 +186,8 @@ private _yOffset = 0;
 	_xPos = _xPos + BUTTON_WIDTH + 0.01;
 	
 	// === VOLUME SECTION ===
-	// Volume Label  
-	private _ctrlVolumeLabel = _display ctrlCreate ["RscText", _baseIDC + 39, _group];
+	// Volume Label
+	private _ctrlVolumeLabel = _display ctrlCreate ["RscText", _baseIDC + 15, _group];
 	_ctrlVolumeLabel ctrlSetPosition [_xPos, _yRow, 0.06, BUTTON_HEIGHT];
 	_ctrlVolumeLabel ctrlSetText "Vol";
 	_ctrlVolumeLabel ctrlSetTextColor COLOR_GREY_70;
@@ -189,7 +196,7 @@ private _yOffset = 0;
 	_xPos = _xPos + 0.064;
 	
 	// Volume Display
-	private _ctrlVolumeDisplay = _display ctrlCreate ["ARM_RscTextCentered", _baseIDC + 41, _group];
+	private _ctrlVolumeDisplay = _display ctrlCreate ["ARM_RscTextCentered", _baseIDC + 17, _group];
 	_ctrlVolumeDisplay ctrlSetPosition [_xPos, _yRow, 0.07, BUTTON_HEIGHT];
 	_ctrlVolumeDisplay ctrlSetText (str (round (_volume * 100)));
 	_ctrlVolumeDisplay ctrlSetTextColor COLOR_WHITE_100;
@@ -199,7 +206,7 @@ private _yOffset = 0;
 	
 	// === POWER BUTTON ===
 	// Power Display (read-only button)
-	private _ctrlPowerDisplay = _display ctrlCreate ["RscButton", _baseIDC + 50, _group];
+	private _ctrlPowerDisplay = _display ctrlCreate ["RscButton", _baseIDC + 19, _group];
 	_ctrlPowerDisplay ctrlSetPosition [_xPos, _yRow, 0.09, BUTTON_HEIGHT];
 	if (_isOn) then {
 		_ctrlPowerDisplay ctrlSetText "ON";
@@ -215,7 +222,7 @@ private _yOffset = 0;
 	
 	// === COPY BUTTON ===
 	// Copy Button (active/enabled)
-	private _ctrlCopyButton = _display ctrlCreate ["RscButton", _baseIDC + 51, _group];
+	private _ctrlCopyButton = _display ctrlCreate ["RscButton", _baseIDC + 20, _group];
 	_ctrlCopyButton ctrlSetPosition [_xPos, _yRow, 0.09, BUTTON_HEIGHT];
 	_ctrlCopyButton ctrlSetText "Copy";
 	_ctrlCopyButton ctrlSetTextColor COLOR_WHITE_100;
