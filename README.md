@@ -26,6 +26,22 @@ Acre Radio Manager is a client-side Arma 3 mod that provides an intuitive interf
 - **Adjustable Font Size**: Increase or decrease UI text size for better readability (5 levels)
 - **Intuitive Controls**: Direct access to all radio settings without complex menus
 
+## Supported Radio Types
+
+The mod provides different levels of functionality depending on the radio type:
+
+| Radio Type | PTT Assignment | Channel Change | Ear Assignment | Volume Control | Power On/Off |
+|-----------|---------------|----------------|----------------|----------------|-------------|
+| AN/PRC-117F | ✓ | ✓ | ✓ | ✓ | ✓ |
+| AN/PRC-152 | ✓ | ✓ | ✓ | ✓ | ✓ |
+| AN/PRC-148 | ✓ | ✗ | ✓ | ✓ | ✓ |
+| AN/PRC-343 | ✓ | ✗ | ✓ | ✓ | ✓ |
+| AN/PRC-77 | ✓ | ✗ | ✓ | ✓ | ✓ |
+| Beofeng 888S | ✓ | ✗ | ✓ | ✓ | ✓ |
+| Other ACRE Radios | ✓ | ✗ | ✓ | ✓ | ✓ |
+
+**Note**: Radios without channel change support will display "Radio not supported" in the channel section. All other functions remain fully operational.
+
 ## Installation
 
 1. Subscribe to the mod on Steam Workshop (coming soon)

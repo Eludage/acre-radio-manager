@@ -43,6 +43,12 @@ class CfgFunctions
             file = "AcreRadioManager\functions\core";
             class openRadioSettings {}; // Opens the main dialog
         };
+        // ===== Actions / User Interactions =====
+        class actions
+        {
+            file = "AcreRadioManager\functions\actions";
+            class changeRadioChannel {}; // Changes radio channel and updates UI
+        };
         // ===== Data / ACRE Interface =====
         class data
         {

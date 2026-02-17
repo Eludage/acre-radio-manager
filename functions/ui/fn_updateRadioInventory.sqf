@@ -152,6 +152,10 @@ private _yOffset = 0;
 	_xPos = _xPos + 0.006;
 	
 	// === CHANNEL SECTION ===
+	// Determine if radio supports channel changing (only PRC-117F and PRC-152)
+	private _baseClass = [_radioId] call acre_api_fnc_getBaseRadio;
+	private _isRadioSupported = (_baseClass find "ACRE_PRC117F" >= 0) || (_baseClass find "ACRE_PRC152" >= 0);
+	
 	// Channel Label
 	private _ctrlChannelLabel = _display ctrlCreate ["RscText", _baseIDC + 19, _group];
 	_ctrlChannelLabel ctrlSetPosition [_xPos, _yRow, 0.05, BUTTON_HEIGHT];
@@ -167,13 +171,18 @@ private _yOffset = 0;
 	_ctrlChannelDec ctrlSetText "-";
 	_ctrlChannelDec ctrlSetTextColor COLOR_WHITE_100;
 	_ctrlChannelDec ctrlSetBackgroundColor COLOR_GREY_40;
+	_ctrlChannelDec ctrlEnable _isRadioSupported;
 	_ctrlChannelDec ctrlCommit 0;
 	_xPos = _xPos + BUTTON_WIDTH + 0.004;
 	
 	// Channel Display
 	private _ctrlChannelDisplay = _display ctrlCreate ["RscText", _baseIDC + 21, _group];
 	_ctrlChannelDisplay ctrlSetPosition [_xPos, _yRow, 0.26, BUTTON_HEIGHT];
-	_ctrlChannelDisplay ctrlSetText format ["%1: %2", _channel, _channelName];
+	if (_isRadioSupported) then {
+		_ctrlChannelDisplay ctrlSetText format ["%1: %2", _channel, _channelName];
+	} else {
+		_ctrlChannelDisplay ctrlSetText "Radio not supported";
+	};
 	_ctrlChannelDisplay ctrlSetTextColor COLOR_WHITE_100;
 	_ctrlChannelDisplay ctrlSetBackgroundColor COLOR_GREY_30;
 	_ctrlChannelDisplay ctrlCommit 0;
@@ -185,7 +194,32 @@ private _yOffset = 0;
 	_ctrlChannelInc ctrlSetText "+";
 	_ctrlChannelInc ctrlSetTextColor COLOR_WHITE_100;
 	_ctrlChannelInc ctrlSetBackgroundColor COLOR_GREY_40;
+	_ctrlChannelInc ctrlEnable _isRadioSupported;
 	_ctrlChannelInc ctrlCommit 0;
+	
+	// Add event handlers for channel buttons (only if radio is supported)
+	if (_isRadioSupported) then {
+		_ctrlChannelDec ctrlAddEventHandler ["ButtonClick", {
+			params ["_ctrl"];
+			private _displayCtrl = ctrlParent _ctrl displayCtrl (ctrlIDC _ctrl + 1); // Get channel display control
+			private _radioIdFromBtn = _ctrl getVariable ["radioId", ""];
+			if (_radioIdFromBtn != "") then {
+				[_radioIdFromBtn, -1, _displayCtrl] call AcreRadioManager_fnc_changeRadioChannel;
+			};
+		}];
+		_ctrlChannelDec setVariable ["radioId", _radioId];
+		
+		_ctrlChannelInc ctrlAddEventHandler ["ButtonClick", {
+			params ["_ctrl"];
+			private _displayCtrl = ctrlParent _ctrl displayCtrl (ctrlIDC _ctrl - 1); // Get channel display control
+			private _radioIdFromBtn = _ctrl getVariable ["radioId", ""];
+			if (_radioIdFromBtn != "") then {
+				[_radioIdFromBtn, 1, _displayCtrl] call AcreRadioManager_fnc_changeRadioChannel;
+			};
+		}];
+		_ctrlChannelInc setVariable ["radioId", _radioId];
+	};
+	
 	_xPos = _xPos + BUTTON_WIDTH + 0.01;
 	
 	// === EAR SECTION ===

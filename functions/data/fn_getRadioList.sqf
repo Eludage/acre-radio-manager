@@ -79,18 +79,22 @@ private _radioData = [];
 	
 	// Get current channel number (1-based)
 	private _channel = [_radioId] call acre_api_fnc_getRadioChannel;
-	// Convert to number if string, default to 1 if nil
+	// Convert to number if string, default to 1 if nil or invalid
 	if (typeName _channel == "STRING") then {
 		_channel = parseNumber _channel;
 	};
-	if (isNil "_channel") then {
+	if (typeName _channel != "SCALAR") then {
+		_channel = 1;
+	};
+	if (_channel < 1) then {
 		_channel = 1;
 	};
 	
 	// Get channel name (label) if available
 	private _channelName = "";
 	// Note: getPresetChannelData expects 0-based channel index, but getRadioChannel returns 1-based
-	private _channelData = [_baseClass, "default", _channel - 1] call acre_api_fnc_getPresetChannelData;
+	private _channelIndex = (_channel - 1) max 0;
+	private _channelData = [_baseClass, "default", _channelIndex] call acre_api_fnc_getPresetChannelData;
 	diag_log format ["DEBUG %1 - Channel data: %2 (type: %3)", _radioId, _channelData, typeName _channelData];
 	if (!isNil "_channelData") then {
 		if (typeName _channelData == "LOCATION") then {

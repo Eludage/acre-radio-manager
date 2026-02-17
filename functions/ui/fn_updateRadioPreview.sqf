@@ -131,6 +131,10 @@ private _yOffset = 0;
 	_xPos = _xPos + BUTTON_WIDTH + 0.01;
 	
 	// === CHANNEL SECTION ===
+	// Determine if radio supports channel changing (only PRC-117F and PRC-152)
+	private _baseClass = [_radioId] call acre_api_fnc_getBaseRadio;
+	private _isRadioSupported = (_baseClass find "ACRE_PRC117F" >= 0) || (_baseClass find "ACRE_PRC152" >= 0);
+	
 	// Channel Label
 	private _ctrlChannelLabel = _display ctrlCreate ["RscText", _baseIDC + 19, _group];
 	_ctrlChannelLabel ctrlSetPosition [_xPos, _yRow, 0.05, BUTTON_HEIGHT];
@@ -143,7 +147,11 @@ private _yOffset = 0;
 	// Channel Display
 	private _ctrlChannelDisplay = _display ctrlCreate ["RscText", _baseIDC + 21, _group];
 	_ctrlChannelDisplay ctrlSetPosition [_xPos, _yRow, 0.26, BUTTON_HEIGHT];
-	_ctrlChannelDisplay ctrlSetText format ["%1: %2", _channel, _channelName];
+	if (_isRadioSupported) then {
+		_ctrlChannelDisplay ctrlSetText format ["%1: %2", _channel, _channelName];
+	} else {
+		_ctrlChannelDisplay ctrlSetText "Radio not supported";
+	};
 	_ctrlChannelDisplay ctrlSetTextColor COLOR_WHITE_100;
 	_ctrlChannelDisplay ctrlSetBackgroundColor COLOR_GREY_30;
 	_ctrlChannelDisplay ctrlCommit 0;
