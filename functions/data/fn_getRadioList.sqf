@@ -33,13 +33,14 @@ if (count _radios == 0) exitWith {
 	""
 };
 
-// Get PTT assignments once (more efficient than querying per radio)
-// Returns nested array: [[ptt1_radios], [ptt2_radios], [ptt3_radios]]
+// Get PTT assignments - ACRE returns flat array where index = PTT number
+// [radio1, radio2, radio3] means radio1=PTT1, radio2=PTT2, radio3=PTT3
 private _pttAssignments = [] call acre_api_fnc_getMultiPushToTalkAssignment;
 
-private _ptt1Radios = if (!isNil "_pttAssignments" && {typeName _pttAssignments == "ARRAY"} && {count _pttAssignments > 0}) then { _pttAssignments select 0 } else { [] };
-private _ptt2Radios = if (!isNil "_pttAssignments" && {typeName _pttAssignments == "ARRAY"} && {count _pttAssignments > 1}) then { _pttAssignments select 1 } else { [] };
-private _ptt3Radios = if (!isNil "_pttAssignments" && {typeName _pttAssignments == "ARRAY"} && {count _pttAssignments > 2}) then { _pttAssignments select 2 } else { [] };
+// Extract individual PTT radios from flat array
+private _ptt1Radio = if (!isNil "_pttAssignments" && {typeName _pttAssignments == "ARRAY"} && {count _pttAssignments > 0}) then { _pttAssignments select 0 } else { "" };
+private _ptt2Radio = if (!isNil "_pttAssignments" && {typeName _pttAssignments == "ARRAY"} && {count _pttAssignments > 1}) then { _pttAssignments select 1 } else { "" };
+private _ptt3Radio = if (!isNil "_pttAssignments" && {typeName _pttAssignments == "ARRAY"} && {count _pttAssignments > 2}) then { _pttAssignments select 2 } else { "" };
 
 // Process each radio and build array
 private _radioData = [];
@@ -57,10 +58,11 @@ private _radioData = [];
 	private _icon = getText (configFile >> "CfgWeapons" >> _baseClass >> "picture");
 	
 	// Determine PTT assignment (0 = none, 1-3 = PTT keys)
+	// Check if radio ID matches any PTT slot
 	private _ptt = 0;
-	if (_radioId in _ptt1Radios) then { _ptt = 1; };
-	if (_radioId in _ptt2Radios) then { _ptt = 2; };
-	if (_radioId in _ptt3Radios) then { _ptt = 3; };
+	if (_radioId == _ptt1Radio) then { _ptt = 1; };
+	if (_radioId == _ptt2Radio) then { _ptt = 2; };
+	if (_radioId == _ptt3Radio) then { _ptt = 3; };
 	
 	// Get current channel number (1-based)
 	private _channel = [_radioId] call acre_api_fnc_getRadioChannel;

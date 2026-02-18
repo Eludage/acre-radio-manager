@@ -10,9 +10,10 @@ Acre Radio Manager is a client-side Arma 3 mod that provides an intuitive interf
 - **Quick Selection**: Click any radio to view and edit its detailed settings
 
 ### Radio Settings Management
-- **Ear Assignment**: Switch radios between left and right ear (for headsets/earpieces)
-- **Channel Control**: Change radio channels quickly with visual feedback
-- **Volume Adjustment**: Set individual volume levels for each radio
+- **PTT Assignment**: Assign radios to Push-To-Talk keys (1, 2, or 3) with smart swapping logic
+- **Ear Assignment**: Switch radios between left, center, and right ear (for headsets/earpieces)
+- **Channel Control**: Change radio channels quickly with visual feedback (for supported radios)
+- **Volume Adjustment**: Set individual volume levels for each radio in 10% increments
 - **Real-time Application**: All changes are applied immediately
 
 ### Preset System
@@ -60,12 +61,21 @@ The mod provides different levels of functionality depending on the radio type:
 1. **View Your Radios**: All radios in your inventory appear in the top section
 2. **Select a Radio**: Click on any radio in the inventory list
 3. **Adjust Settings**: Use the controls in the Radio Preview section:
-   - Change ear assignment (Left/Right buttons)
-   - Adjust channel (channel selector)
-   - Modify volume (use +/- buttons for 10% steps, or type a value and press Enter or click away)
+   - **PTT Assignment**: Click buttons 1, 2, or 3 to assign the radio to a Push-To-Talk key
+   - **Ear Assignment**: Change between Left/Center/Right ear
+   - **Channel**: Adjust channel (for supported radios)
+   - **Volume**: Use +/- buttons for 10% steps, or type a value and press Enter or click away
 4. **Changes Apply Immediately**: No need to click "Save" or "Apply"
 
-**Note**: Volume is adjusted in 10% increments (0, 10, 20, ..., 100). Manual entries are automatically rounded to the nearest 10%.
+**PTT Assignment Rules**:
+- You cannot remove PTT from a radio (X button is disabled)
+- PTT buttons are limited by the number of radios you have (e.g., PTT 3 is disabled if you only have 2 radios)
+- When assigning a radio with PTT to a new PTT, the two radios swap their PTT assignments
+- When assigning a radio without PTT to a new PTT, the other radio loses its PTT
+
+**Volume Control**:
+- Volume is adjusted in 10% increments (0, 10, 20, ..., 100)
+- Manual entries are automatically rounded to the nearest 10%
 
 ### Working with Presets
 1. **Save Current Configuration**:

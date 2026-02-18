@@ -128,15 +128,28 @@ private _yOffset = 0;
 	
 	// PTT Buttons: 1, 2, 3, X
 	private _pttButtons = ["1", "2", "3", "X"];
+	private _radioCount = count _radios;
 	{
 		private _btnIndex = _forEachIndex;
 		private _btnText = _x;
-		private _pttNum = _btnIndex + 1; // 1, 2, 3, 4
+		private _pttNum = _btnIndex + 1; // 1, 2, 3, 4 (where 4 represents X/none)
+		private _actualPTT = if (_pttNum == 4) then {0} else {_pttNum}; // Convert button 4 to PTT 0
 		
 		private _ctrlPTT = _display ctrlCreate ["RscButton", _baseIDC + 3 + _btnIndex, _group];
 		_ctrlPTT ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
 		_ctrlPTT ctrlSetText _btnText;
 		_ctrlPTT ctrlSetTextColor COLOR_WHITE_100;
+		
+		// Determine if button should be enabled
+		private _isEnabled = true;
+		// Rule: X button is always disabled (can't remove PTT)
+		if (_actualPTT == 0) then {
+			_isEnabled = false;
+		};
+		// Rule: Can't select PTT greater than number of radios
+		if (_actualPTT > _radioCount) then {
+			_isEnabled = false;
+		};
 		
 		// Highlight active PTT
 		if (_pttNum <= 3 && _ptt == _pttNum) then {
@@ -149,7 +162,33 @@ private _yOffset = 0;
 			};
 		};
 		
+		_ctrlPTT ctrlEnable _isEnabled;
 		_ctrlPTT ctrlCommit 0;
+		
+		// Add click handler for enabled PTT buttons
+		if (_isEnabled) then {
+			// Store the PTT value and radio ID directly on the control for the event handler
+			_ctrlPTT setVariable ["pttValue", _actualPTT];
+			_ctrlPTT setVariable ["radioId", _radioId];
+			_ctrlPTT setVariable ["baseIDC", _baseIDC];
+			
+			_ctrlPTT ctrlAddEventHandler ["MouseButtonDown", {
+				params ["_ctrl", "_button", "_xPos", "_yPos"];
+				// Only respond to left mouse button (button 0)
+				if (_button != 0) exitWith {};
+				
+				private _pttVal = _ctrl getVariable ["pttValue", -1];
+				private _radioIdVal = _ctrl getVariable ["radioId", ""];
+				private _baseIDCVal = _ctrl getVariable ["baseIDC", 0];
+				
+				if (_radioIdVal != "" && _pttVal >= 0 && _baseIDCVal > 0) then {
+					[_radioIdVal, _pttVal, _baseIDCVal] call AcreRadioManager_fnc_changeRadioPTT;
+				} else {
+					diag_log format ["ERROR: PTT button click failed - radioId: %1, pttVal: %2, baseIDC: %3", _radioIdVal, _pttVal, _baseIDCVal];
+				};
+			}];
+		};
+		
 		_xPos = _xPos + BUTTON_WIDTH + 0.004;
 	} forEach _pttButtons;
 	

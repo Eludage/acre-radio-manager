@@ -50,6 +50,7 @@ class CfgFunctions
             class changeRadioChannel {}; // Changes radio channel and updates UI
             class changeRadioEar {}; // Changes radio ear/spatial assignment and updates UI
             class changeRadioVolume {}; // Changes radio volume and updates UI
+            class changeRadioPTT {}; // Changes radio PTT assignment with smart swapping
         };
         // ===== Data / ACRE Interface =====
         class data
