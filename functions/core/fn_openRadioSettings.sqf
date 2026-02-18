@@ -18,6 +18,14 @@ private _radioList = [] call AcreRadioManager_fnc_getRadioList;
 // Debug: Log radio list
 // [_radioList] call AcreRadioManager_fnc_debugLogRadioList;
 
+// Ensure "Last Presets" exists in savestates
+private _savestates = profileNamespace getVariable ["AcreRadioManager_savestates", createHashMap];
+if !("Last Presets" in _savestates) then {
+	_savestates set ["Last Presets", []];
+	profileNamespace setVariable ["AcreRadioManager_savestates", _savestates];
+	saveProfileNamespace;
+};
+
 // Open the radio settings dialog
 private _dialogOpened = createDialog "AcreRadioManager_Dialog";
 
@@ -25,6 +33,7 @@ private _dialogOpened = createDialog "AcreRadioManager_Dialog";
 if (_dialogOpened) then {
 	[] call AcreRadioManager_fnc_updateRadioInventory;
 	[] call AcreRadioManager_fnc_updateRadioPreview;
+	[] call AcreRadioManager_fnc_updateSavestateList;
 };
 
 // Return success/failure

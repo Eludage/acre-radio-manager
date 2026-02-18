@@ -51,6 +51,12 @@ class CfgFunctions
             class changeRadioEar {}; // Changes radio ear/spatial assignment and updates UI
             class changeRadioVolume {}; // Changes radio volume and updates UI
             class changeRadioPTT {}; // Changes radio PTT assignment with smart swapping
+            class addSavestate {}; // Adds a new savestate entry
+            class removeSavestate {}; // Removes the selected savestate entry
+            class loadSavestate {}; // Loads a savestate and applies it to the current radios
+            class saveSavestate {}; // Saves the current radio settings to a savestate
+            class renameSavestate {}; // Renames a savestate entry
+            class saveLastPresets {}; // Saves the current radio settings to "Last Presets"
         };
         // ===== Data / ACRE Interface =====
         class data
@@ -64,6 +70,7 @@ class CfgFunctions
             file = "AcreRadioManager\functions\ui";
             class updateRadioInventory {}; // Dynamically creates radio inventory controls
             class updateRadioPreview {}; // Dynamically creates radio preview controls
+            class updateSavestateList {}; // Dynamically creates savestate list controls
         };
         // ===== Utilities / Helpers =====
         class utilities

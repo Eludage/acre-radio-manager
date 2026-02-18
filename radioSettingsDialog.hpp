@@ -288,7 +288,7 @@ class AcreRadioManager_Dialog
             idc = -1;
             x = 0.16 * safezoneW + safezoneX;
             y = 0.49 * safezoneH + safezoneY;
-            w = 0.68 * safezoneW;
+            w = 0.50 * safezoneW;
             h = 0.31 * safezoneH;
             colorBackground[] = COLOR_GREY_15;
         };
@@ -307,6 +307,79 @@ class AcreRadioManager_Dialog
             };
         };
 
+        // ============== Radio Preview Options SECTION ==============
+        class RadioPreviewOptionsTitle: ARM_RscBoxTitle
+        {
+            idc = -1;
+            text = "Radio Preview Options";
+            x = 0.67 * safezoneW + safezoneX;
+            y = 0.46 * safezoneH + safezoneY;
+            w = 0.1 * safezoneW;
+            h = 0.025 * safezoneH;
+        };
+
+        class RadioPreviewOptionsBackground: ARM_RscPanel
+        {
+            idc = -1;
+            x = 0.67 * safezoneW + safezoneX;
+            y = 0.49 * safezoneH + safezoneY;
+            w = 0.17 * safezoneW;
+            h = 0.26 * safezoneH;
+            colorBackground[] = COLOR_GREY_15;
+        };
+
+        class RadioPreviewOptionsGroup: ARM_RscControlsGroup
+        {
+            idc = 16030;
+            x = 0.67 * safezoneW + safezoneX;
+            y = 0.49 * safezoneH + safezoneY;
+            w = 0.17 * safezoneW;
+            h = 0.26 * safezoneH;
+            
+            class Controls
+            {
+                // Controls will be created dynamically at runtime
+            };
+        };
+
+        class RadioPreviewOptionsButtonsBackground: ARM_RscPanel
+        {
+            idc = -1;
+            x = 0.67 * safezoneW + safezoneX;
+            y = 0.76 * safezoneH + safezoneY;
+            w = 0.17 * safezoneW;
+            h = 0.04 * safezoneH;
+            colorBackground[] = COLOR_GREY_15;
+        };
+
+        class AddSavestateButton: ARM_RscButton
+        {
+            idc = 16031;
+            text = "Add Savestate";
+            x = 0.68 * safezoneW + safezoneX;
+            y = 0.77 * safezoneH + safezoneY;
+            w = 0.07 * safezoneW;
+            h = 0.02 * safezoneH;
+            action = "[] call AcreRadioManager_fnc_addSavestate;";
+            colorBackground[] = COLOR_GREY_30;
+            colorFocused[] = COLOR_GREY_30;
+            colorBackgroundActive[] = COLOR_GREY_50;
+        };
+
+        class RemoveSavestateButton: ARM_RscButton
+        {
+            idc = 16032;
+            text = "Remove Savestate";
+            x = 0.76 * safezoneW + safezoneX;
+            y = 0.77 * safezoneH + safezoneY;
+            w = 0.07 * safezoneW;
+            h = 0.02 * safezoneH;
+            action = "[] call AcreRadioManager_fnc_removeSavestate;";
+            colorBackground[] = COLOR_GREY_30;
+            colorFocused[] = COLOR_GREY_30;
+            colorBackgroundActive[] = COLOR_GREY_50;
+        };
+
         // ============== CLOSE BUTTON ==============
         class CloseButton: ARM_RscButton
         {
@@ -316,7 +389,7 @@ class AcreRadioManager_Dialog
             y = 0.84 * safezoneH + safezoneY;
             w = 0.1 * safezoneW;
             h = 0.04 * safezoneH;
-            action = "closeDialog 0;";
+            action = "[] call AcreRadioManager_fnc_saveLastPresets; closeDialog 0;";
             colorBackground[] = COLOR_GREY_30;
             colorFocused[] = COLOR_GREY_30;
             colorBackgroundActive[] = COLOR_GREY_50;

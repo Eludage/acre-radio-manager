@@ -1,0 +1,65 @@
+/*
+ * Author: Eludage
+ * Saves the current radio settings to a savestate.
+ * Cannot save to "Last Presets".
+ *
+ * Arguments:
+ * 0: _savestateName <STRING> - Name of the savestate to save to
+ *
+ * Return Value:
+ * Boolean: true on success, false on failure
+ *
+ * Example:
+ * ["My Preset"] call AcreRadioManager_fnc_saveSavestate;
+ */
+
+params ["_savestateName"];
+
+if (isNil "_savestateName" || _savestateName == "") exitWith {
+	diag_log "ERROR: Invalid savestate name";
+	false
+};
+
+// Cannot save to "Last Presets"
+if (_savestateName == "Last Presets") exitWith {
+	hint "Cannot save to 'Last Presets'";
+	false
+};
+
+// Get current radio list from uiNamespace
+private _radios = uiNamespace getVariable ["AcreRadioManager_currentRadios", []];
+if (_radios isEqualTo "") exitWith {
+	hint "No radios in inventory";
+	false
+};
+
+// Build savestate data array
+private _savestateData = [];
+
+{
+	private _radioData = _x;
+	
+	// Extract settings: [ptt, channel, ear, volume]
+	private _ptt = _radioData select 3;
+	private _channel = _radioData select 4;
+	private _ear = _radioData select 7;
+	private _volume = _radioData select 8;
+	
+	private _radioSettings = [_ptt, _channel, _ear, _volume];
+	_savestateData pushBack _radioSettings;
+	
+} forEach _radios;
+
+// Get savestates from profileNamespace
+private _savestates = profileNamespace getVariable ["AcreRadioManager_savestates", createHashMap];
+
+// Save the data
+_savestates set [_savestateName, _savestateData];
+
+// Save to profileNamespace
+profileNamespace setVariable ["AcreRadioManager_savestates", _savestates];
+saveProfileNamespace;
+
+hint format ["Saved to savestate: %1", _savestateName];
+
+true

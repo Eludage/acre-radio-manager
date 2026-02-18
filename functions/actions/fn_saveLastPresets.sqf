@@ -1,0 +1,49 @@
+/*
+ * Author: Eludage
+ * Saves the current radio inventory to "Last Presets".
+ * Called automatically when the dialog closes.
+ *
+ * Arguments:
+ * None
+ *
+ * Return Value:
+ * Boolean: true on success, false on failure
+ *
+ * Example:
+ * [] call AcreRadioManager_fnc_saveLastPresets;
+ */
+
+// Get current radio list from uiNamespace
+private _radios = uiNamespace getVariable ["AcreRadioManager_currentRadios", []];
+if (_radios isEqualTo "") exitWith {
+	true // No radios, but not an error
+};
+
+// Build savestate data array
+private _savestateData = [];
+
+{
+	private _radioData = _x;
+	
+	// Extract settings: [ptt, channel, ear, volume]
+	private _ptt = _radioData select 3;
+	private _channel = _radioData select 4;
+	private _ear = _radioData select 7;
+	private _volume = _radioData select 8;
+	
+	private _radioSettings = [_ptt, _channel, _ear, _volume];
+	_savestateData pushBack _radioSettings;
+	
+} forEach _radios;
+
+// Get savestates from profileNamespace
+private _savestates = profileNamespace getVariable ["AcreRadioManager_savestates", createHashMap];
+
+// Save to "Last Presets"
+_savestates set ["Last Presets", _savestateData];
+
+// Save to profileNamespace
+profileNamespace setVariable ["AcreRadioManager_savestates", _savestates];
+saveProfileNamespace;
+
+true
