@@ -62,6 +62,13 @@ private _savestateNames = ["Last Presets"];
 // Store current savestate names in uiNamespace for other functions
 uiNamespace setVariable ["AcreRadioManager_currentSavestateNames", _savestateNames];
 
+// Limit to maximum 20 savestates to prevent IDC overflow
+private _maxSavestates = 20 min (count _savestateNames);
+if (count _savestateNames > _maxSavestates) then {
+	_savestateNames = _savestateNames select [0, _maxSavestates];
+	hint format ["Savestate limit reached! Only showing first %1 of %2 savestates.", _maxSavestates, count _savestateNames];
+};
+
 // Get currently selected savestate index (if any)
 private _selectedIndex = uiNamespace getVariable ["AcreRadioManager_selectedSavestateIndex", -1];
 

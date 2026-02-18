@@ -15,6 +15,12 @@
 // Get current savestates from profileNamespace
 private _savestates = profileNamespace getVariable ["AcreRadioManager_savestates", createHashMap];
 
+// Check if savestate limit reached (20 max)
+if (count _savestates >= 20) exitWith {
+	hint "Savestate limit reached! Maximum 20 savestates allowed.";
+	false
+};
+
 // Find a unique name for the new savestate
 private _newName = "New Savestate";
 private _counter = 1;
