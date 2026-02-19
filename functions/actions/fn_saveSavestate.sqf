@@ -22,14 +22,14 @@ if (isNil "_savestateName" || _savestateName == "") exitWith {
 
 // Cannot save to "Last Presets"
 if (_savestateName == "Last Presets") exitWith {
-	hint "Cannot save to 'Last Presets'";
+	["Cannot save to 'Last Presets'"] call AcreRadioManager_fnc_showHint;
 	false
 };
 
 // Get current radio list from uiNamespace
 private _radios = uiNamespace getVariable ["AcreRadioManager_currentRadios", []];
 if (_radios isEqualTo "") exitWith {
-	hint "No radios in inventory";
+	["No radios in inventory"] call AcreRadioManager_fnc_showHint;
 	false
 };
 
@@ -61,6 +61,6 @@ _savestates set [_savestateName, _savestateData];
 // Save to profileNamespace
 profileNamespace setVariable ["AcreRadioManager_savestates", _savestates];
 
-hint format ["Saved to savestate: %1", _savestateName];
+[format ["Saved to savestate: %1", _savestateName]] call AcreRadioManager_fnc_showHint;
 
 true

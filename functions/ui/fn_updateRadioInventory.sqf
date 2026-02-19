@@ -67,7 +67,7 @@ if (_radios isEqualTo "") exitWith {
 private _maxRadios = 12 min (count _radios);
 if (count _radios > _maxRadios) then {
 	_radios = _radios select [0, _maxRadios];
-	hint format ["Radio limit reached! Only showing first %1 of %2 radios.", _maxRadios, count _radios];
+	[format ["Radio limit reached! Only showing first %1 of %2 radios.", _maxRadios, count _radios]] call AcreRadioManager_fnc_showHint;
 };
 
 // Create IDC to radio ID mapping in uiNamespace for event handlers

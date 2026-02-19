@@ -67,7 +67,7 @@ uiNamespace setVariable ["AcreRadioManager_currentSavestateNames", _savestateNam
 private _maxSavestates = 20 min (count _savestateNames);
 if (count _savestateNames > _maxSavestates) then {
 	_savestateNames = _savestateNames select [0, _maxSavestates];
-	hint format ["Savestate limit reached! Only showing first %1 of %2 savestates.", _maxSavestates, count _savestateNames];
+	[format ["Savestate limit reached! Only showing first %1 of %2 savestates.", _maxSavestates, count _savestateNames]] call AcreRadioManager_fnc_showHint;
 };
 
 // Get currently selected savestate index (if any)

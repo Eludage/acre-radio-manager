@@ -25,7 +25,7 @@ private _savestates = profileNamespace getVariable ["AcreRadioManager_savestates
 
 // Check if savestate exists
 if (!(_savestateName in _savestates)) exitWith {
-	hint format ["Savestate '%1' not found", _savestateName];
+	[format ["Savestate '%1' not found", _savestateName]] call AcreRadioManager_fnc_showHint;
 	false
 };
 
@@ -39,7 +39,7 @@ if (isNil "_savestateData" || typeName _savestateData != "ARRAY") exitWith {
 // Get current inventory radios as the data source for icon, name, ID etc.
 private _currentRadios = uiNamespace getVariable ["AcreRadioManager_currentRadios", []];
 if (_currentRadios isEqualTo "" || count _currentRadios == 0) exitWith {
-	hint "No radios in inventory";
+	["No radios in inventory"] call AcreRadioManager_fnc_showHint;
 	false
 };
 
@@ -83,6 +83,6 @@ if (!isNull _display) then {
 	[] call AcreRadioManager_fnc_updateRadioPreview;
 };
 
-hint format ["Loaded savestate into preview: %1", _savestateName];
+[format ["Loaded savestate into preview: %1", _savestateName]] call AcreRadioManager_fnc_showHint;
 
 true

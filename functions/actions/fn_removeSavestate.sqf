@@ -16,7 +16,7 @@
 // Get currently selected savestate index
 private _selectedIndex = uiNamespace getVariable ["AcreRadioManager_selectedSavestateIndex", -1];
 if (_selectedIndex < 0) exitWith {
-	hint "No savestate selected";
+	["No savestate selected"] call AcreRadioManager_fnc_showHint;
 	false
 };
 
@@ -31,7 +31,7 @@ private _savestateName = _savestateNames select _selectedIndex;
 
 // Cannot remove "Last Presets"
 if (_savestateName == "Last Presets") exitWith {
-	hint "Cannot remove 'Last Presets'";
+	["Cannot remove 'Last Presets'"] call AcreRadioManager_fnc_showHint;
 	false
 };
 

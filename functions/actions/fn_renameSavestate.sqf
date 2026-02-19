@@ -23,7 +23,7 @@ if (isNil "_oldName" || _oldName == "" || isNil "_newName" || _newName == "") ex
 
 // Cannot rename "Last Presets"
 if (_oldName == "Last Presets") exitWith {
-	hint "Cannot rename 'Last Presets'";
+	["Cannot rename 'Last Presets'"] call AcreRadioManager_fnc_showHint;
 	[] call AcreRadioManager_fnc_updateSavestateList; // Revert UI
 	false
 };
@@ -39,7 +39,7 @@ if (!(_oldName in _savestates)) exitWith {
 
 // Check if new name already exists
 if (_newName in _savestates && _newName != _oldName) exitWith {
-	hint format ["Savestate '%1' already exists", _newName];
+	[format ["Savestate '%1' already exists", _newName]] call AcreRadioManager_fnc_showHint;
 	[] call AcreRadioManager_fnc_updateSavestateList; // Revert UI
 	false
 };

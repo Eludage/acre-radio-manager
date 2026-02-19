@@ -80,6 +80,7 @@ class CfgFunctions
             class debugLogRadioList {}; // Logs radio list to debug console
             class validateVolumeInput {}; // Validates and clamps volume input (0-100), optionally rounds to nearest 10
             class getChannelName {}; // Resolves channel display name from ACRE preset data for a given radio and channel number
+            class showHint {}; // Displays a hint message that auto-clears after 5 seconds
         };
     };
 };

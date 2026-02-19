@@ -24,31 +24,31 @@ if (isNil "_savestateName" || _savestateName == "") exitWith {
 // Get savestate data
 private _savestates = profileNamespace getVariable ["AcreRadioManager_savestates", createHashMap];
 if !(_savestateName in _savestates) exitWith {
-	hint format ["Savestate '%1' not found.", _savestateName];
+	[format ["Savestate '%1' not found.", _savestateName]] call AcreRadioManager_fnc_showHint;
 	false
 };
 
 private _savestateData = _savestates get _savestateName;
 if (_savestateData isEqualTo [] || isNil "_savestateData") exitWith {
-	hint format ["Savestate '%1' is empty.", _savestateName];
+	[format ["Savestate '%1' is empty.", _savestateName]] call AcreRadioManager_fnc_showHint;
 	false
 };
 
 // Get current inventory radio IDs from ACRE
 if (isNil "acre_api_fnc_getCurrentRadioList") exitWith {
-	hint "ACRE not loaded.";
+	["ACRE not loaded."] call AcreRadioManager_fnc_showHint;
 	false
 };
 
 private _inventoryRadioIds = [] call acre_api_fnc_getCurrentRadioList;
 if (count _inventoryRadioIds == 0) exitWith {
-	hint "No radios in inventory.";
+	["No radios in inventory."] call AcreRadioManager_fnc_showHint;
 	false
 };
 
 // Verify entry counts match
 if (count _savestateData != count _inventoryRadioIds) exitWith {
-	hint format ["Cannot apply: savestate has %1 radio(s), inventory has %2.", count _savestateData, count _inventoryRadioIds];
+	[format ["Cannot apply: savestate has %1 radio(s), inventory has %2.", count _savestateData, count _inventoryRadioIds]] call AcreRadioManager_fnc_showHint;
 	false
 };
 
@@ -83,7 +83,7 @@ private _typeMismatch = false;
 	private _sCount = count (_savestateByType getOrDefault [_bc, []]);
 	private _iCount = count (_inventoryByType getOrDefault [_bc, []]);
 	if (_sCount != _iCount) then {
-		hint format ["Cannot apply: type mismatch for '%1' (%2 in savestate, %3 in inventory).", _bc, _sCount, _iCount];
+		[format ["Cannot apply: type mismatch for '%1' (%2 in savestate, %3 in inventory).", _bc, _sCount, _iCount]] call AcreRadioManager_fnc_showHint;
 		_typeMismatch = true;
 	};
 } forEach (keys _savestateByType);
@@ -96,7 +96,7 @@ private _extraType = false;
 {
 	private _bc = _x;
 	if !(_bc in _savestateByType) then {
-		hint format ["Cannot apply: inventory has radio type '%1' not present in savestate.", _bc];
+		[format ["Cannot apply: inventory has radio type '%1' not present in savestate.", _bc]] call AcreRadioManager_fnc_showHint;
 		_extraType = true;
 	};
 } forEach (keys _inventoryByType);
@@ -153,6 +153,6 @@ _newPTT call acre_api_fnc_setMultiPushToTalkAssignment;
 [] call AcreRadioManager_fnc_getRadioList;
 [] call AcreRadioManager_fnc_updateRadioInventory;
 
-hint format ["Applied savestate: %1", _savestateName];
+[format ["Applied savestate: %1", _savestateName]] call AcreRadioManager_fnc_showHint;
 
 true

@@ -17,7 +17,7 @@ private _savestates = profileNamespace getVariable ["AcreRadioManager_savestates
 
 // Check if savestate limit reached (20 max)
 if (count _savestates >= 20) exitWith {
-	hint "Savestate limit reached! Maximum 20 savestates allowed.";
+	["Savestate limit reached! Maximum 20 savestates allowed."] call AcreRadioManager_fnc_showHint;
 	false
 };
 
