@@ -40,8 +40,8 @@ if (!(_currentRadios isEqualTo "")) then {
 		_savestateData pushBack [
 			_radioData select 3, // ptt
 			_radioData select 4, // channel
-			_radioData select 7, // ear
-			_radioData select 8, // volume
+			_radioData select 6, // ear
+			_radioData select 7, // volume
 			_baseClass           // baseClass
 		];
 	} forEach _currentRadios;

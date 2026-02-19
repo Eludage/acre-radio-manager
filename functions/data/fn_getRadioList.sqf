@@ -6,7 +6,7 @@
  * None
  *
  * Return Value:
- * Array of Arrays - Each array contains radio information [id, icon, name, ptt, channel, channelName, frequency, ear, volume, isOn]
+ * Array of Arrays - Each array contains radio information [id, icon, name, ptt, channel, channelName, ear, volume, isOn]
  * Returns empty string "" if no radios found
  *
  * Example:
@@ -80,36 +80,6 @@ private _radioData = [];
 	// Get channel name via helper
 	private _channelName = [_radioId, _channel] call AcreRadioManager_fnc_getChannelName;
 	
-	// Also fetch channel data for frequency lookup below
-	private _channelIndex = (_channel - 1) max 0;
-	private _channelData = [_baseClass, "default", _channelIndex] call acre_api_fnc_getPresetChannelData;
-	
-	// Get frequency in MHz - try getting from channel data first
-	private _frequency = 0;
-	if (!isNil "_channelData") then {
-		if (typeName _channelData == "LOCATION") then {
-			// Extract from location namespace (note: key is lowercase "frequencytx")
-			_frequency = _channelData getVariable ["frequencytx", 0];
-		} else {
-			if (typeName _channelData == "HASHMAP") then {
-				_frequency = _channelData getOrDefault ["frequencyTX", 0];
-			};
-		};
-	};
-	// Fallback to direct API call
-	if (_frequency == 0) then {
-		private _freqRaw = [_radioId] call acre_api_fnc_getRadioFrequency;
-		if (!isNil "_freqRaw") then {
-			if (typeName _freqRaw == "STRING") then {
-				_frequency = parseNumber _freqRaw;
-			} else {
-				if (typeName _freqRaw == "SCALAR") then {
-					_frequency = _freqRaw;
-				};
-			};
-		};
-	};
-	
 	// Get spatial positioning and convert to ear string
 	private _spatial = [_radioId] call acre_api_fnc_getRadioSpatial;
 	private _ear = "center";
@@ -155,7 +125,7 @@ private _radioData = [];
 	};
 	
 	// Build radio info array
-	// [id, icon, name, ptt, channel, channelName, frequency, ear, volume, isOn]
+	// [id, icon, name, ptt, channel, channelName, ear, volume, isOn]
 	private _radioInfo = [
 		_radioId,        // 0: Radio instance ID
 		_icon,           // 1: Icon path
@@ -163,10 +133,9 @@ private _radioData = [];
 		_ptt,            // 3: PTT assignment (0-3)
 		_channel,        // 4: Channel number
 		_channelName,    // 5: Channel name/label
-		_frequency,      // 6: Frequency in MHz
-		_ear,            // 7: Ear assignment
-		_volume,         // 8: Volume (0.0-1.0)
-		_isOn            // 9: Power state
+		_ear,            // 6: Ear assignment
+		_volume,         // 7: Volume (0.0-1.0)
+		_isOn            // 8: Power state
 	];
 	
 	_radioData pushBack _radioInfo;

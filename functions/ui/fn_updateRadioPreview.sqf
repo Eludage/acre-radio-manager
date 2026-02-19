@@ -84,10 +84,9 @@ private _yOffset = 0;
 	private _ptt = _radioData select 3;
 	private _channel = _radioData select 4;
 	private _channelName = _radioData select 5;
-	private _frequency = _radioData select 6;
-	private _ear = _radioData select 7;
-	private _volume = _radioData select 8;
-	private _isOn = _radioData select 9;
+	private _ear = _radioData select 6;
+	private _volume = _radioData select 7;
+	private _isOn = _radioData select 8;
 	
 	// Calculate base IDC for this radio (16400 for first radio, 16425 for second, etc.)
 	private _baseIDC = 16400 + (_radioIndex * 25);
@@ -247,8 +246,8 @@ private _yOffset = 0;
 			_srcBaseClass,
 			_srcData select 3, // ptt
 			_srcData select 4, // channel
-			_srcData select 7, // ear
-			_srcData select 8  // volume
+			_srcData select 6, // ear
+			_srcData select 7  // volume
 		]];
 		// Rebuild inventory UI to apply green highlight to matching radio names
 		[] call AcreRadioManager_fnc_updateRadioInventory;

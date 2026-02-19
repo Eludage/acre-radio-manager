@@ -84,10 +84,9 @@ This section documents the runtime namespaces and variables used by Acre Radio M
     - 3: Number — PTT assignment (0 = none, 1-3 = PTT keys)
     - 4: Number — Channel number
     - 5: String — Channel name/label
-    - 6: Number — Frequency in MHz
-    - 7: String — Ear assignment ("left", "right", "center")
-    - 8: Number — Volume (0.0 to 1.0)
-    - 9: Boolean — Power state (true = on, false = off)
+    - 6: String — Ear assignment ("left", "right", "center")
+    - 7: Number — Volume (0.0 to 1.0)
+    - 8: Boolean — Power state (true = on, false = off)
 - `AcreRadioManager_currentSavestateNames`: Array — List of all savestate names in current session. Always has "Last Presets" at index 0.
 - `AcreRadioManager_selectedSavestateIndex`: Number — Index of currently selected savestate for removal. -1 when no selection.
 - `AcreRadioManager_hintCounter`: Number — Monotonically incrementing counter used by `fn_showHint` to prevent stale spawned clears from wiping a newer hint. Incremented on every `fn_showHint` call.

@@ -91,10 +91,9 @@ private _yOffset = 0;
 	private _ptt = _radioData select 3;
 	private _channel = _radioData select 4;
 	private _channelName = _radioData select 5;
-	private _frequency = _radioData select 6;
-	private _ear = _radioData select 7;
-	private _volume = _radioData select 8;
-	private _isOn = _radioData select 9;
+	private _ear = _radioData select 6;
+	private _volume = _radioData select 7;
+	private _isOn = _radioData select 8;
 	private _baseClass = [_radioId] call acre_api_fnc_getBaseRadio;
 	
 	// Calculate base IDC for this radio (16100 for first radio, 16125 for second, etc.)
