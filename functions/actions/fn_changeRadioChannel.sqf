@@ -133,6 +133,10 @@ if (_newChannel != _currentChannel) then {
 	// Update display control
 	_displayCtrl ctrlSetText format ["%1: %2", _newChannel, _channelName];
 	
+	// Refresh radio data and update Radio Preview
+	[] call AcreRadioManager_fnc_getRadioList;
+	[] call AcreRadioManager_fnc_updateRadioPreview;
+	
 	true
 } else {
 	// Already at min/max, no change needed

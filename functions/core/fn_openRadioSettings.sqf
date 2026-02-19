@@ -23,7 +23,6 @@ private _savestates = profileNamespace getVariable ["AcreRadioManager_savestates
 if !("Last Presets" in _savestates) then {
 	_savestates set ["Last Presets", []];
 	profileNamespace setVariable ["AcreRadioManager_savestates", _savestates];
-	saveProfileNamespace;
 };
 
 // Open the radio settings dialog

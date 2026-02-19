@@ -72,6 +72,12 @@ if (count _savestateNames > _maxSavestates) then {
 // Get currently selected savestate index (if any)
 private _selectedIndex = uiNamespace getVariable ["AcreRadioManager_selectedSavestateIndex", -1];
 
+// Clear existing controls from the group
+private _controls = allControls _group;
+{
+	ctrlDelete _x;
+} forEach _controls;
+
 private _yOffset = 0.01;
 
 {
@@ -102,11 +108,28 @@ private _yOffset = 0.01;
 	_ctrlEdit ctrlAddEventHandler ["MouseButtonDown", {
 		params ["_ctrl", "_button"];
 		if (_button == 0) then { // Left click
-			private _index = _ctrl getVariable ["savestateIndex", -1];
-			uiNamespace setVariable ["AcreRadioManager_selectedSavestateIndex", _index];
+			private _selIndex = _ctrl getVariable ["savestateIndex", -1];
+			private _oldIndex = uiNamespace getVariable ["AcreRadioManager_selectedSavestateIndex", -1];
+			uiNamespace setVariable ["AcreRadioManager_selectedSavestateIndex", _selIndex];
 			
-			// Refresh list to show selection highlight
-			[] call AcreRadioManager_fnc_updateSavestateList;
+			// Update selection highlight without rebuilding entire list
+			private _display = findDisplay 16000;
+			if (!isNull _display) then {
+				private _group = _display displayCtrl 16030;
+				if (!isNull _group) then {
+					// Unhighlight old selection
+					if (_oldIndex >= 0) then {
+						private _oldCtrl = _display displayCtrl (16700 + (_oldIndex * 5));
+						if (!isNull _oldCtrl) then {
+							_oldCtrl ctrlSetBackgroundColor [0.15, 0.15, 0.15, 1];
+							_oldCtrl ctrlCommit 0;
+						};
+					};
+					// Highlight new selection
+					_ctrl ctrlSetBackgroundColor [0.3, 0.3, 0.3, 1];
+					_ctrl ctrlCommit 0;
+				};
+			};
 		};
 	}];
 	

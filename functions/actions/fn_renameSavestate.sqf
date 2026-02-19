@@ -51,7 +51,6 @@ _savestates set [_newName, _data];
 
 // Save to profileNamespace
 profileNamespace setVariable ["AcreRadioManager_savestates", _savestates];
-saveProfileNamespace;
 
 // Refresh the savestate list
 [] call AcreRadioManager_fnc_updateSavestateList;

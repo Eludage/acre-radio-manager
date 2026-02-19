@@ -73,6 +73,11 @@ if (count _radios > _maxRadios) then {
 // Create IDC to radio ID mapping in uiNamespace for event handlers
 private _idcToRadioMap = createHashMap;
 
+// Clear existing controls before rebuilding
+{
+	ctrlDelete _x;
+} forEach (allControls _group);
+
 private _yOffset = 0;
 
 {

@@ -389,7 +389,7 @@ class AcreRadioManager_Dialog
             y = 0.84 * safezoneH + safezoneY;
             w = 0.1 * safezoneW;
             h = 0.04 * safezoneH;
-            action = "[] call AcreRadioManager_fnc_saveLastPresets; closeDialog 0;";
+            action = "[] call AcreRadioManager_fnc_savePresets; closeDialog 0;";
             colorBackground[] = COLOR_GREY_30;
             colorFocused[] = COLOR_GREY_30;
             colorBackgroundActive[] = COLOR_GREY_50;

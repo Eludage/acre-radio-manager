@@ -69,4 +69,8 @@ if (!isNull _display) then {
 	} forEach _earButtons;
 };
 
+// Refresh radio data and update Radio Preview
+[] call AcreRadioManager_fnc_getRadioList;
+[] call AcreRadioManager_fnc_updateRadioPreview;
+
 true

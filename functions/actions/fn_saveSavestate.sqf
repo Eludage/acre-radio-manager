@@ -58,7 +58,6 @@ _savestates set [_savestateName, _savestateData];
 
 // Save to profileNamespace
 profileNamespace setVariable ["AcreRadioManager_savestates", _savestates];
-saveProfileNamespace;
 
 hint format ["Saved to savestate: %1", _savestateName];
 

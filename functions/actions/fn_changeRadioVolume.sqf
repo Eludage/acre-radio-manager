@@ -57,4 +57,8 @@ if (!isNull _display) then {
 	};
 };
 
+// Refresh radio data and update Radio Preview
+[] call AcreRadioManager_fnc_getRadioList;
+[] call AcreRadioManager_fnc_updateRadioPreview;
+
 true

@@ -1,6 +1,7 @@
 /*
  * Author: Eludage
- * Saves the current radio inventory to "Last Presets".
+ * Saves the current radio inventory to "Last Presets" and flushes all pending
+ * savestate changes to disk via saveProfileNamespace.
  * Called automatically when the dialog closes.
  *
  * Arguments:
@@ -10,7 +11,7 @@
  * Boolean: true on success, false on failure
  *
  * Example:
- * [] call AcreRadioManager_fnc_saveLastPresets;
+ * [] call AcreRadioManager_fnc_savePresets;
  */
 
 // Get current radio list from uiNamespace

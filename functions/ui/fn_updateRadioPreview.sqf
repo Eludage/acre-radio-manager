@@ -66,6 +66,11 @@ if (count _radios > _maxRadios) then {
 	_radios = _radios select [0, _maxRadios];
 };
 
+// Clear existing controls before rebuilding
+{
+	ctrlDelete _x;
+} forEach (allControls _group);
+
 private _yOffset = 0;
 
 {

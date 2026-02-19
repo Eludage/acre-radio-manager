@@ -56,7 +56,7 @@ class CfgFunctions
             class loadSavestate {}; // Loads a savestate and applies it to the current radios
             class saveSavestate {}; // Saves the current radio settings to a savestate
             class renameSavestate {}; // Renames a savestate entry
-            class saveLastPresets {}; // Saves the current radio settings to "Last Presets"
+            class savePresets {}; // Saves the current radio settings and flushes all pending savestate changes to disk
         };
         // ===== Data / ACRE Interface =====
         class data

@@ -43,7 +43,6 @@ _savestates deleteAt _savestateName;
 
 // Save to profileNamespace
 profileNamespace setVariable ["AcreRadioManager_savestates", _savestates];
-saveProfileNamespace;
 
 // Clear selection
 uiNamespace setVariable ["AcreRadioManager_selectedSavestateIndex", -1];
