@@ -30,6 +30,8 @@ private _dialogOpened = createDialog "AcreRadioManager_Dialog";
 
 // If dialog opened successfully, populate the radio inventory
 if (_dialogOpened) then {
+	// Initialize previewRadios to match inventory on open
+	uiNamespace setVariable ["AcreRadioManager_previewRadios", uiNamespace getVariable ["AcreRadioManager_currentRadios", []]];
 	[] call AcreRadioManager_fnc_updateRadioInventory;
 	[] call AcreRadioManager_fnc_updateRadioPreview;
 	[] call AcreRadioManager_fnc_updateSavestateList;

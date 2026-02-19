@@ -1,6 +1,7 @@
 /*
  * Author: Eludage
- * Loads a savestate and applies the settings to the player's radios.
+ * Loads a savestate into the Radio Preview area.
+ * Does NOT apply settings to actual radios - only updates the preview display.
  *
  * Arguments:
  * 0: _savestateName <STRING> - Name of the savestate to load
@@ -35,81 +36,53 @@ if (isNil "_savestateData" || typeName _savestateData != "ARRAY") exitWith {
 	false
 };
 
-// Get current radios
-private _radios = [] call acre_api_fnc_getCurrentRadioList;
-if (count _radios == 0) exitWith {
+// Get current inventory radios as the data source for icon, name, ID etc.
+private _currentRadios = uiNamespace getVariable ["AcreRadioManager_currentRadios", []];
+if (_currentRadios isEqualTo "" || count _currentRadios == 0) exitWith {
 	hint "No radios in inventory";
 	false
 };
 
-// Apply savestate to radios (match by index)
+// Build preview radio data by overlaying savestate settings onto current inventory
+private _previewRadios = [];
 {
-	private _radioSettings = _x;
+	private _radioData = +_x; // deep copy to avoid modifying currentRadios
 	private _radioIndex = _forEachIndex;
-	
-	// Check if we have a corresponding radio in inventory
-	if (_radioIndex < count _radios) then {
-		private _radioId = _radios select _radioIndex;
-		
-		// Extract settings from savestate
+
+	if (_radioIndex < count _savestateData) then {
+		private _radioSettings = _savestateData select _radioIndex;
+
 		// Format: [ptt, channel, ear, volume]
 		if (count _radioSettings >= 4) then {
 			private _ptt = _radioSettings select 0;
 			private _channel = _radioSettings select 1;
 			private _ear = _radioSettings select 2;
 			private _volume = _radioSettings select 3;
-			
-			// Apply PTT (handled separately via multi-PTT API)
-			// Apply channel (only for supported radios)
-			private _baseClass = [_radioId] call acre_api_fnc_getBaseRadio;
-			private _isRadioSupported = (_baseClass find "ACRE_PRC117F" >= 0) || (_baseClass find "ACRE_PRC152" >= 0);
-			if (_isRadioSupported && _channel > 0) then {
-				[_radioId, _channel] call acre_api_fnc_setRadioChannel;
-			};
-			
-			// Apply ear
-			if (_ear != "") then {
-				[_radioId, toUpper _ear] call acre_api_fnc_setRadioSpatial;
-			};
-			
-			// Apply volume
-			if (_volume >= 0 && _volume <= 1) then {
-				[_radioId, _volume] call acre_api_fnc_setRadioVolume;
-			};
+
+			_radioData set [3, _ptt];
+			_radioData set [4, _channel];
+
+			// Resolve channel name via helper
+			private _radioId = _radioData select 0;
+			private _channelName = [_radioId, _channel] call AcreRadioManager_fnc_getChannelName;
+
+			_radioData set [5, _channelName];
+			_radioData set [7, _ear];
+			_radioData set [8, _volume];
 		};
 	};
-} forEach _savestateData;
 
-// Apply PTT assignments from savestate
-// Build PTT array from savestate data
-private _pttAssignments = ["", "", ""];
-{
-	private _radioSettings = _x;
-	private _radioIndex = _forEachIndex;
-	
-	if (_radioIndex < count _radios && count _radioSettings >= 1) then {
-		private _ptt = _radioSettings select 0;
-		private _radioId = _radios select _radioIndex;
-		
-		if (_ptt >= 1 && _ptt <= 3) then {
-			private _pttIndex = _ptt - 1;
-			_pttAssignments set [_pttIndex, _radioId];
-		};
-	};
-} forEach _savestateData;
+	_previewRadios pushBack _radioData;
+} forEach _currentRadios;
 
-// Apply PTT assignments
-[_pttAssignments] call acre_api_fnc_setMultiPushToTalkAssignment;
-
-// Refresh radio list and UI
-[] call AcreRadioManager_fnc_getRadioList;
+// Store preview state and refresh only the preview UI - inventory is unchanged
+uiNamespace setVariable ["AcreRadioManager_previewRadios", _previewRadios];
 
 private _display = findDisplay 16000;
 if (!isNull _display) then {
-	[] call AcreRadioManager_fnc_updateRadioInventory;
 	[] call AcreRadioManager_fnc_updateRadioPreview;
 };
 
-hint format ["Loaded savestate: %1", _savestateName];
+hint format ["Loaded savestate into preview: %1", _savestateName];
 
 true

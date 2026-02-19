@@ -54,8 +54,8 @@ if (isNull _group) exitWith {
 	false
 };
 
-// Get radio data from uiNamespace
-private _radios = uiNamespace getVariable ["AcreRadioManager_currentRadios", []];
+// Get radio data from uiNamespace (preview state - may differ from inventory after loading a savestate)
+private _radios = uiNamespace getVariable ["AcreRadioManager_previewRadios", []];
 if (_radios isEqualTo "") exitWith {
 	true
 };

@@ -77,28 +77,12 @@ private _radioData = [];
 		_channel = 1;
 	};
 	
-	// Get channel name (label) if available
-	private _channelName = "";
-	// Note: getPresetChannelData expects 0-based channel index, but getRadioChannel returns 1-based
+	// Get channel name via helper
+	private _channelName = [_radioId, _channel] call AcreRadioManager_fnc_getChannelName;
+	
+	// Also fetch channel data for frequency lookup below
 	private _channelIndex = (_channel - 1) max 0;
 	private _channelData = [_baseClass, "default", _channelIndex] call acre_api_fnc_getPresetChannelData;
-	if (!isNil "_channelData") then {
-		if (typeName _channelData == "LOCATION") then {
-			// Channel data is stored in location namespace - use "description" for channel name
-			_channelName = _channelData getVariable ["description", ""];
-		} else {
-			if (typeName _channelData == "HASHMAP") then {
-				_channelName = _channelData getOrDefault ["label", ""];
-			} else {
-				if (typeName _channelData == "ARRAY" && {count _channelData > 0}) then {
-					_channelName = str (_channelData select 0);
-				};
-			};
-		};
-	};
-	if (_channelName == "") then {
-		_channelName = format ["Channel %1", _channel];
-	};
 	
 	// Get frequency in MHz - try getting from channel data first
 	private _frequency = 0;
@@ -191,6 +175,8 @@ private _radioData = [];
 
 // Store in uiNamespace for access by other functions
 uiNamespace setVariable ["AcreRadioManager_currentRadios", _radioData];
+// Inventory changes always sync the preview state
+uiNamespace setVariable ["AcreRadioManager_previewRadios", _radioData];
 
 // Return the radio data array
 _radioData

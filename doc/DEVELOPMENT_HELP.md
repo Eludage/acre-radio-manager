@@ -2,6 +2,17 @@
 
 This document contains helpful development-oriented references for working on Acre Radio Manager. It contains the control ID reference, namespace documentation, and variable usage.
 
+## Business Logic
+
+This section describes the intended behavior across the key user interactions.
+
+- **Dialog opened**: The preview area mirrors the current inventory state. `previewRadios` is initialized to `currentRadios`.
+- **Inventory changed** (PTT, channel, ear, volume): Changes are applied to ACRE immediately. `currentRadios` and `previewRadios` are both refreshed via `fn_getRadioList`, keeping inventory and preview in sync.
+- **Dialog closed**: The current **inventory** state (not preview) is saved as "Last Presets" and all pending savestate changes are flushed to disk via `fn_savePresets`.
+- **Savestate added**: A new entry is created and **pre-filled with the current inventory** state so it can immediately be renamed and used.
+- **Savestate loaded**: Settings are overlaid onto the **preview area only**. The actual ACRE radio settings and the inventory are untouched.
+- **Savestate saved**: Stores the current **inventory** state into the savestate, not the preview state.
+
 ## Dialog and Control ID Reference
 
 This section lists the main dialog ID (IDD) and the control IDCs used in the Radio Settings dialog (`radioSettingsDialog.hpp`). Use these IDs in scripts to access controls via `findDisplay` and `displayCtrl`.
@@ -66,6 +77,7 @@ This section documents the runtime namespaces and variables used by Acre Radio M
     - 9: Boolean — Power state (true = on, false = off)
 - `AcreRadioManager_currentSavestateNames`: Array — List of all savestate names in current session. Always has "Last Presets" at index 0.
 - `AcreRadioManager_selectedSavestateIndex`: Number — Index of currently selected savestate for removal. -1 when no selection.
+- `AcreRadioManager_previewRadios`: Array or String — Radio info arrays used exclusively by the Radio Preview section. Same format as `AcreRadioManager_currentRadios`. Stays in sync with inventory on any inventory change. Diverges when a savestate is loaded via `fn_loadSavestate`, which overlays savestate settings without modifying `currentRadios`.
 
 #### Radio Settings Cache
 - `AcreRadioManager_radioSettings`: HashMap — Cached settings for all radios during dialog session. Map of radio class name → settings hashmap.

@@ -113,22 +113,8 @@ if (_newChannel != _currentChannel) then {
 	// Set new channel via ACRE API
 	private _result = [_radioId, _newChannel] call acre_api_fnc_setRadioChannel;
 	
-	// Get channel name - ensure channel index is valid (0-based, so max is _maxChannel - 1)
-	private _channelName = "";
-	private _channelIndex = (_newChannel - 1) min (_maxChannel - 1) max 0;
-	private _channelData = [_baseClass, "default", _channelIndex] call acre_api_fnc_getPresetChannelData;
-	if (!isNil "_channelData") then {
-		if (typeName _channelData == "LOCATION") then {
-			_channelName = _channelData getVariable ["description", ""];
-		} else {
-			if (typeName _channelData == "HASHMAP") then {
-				_channelName = _channelData getOrDefault ["label", ""];
-			};
-		};
-	};
-	if (_channelName == "") then {
-		_channelName = format ["Channel %1", _newChannel];
-	};
+	// Get channel name via helper
+	private _channelName = [_radioId, _newChannel] call AcreRadioManager_fnc_getChannelName;
 	
 	// Update display control
 	_displayCtrl ctrlSetText format ["%1: %2", _newChannel, _channelName];

@@ -113,13 +113,13 @@ private _yOffset = 0.01;
 			uiNamespace setVariable ["AcreRadioManager_selectedSavestateIndex", _selIndex];
 			
 			// Update selection highlight without rebuilding entire list
-			private _display = findDisplay 16000;
-			if (!isNull _display) then {
-				private _group = _display displayCtrl 16030;
-				if (!isNull _group) then {
+			private _ehDisplay = findDisplay 16000;
+			if (!isNull _ehDisplay) then {
+				private _ehGroup = _ehDisplay displayCtrl 16030;
+				if (!isNull _ehGroup) then {
 					// Unhighlight old selection
 					if (_oldIndex >= 0) then {
-						private _oldCtrl = _display displayCtrl (16700 + (_oldIndex * 5));
+						private _oldCtrl = _ehDisplay displayCtrl (16700 + (_oldIndex * 5));
 						if (!isNull _oldCtrl) then {
 							_oldCtrl ctrlSetBackgroundColor [0.15, 0.15, 0.15, 1];
 							_oldCtrl ctrlCommit 0;
