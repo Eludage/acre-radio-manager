@@ -92,11 +92,15 @@ This section documents the runtime namespaces and variables used by Acre Radio M
 #### Savestates
 - `AcreRadioManager_savestates`: HashMap — Saved radio savestates. Map of savestate name → savestate data array.
   - Each savestate data array contains an array of radio settings in order: [radio1Settings, radio2Settings, ...]
-  - Each radio settings array contains: [ptt, channel, ear, volume]
+  - Each radio settings array contains: [ptt, channel, ear, volume, baseClass]
     - ptt: Number — PTT assignment (0 = none, 1-3 = PTT keys)
     - channel: Number — Channel number
     - ear: String — "left", "right", or "center"
     - volume: Number — Volume level (0.0 to 1.0)
+    - baseClass: String — Radio base class (e.g. "ACRE_PRC343"), used for type-matching on Apply
+  - **Power state is intentionally not saved.** The ACRE API does not expose a reliable way to
+    change radio power state programmatically. The power button in the inventory UI is read-only.
+    When a savestate is applied, power state is left unchanged on all radios.
   - Special savestate "Last Presets" is always present and auto-saves on dialog close
   - "Last Presets" cannot be renamed, deleted, or manually saved to
 

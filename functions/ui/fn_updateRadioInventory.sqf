@@ -25,7 +25,7 @@
  * - Ear Buttons L/B/R: baseIDC + 12, 13, 14
  * - Volume Label: baseIDC + 15
  * - Volume Dec/Edit/Inc: baseIDC + 16, 17, 18
- * - Power Button: baseIDC + 19
+ * - Power Display (read-only): baseIDC + 19
  */
 
 // Color constants
@@ -431,8 +431,10 @@ private _yOffset = 0;
 	
 	_xPos = _xPos + BUTTON_WIDTH + 0.01;
 	
-	// === POWER BUTTON ===
-	// Power Button (Toggle On/Off)
+	// === POWER DISPLAY ===
+	// Read-only indicator — changing radio power state via the ACRE API is not
+	// currently supported. The button is intentionally disabled to reflect this.
+	// Savestates always restore power as ON; the power state field is not persisted.
 	private _ctrlPower = _display ctrlCreate ["RscButton", _baseIDC + 19, _group];
 	_ctrlPower ctrlSetPosition [_xPos, _yRow, 0.09, BUTTON_HEIGHT];
 	if (_isOn) then {
@@ -443,6 +445,7 @@ private _yOffset = 0;
 		_ctrlPower ctrlSetBackgroundColor COLOR_RED;
 	};
 	_ctrlPower ctrlSetTextColor COLOR_WHITE_100;
+	_ctrlPower ctrlEnable false; // Read-only: no ACRE API available to toggle power
 	_ctrlPower ctrlCommit 0;
 	
 	// Move to next radio position
