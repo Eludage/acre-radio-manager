@@ -226,13 +226,34 @@ private _yOffset = 0;
 	_xPos = _xPos + 0.09 + 0.01;
 	
 	// === COPY BUTTON ===
-	// Copy Button (active/enabled)
+	// Enters copy mode: highlights matching radio names in the inventory green
+	// so the player can click one to paste these preview settings onto it.
 	private _ctrlCopyButton = _display ctrlCreate ["RscButton", _baseIDC + 20, _group];
 	_ctrlCopyButton ctrlSetPosition [_xPos, _yRow, 0.09, BUTTON_HEIGHT];
 	_ctrlCopyButton ctrlSetText "Copy";
 	_ctrlCopyButton ctrlSetTextColor COLOR_WHITE_100;
 	_ctrlCopyButton ctrlSetBackgroundColor COLOR_GREY_40;
 	_ctrlCopyButton ctrlCommit 0;
+	
+	_ctrlCopyButton setVariable ["radioIndex", _radioIndex];
+	_ctrlCopyButton ctrlAddEventHandler ["ButtonClick", {
+		params ["_ctrl"];
+		private _srcIndex = _ctrl getVariable ["radioIndex", -1];
+		private _previewRadios = uiNamespace getVariable ["AcreRadioManager_previewRadios", []];
+		if (_srcIndex < 0 || _srcIndex >= count _previewRadios) exitWith {};
+		private _srcData = _previewRadios select _srcIndex;
+		private _srcRadioId = _srcData select 0;
+		private _srcBaseClass = [_srcRadioId] call acre_api_fnc_getBaseRadio;
+		uiNamespace setVariable ["AcreRadioManager_copySource", [
+			_srcBaseClass,
+			_srcData select 3, // ptt
+			_srcData select 4, // channel
+			_srcData select 7, // ear
+			_srcData select 8  // volume
+		]];
+		// Rebuild inventory UI to apply green highlight to matching radio names
+		[] call AcreRadioManager_fnc_updateRadioInventory;
+	}];
 	
 	// Move to next radio position
 	_yOffset = _yOffset + ITEM_HEIGHT;

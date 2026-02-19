@@ -16,7 +16,7 @@
  * - Radio 0 base: 16100, Radio 1 base: 16125, Radio 2 base: 16150, etc.
  * - Maximum 12 radios supported (IDC range: 16100-16399)
  * - Icon: baseIDC + 0
- * - Name: baseIDC + 1
+ * - Name (copy target button): baseIDC + 1
  * - PTT Label: baseIDC + 2
  * - PTT Buttons 1-4: baseIDC + 3 to 6
  * - Channel Label: baseIDC + 7
@@ -95,6 +95,7 @@ private _yOffset = 0;
 	private _ear = _radioData select 7;
 	private _volume = _radioData select 8;
 	private _isOn = _radioData select 9;
+	private _baseClass = [_radioId] call acre_api_fnc_getBaseRadio;
 	
 	// Calculate base IDC for this radio (16100 for first radio, 16125 for second, etc.)
 	private _baseIDC = 16100 + (_radioIndex * 25);
@@ -114,12 +115,33 @@ private _yOffset = 0;
 	_xPos = _xPos + 0.07;
 	
 	// === RADIO NAME ===
-	private _ctrlName = _display ctrlCreate ["RscText", _baseIDC + 1, _group];
+	// In copy mode, turns into a green clickable button for matching radio types.
+	private _copySource = uiNamespace getVariable ["AcreRadioManager_copySource", nil];
+	private _isCopyTarget = (!isNil "_copySource") && { (_copySource select 0) == _baseClass };
+	
+	private _ctrlName = _display ctrlCreate ["RscButton", _baseIDC + 1, _group];
 	_ctrlName ctrlSetPosition [_xPos, _yRow, 0.20, BUTTON_HEIGHT];
 	_ctrlName ctrlSetText _displayName;
 	_ctrlName ctrlSetTextColor COLOR_WHITE_100;
-	_ctrlName ctrlSetBackgroundColor [0, 0, 0, 0];
+	if (_isCopyTarget) then {
+		_ctrlName ctrlSetBackgroundColor COLOR_GREEN;
+		_ctrlName ctrlEnable true;
+	} else {
+		_ctrlName ctrlSetBackgroundColor [0, 0, 0, 0];
+		_ctrlName ctrlEnable false;
+	};
+	_ctrlName setVariable ["radioId", _radioId];
+	_ctrlName setVariable ["radioIndex", _radioIndex];
 	_ctrlName ctrlCommit 0;
+	
+	_ctrlName ctrlAddEventHandler ["ButtonClick", {
+		params ["_ctrl"];
+		private _targetRadioId = _ctrl getVariable ["radioId", ""];
+		private _targetRadioIndex = _ctrl getVariable ["radioIndex", -1];
+		if (_targetRadioId != "" && _targetRadioIndex >= 0) then {
+			[_targetRadioId, _targetRadioIndex] call AcreRadioManager_fnc_copyRadioSettings;
+		};
+	}];
 	_xPos = _xPos + 0.204;
 	
 	// === PTT SECTION ===
@@ -202,7 +224,6 @@ private _yOffset = 0;
 	
 	// === CHANNEL SECTION ===
 	// Determine if radio supports channel changing (only PRC-117F and PRC-152)
-	private _baseClass = [_radioId] call acre_api_fnc_getBaseRadio;
 	private _isRadioSupported = (_baseClass find "ACRE_PRC117F" >= 0) || (_baseClass find "ACRE_PRC152" >= 0);
 	
 	// Channel Label

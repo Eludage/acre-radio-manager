@@ -56,6 +56,7 @@ class CfgFunctions
             class loadSavestate {}; // Loads a savestate and applies it to the current radios
             class saveSavestate {}; // Saves the current radio settings to a savestate
             class applySavestate {}; // Applies a savestate to the actual ACRE radios, matching by radio type
+            class copyRadioSettings {}; // Copies preview radio settings onto a target inventory radio (used by copy mode)
             class renameSavestate {}; // Renames a savestate entry
             class savePresets {}; // Saves the current radio settings and flushes all pending savestate changes to disk
         };

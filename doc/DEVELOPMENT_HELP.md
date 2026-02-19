@@ -34,6 +34,7 @@ This section lists the main dialog ID (IDD) and the control IDCs used in the Rad
   - Radios in Inventory controls
     - 16010 → RadiosInventoryGroup — control group for dynamically created radio inventory controls
     - 16100-16399 → Dynamic radio controls (max 12 radios, 25 IDCs per radio)
+      - baseIDC + 1 (Name): normally disabled `RscButton` with transparent background; turns green and clickable when copy mode is active and the radio type matches the copy source
   - Radio Preview controls
     - 16020 → RadioPreviewGroup — control group for dynamically created radio preview controls
     - 16400-16699 → Dynamic radio preview controls (max 12 radios, 25 IDCs per radio)
@@ -78,6 +79,7 @@ This section documents the runtime namespaces and variables used by Acre Radio M
 - `AcreRadioManager_currentSavestateNames`: Array — List of all savestate names in current session. Always has "Last Presets" at index 0.
 - `AcreRadioManager_selectedSavestateIndex`: Number — Index of currently selected savestate for removal. -1 when no selection.
 - `AcreRadioManager_hintCounter`: Number — Monotonically incrementing counter used by `fn_showHint` to prevent stale spawned clears from wiping a newer hint. Incremented on every `fn_showHint` call.
+- `AcreRadioManager_copySource`: Array or nil — Active copy mode source data set when the player clicks a Copy button in the preview area. nil when copy mode is inactive. Format: `[baseClass, ptt, channel, ear, volume]`. Cleared automatically after a successful paste (inventory name click) or when a new Copy is pressed.
 - `AcreRadioManager_previewRadios`: Array or String — Radio info arrays used exclusively by the Radio Preview section. Same format as `AcreRadioManager_currentRadios`. Stays in sync with inventory on any inventory change. Diverges when a savestate is loaded via `fn_loadSavestate`, which overlays savestate settings without modifying `currentRadios`.
 
 #### Radio Settings Cache
