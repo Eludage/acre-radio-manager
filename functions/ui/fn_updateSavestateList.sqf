@@ -17,9 +17,10 @@
  * - Entry 1: 16705
  * - Entry 2: 16710, etc.
  * - Maximum 20 savestates (IDC range: 16700-16799)
- * - Edit field: baseIDC + 0
- * - Load button: baseIDC + 1
- * - Save button: baseIDC + 2
+ * - Edit field:   baseIDC + 0
+ * - Load button:   baseIDC + 1
+ * - Save button:   baseIDC + 2
+ * - Apply button:  baseIDC + 3
  */
 
 // Color constants
@@ -33,8 +34,8 @@
 #define ITEM_HEIGHT 0.08
 #define BUTTON_HEIGHT 0.06
 #define ENTRY_PADDING 0.01
-#define BUTTON_WIDTH 0.08
-#define NAME_FIELD_WIDTH 0.2
+#define BUTTON_WIDTH 0.06
+#define NAME_FIELD_WIDTH 0.17
 
 private _display = findDisplay 16000;
 if (isNull _display) exitWith {
@@ -184,6 +185,26 @@ private _yOffset = 0.01;
 		private _name = _ctrl getVariable ["savestateName", ""];
 		if (_name != "") then {
 			[_name] call AcreRadioManager_fnc_saveSavestate;
+		};
+	}];
+	
+	_xPos = _xPos + BUTTON_WIDTH + ENTRY_PADDING;
+	
+	// === APPLY BUTTON ===
+	private _ctrlApply = _display ctrlCreate ["RscButton", _baseIDC + 3, _group];
+	_ctrlApply ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
+	_ctrlApply ctrlSetText "Apply";
+	_ctrlApply ctrlSetTextColor COLOR_WHITE_100;
+	_ctrlApply ctrlSetBackgroundColor COLOR_GREY_40;
+	_ctrlApply ctrlCommit 0;
+	
+	// Store savestate name for apply handler
+	_ctrlApply setVariable ["savestateName", _savestateName];
+	_ctrlApply ctrlAddEventHandler ["ButtonClick", {
+		params ["_ctrl"];
+		private _name = _ctrl getVariable ["savestateName", ""];
+		if (_name != "") then {
+			[_name] call AcreRadioManager_fnc_applySavestate;
 		};
 	}];
 	

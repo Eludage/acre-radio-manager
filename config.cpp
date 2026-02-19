@@ -55,6 +55,7 @@ class CfgFunctions
             class removeSavestate {}; // Removes the selected savestate entry
             class loadSavestate {}; // Loads a savestate and applies it to the current radios
             class saveSavestate {}; // Saves the current radio settings to a savestate
+            class applySavestate {}; // Applies a savestate to the actual ACRE radios, matching by radio type
             class renameSavestate {}; // Renames a savestate entry
             class savePresets {}; // Saves the current radio settings and flushes all pending savestate changes to disk
         };

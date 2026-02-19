@@ -35,11 +35,14 @@ private _savestateData = [];
 if (!(_currentRadios isEqualTo "")) then {
 	{
 		private _radioData = _x;
+		private _radioId = _radioData select 0;
+		private _baseClass = [_radioId] call acre_api_fnc_getBaseRadio;
 		_savestateData pushBack [
 			_radioData select 3, // ptt
 			_radioData select 4, // channel
 			_radioData select 7, // ear
-			_radioData select 8  // volume
+			_radioData select 8, // volume
+			_baseClass           // baseClass
 		];
 	} forEach _currentRadios;
 };

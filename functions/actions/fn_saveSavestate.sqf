@@ -39,13 +39,15 @@ private _savestateData = [];
 {
 	private _radioData = _x;
 	
-	// Extract settings: [ptt, channel, ear, volume]
+	// Extract settings: [ptt, channel, ear, volume, baseClass]
+	private _radioId = _radioData select 0;
+	private _baseClass = [_radioId] call acre_api_fnc_getBaseRadio;
 	private _ptt = _radioData select 3;
 	private _channel = _radioData select 4;
 	private _ear = _radioData select 7;
 	private _volume = _radioData select 8;
 	
-	private _radioSettings = [_ptt, _channel, _ear, _volume];
+	private _radioSettings = [_ptt, _channel, _ear, _volume, _baseClass];
 	_savestateData pushBack _radioSettings;
 	
 } forEach _radios;
