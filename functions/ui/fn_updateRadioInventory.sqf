@@ -124,6 +124,7 @@ private _yOffset = 0;
 	_ctrlName ctrlSetPosition [_xPos, _yRow, 0.20, BUTTON_HEIGHT];
 	_ctrlName ctrlSetText _displayName;
 	_ctrlName ctrlSetTextColor COLOR_WHITE_100;
+	_ctrlName ctrlSetFontHeight 0.04; // Match RscText default used in preview
 	private _nameBtnColor = if (_isCopyTarget) then {COLOR_GREEN} else {[0, 0, 0, 0]};
 	_ctrlName ctrlSetBackgroundColor _nameBtnColor;
 	_ctrlName ctrlEnable _isCopyTarget;
@@ -459,6 +460,7 @@ private _yOffset = 0;
 	_ctrlPower ctrlSetText (if (_isOn) then {"ON"} else {"OFF"});
 	_ctrlPower ctrlSetBackgroundColor _powerColor;
 	_ctrlPower ctrlSetTextColor COLOR_WHITE_100;
+	_ctrlPower ctrlSetTooltip "Power state is read-only. Toggling radio power via this UI is currently not supported.";
 	_ctrlPower ctrlEnable false; // Read-only: no ACRE API available to toggle power
 	_ctrlPower ctrlCommit 0;
 	

@@ -26,7 +26,7 @@
  * - Volume Label: baseIDC + 15
  * - Volume Display: baseIDC + 17
  * - Power Display: baseIDC + 19
- * - Copy Button: baseIDC + 20
+ * - Copy Button: baseIDC + 21
  */
 
 // Color constants
@@ -104,10 +104,11 @@ private _yOffset = 0;
 	_xPos = _xPos + 0.07;
 	
 	// === RADIO NAME ===
-	private _ctrlName = _display ctrlCreate ["RscText", _baseIDC + 1, _group];
+	private _ctrlName = _display ctrlCreate ["ARM_RscTextCentered", _baseIDC + 1, _group];
 	_ctrlName ctrlSetPosition [_xPos, _yRow, 0.20, BUTTON_HEIGHT];
 	_ctrlName ctrlSetText _displayName;
 	_ctrlName ctrlSetTextColor COLOR_WHITE_100;
+	_ctrlName ctrlSetFontHeight 0.04;
 	_ctrlName ctrlSetBackgroundColor [0, 0, 0, 0];
 	_ctrlName ctrlCommit 0;
 	_xPos = _xPos + 0.204;
@@ -226,7 +227,7 @@ private _yOffset = 0;
 	// === COPY BUTTON ===
 	// Enters copy mode: highlights matching radio names in the inventory green
 	// so the player can click one to paste these preview settings onto it.
-	private _ctrlCopyButton = _display ctrlCreate ["ARM_RscButtonGrey40", _baseIDC + 20, _group];
+	private _ctrlCopyButton = _display ctrlCreate ["ARM_RscButtonGrey40", _baseIDC + 21, _group];
 	_ctrlCopyButton ctrlSetPosition [_xPos, _yRow, 0.09, BUTTON_HEIGHT];
 	_ctrlCopyButton ctrlSetText "Copy";
 	_ctrlCopyButton ctrlSetTextColor COLOR_WHITE_100;

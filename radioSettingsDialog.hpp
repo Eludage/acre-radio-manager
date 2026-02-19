@@ -141,8 +141,10 @@ class ARM_RscButtonRed: ARM_RscButton {
 
 class ARM_RscButtonTransparent: ARM_RscButton {
     colorBackground[] = COLOR_BLACK_0;
-    colorFocused[] = COLOR_BLACK_0;
+    colorBackgroundDisabled[] = COLOR_BLACK_0;
     colorBackgroundActive[] = COLOR_BLACK_0;
+    colorFocused[] = COLOR_BLACK_0;
+    colorDisabled[] = COLOR_WHITE_100;
     colorShadow[] = COLOR_BLACK_0;
     colorBorder[] = COLOR_BLACK_0;
 };
