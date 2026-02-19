@@ -128,13 +128,8 @@ private _newPTT = ["", "", ""];
 	// Apply channel
 	[_radioId, _channel] call acre_api_fnc_setRadioChannel;
 	
-	// Apply ear (spatial positioning)
-	private _spatialValue = switch (toLower _ear) do {
-		case "left":   { "left"   };
-		case "right":  { "right"  };
-		default        { "center" };
-	};
-	[_radioId, _spatialValue] call acre_api_fnc_setRadioSpatial;
+	// Apply ear (spatial positioning) — ACRE expects uppercase
+	[_radioId, toUpper _ear] call acre_api_fnc_setRadioSpatial;
 	
 	// Apply volume
 	[_radioId, _volume] call acre_api_fnc_setRadioVolume;

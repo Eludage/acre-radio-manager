@@ -67,8 +67,8 @@ private _previewRadios = [];
 			private _channelName = [_radioId, _channel] call AcreRadioManager_fnc_getChannelName;
 
 			_radioData set [5, _channelName];
-			_radioData set [7, _ear];
-			_radioData set [8, _volume];
+			_radioData set [6, _ear];
+			_radioData set [7, _volume];
 		};
 	};
 
