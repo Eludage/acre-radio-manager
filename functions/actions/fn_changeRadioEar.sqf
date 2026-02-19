@@ -44,33 +44,10 @@ private _acreSpatial = toUpper _newEar;
 // Set new ear assignment via ACRE API
 private _result = [_radioId, _acreSpatial] call acre_api_fnc_setRadioSpatial;
 
-// Update UI - highlight the selected button, unhighlight others
-private _display = findDisplay 16000;
-if (!isNull _display) then {
-	private _earButtons = [
-		[_baseIDC + 12, "left"],
-		[_baseIDC + 13, "center"],
-		[_baseIDC + 14, "right"]
-	];
-	
-	{
-		private _btnIDC = _x select 0;
-		private _btnValue = _x select 1;
-		private _ctrl = _display displayCtrl _btnIDC;
-		
-		if (!isNull _ctrl) then {
-			if (_btnValue == _newEar) then {
-				_ctrl ctrlSetBackgroundColor [0.3, 0.5, 0.3, 1]; // COLOR_GREEN
-			} else {
-				_ctrl ctrlSetBackgroundColor [0.4, 0.4, 0.4, 1]; // COLOR_GREY_40
-			};
-			_ctrl ctrlCommit 0;
-		};
-	} forEach _earButtons;
-};
-
-// Refresh radio data and update Radio Preview
+// Refresh radio data and rebuild inventory (recreates ear buttons with correct class so
+// colorFocused matches the new active state) and update Radio Preview
 [] call AcreRadioManager_fnc_getRadioList;
+[] call AcreRadioManager_fnc_updateRadioInventory;
 [] call AcreRadioManager_fnc_updateRadioPreview;
 
 true

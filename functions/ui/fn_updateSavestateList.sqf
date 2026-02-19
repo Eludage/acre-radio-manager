@@ -150,7 +150,7 @@ private _yOffset = 0.01;
 	_xPos = _xPos + NAME_FIELD_WIDTH + ENTRY_PADDING;
 	
 	// === LOAD BUTTON ===
-	private _ctrlLoad = _display ctrlCreate ["RscButton", _baseIDC + 1, _group];
+	private _ctrlLoad = _display ctrlCreate ["ARM_RscButtonGrey40", _baseIDC + 1, _group];
 	_ctrlLoad ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
 	_ctrlLoad ctrlSetText "Load";
 	_ctrlLoad ctrlSetTextColor COLOR_WHITE_100;
@@ -170,7 +170,7 @@ private _yOffset = 0.01;
 	_xPos = _xPos + BUTTON_WIDTH + ENTRY_PADDING;
 	
 	// === SAVE BUTTON ===
-	private _ctrlSave = _display ctrlCreate ["RscButton", _baseIDC + 2, _group];
+	private _ctrlSave = _display ctrlCreate ["ARM_RscButtonGrey40", _baseIDC + 2, _group];
 	_ctrlSave ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
 	_ctrlSave ctrlSetText "Save";
 	_ctrlSave ctrlSetTextColor COLOR_WHITE_100;
@@ -191,7 +191,7 @@ private _yOffset = 0.01;
 	_xPos = _xPos + BUTTON_WIDTH + ENTRY_PADDING;
 	
 	// === APPLY BUTTON ===
-	private _ctrlApply = _display ctrlCreate ["RscButton", _baseIDC + 3, _group];
+	private _ctrlApply = _display ctrlCreate ["ARM_RscButtonGrey40", _baseIDC + 3, _group];
 	_ctrlApply ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
 	_ctrlApply ctrlSetText "Apply";
 	_ctrlApply ctrlSetTextColor COLOR_WHITE_100;

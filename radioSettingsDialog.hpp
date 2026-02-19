@@ -121,6 +121,32 @@ class ARM_RscButton // Base class for buttons, see https://community.bistudio.co
     borderSize = 0;
 };
 
+class ARM_RscButtonGrey40: ARM_RscButton {
+    colorBackground[] = COLOR_GREY_40;
+    colorFocused[] = COLOR_GREY_40;
+    colorBackgroundActive[] = COLOR_GREY_50;
+};
+
+class ARM_RscButtonGreen: ARM_RscButton {
+    colorBackground[] = COLOR_GREEN;
+    colorFocused[] = COLOR_GREEN;
+    colorBackgroundActive[] = COLOR_GREEN_ACTIVE;
+};
+
+class ARM_RscButtonRed: ARM_RscButton {
+    colorBackground[] = COLOR_RED;
+    colorFocused[] = COLOR_RED;
+    colorBackgroundActive[] = COLOR_RED_ACTIVE;
+};
+
+class ARM_RscButtonTransparent: ARM_RscButton {
+    colorBackground[] = COLOR_BLACK_0;
+    colorFocused[] = COLOR_BLACK_0;
+    colorBackgroundActive[] = COLOR_BLACK_0;
+    colorShadow[] = COLOR_BLACK_0;
+    colorBorder[] = COLOR_BLACK_0;
+};
+
 class ARM_RscListbox // Base class for listboxes, see https://community.bistudio.com/wiki/CT_LISTBOX
 {
     access = 0;

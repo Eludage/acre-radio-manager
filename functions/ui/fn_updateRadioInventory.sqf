@@ -119,17 +119,14 @@ private _yOffset = 0;
 	private _copySource = uiNamespace getVariable ["AcreRadioManager_copySource", nil];
 	private _isCopyTarget = (!isNil "_copySource") && { (_copySource select 0) == _baseClass };
 	
-	private _ctrlName = _display ctrlCreate ["RscButton", _baseIDC + 1, _group];
+	private _nameBtnClass = if (_isCopyTarget) then {"ARM_RscButtonGreen"} else {"ARM_RscButtonTransparent"};
+	private _ctrlName = _display ctrlCreate [_nameBtnClass, _baseIDC + 1, _group];
 	_ctrlName ctrlSetPosition [_xPos, _yRow, 0.20, BUTTON_HEIGHT];
 	_ctrlName ctrlSetText _displayName;
 	_ctrlName ctrlSetTextColor COLOR_WHITE_100;
-	if (_isCopyTarget) then {
-		_ctrlName ctrlSetBackgroundColor COLOR_GREEN;
-		_ctrlName ctrlEnable true;
-	} else {
-		_ctrlName ctrlSetBackgroundColor [0, 0, 0, 0];
-		_ctrlName ctrlEnable false;
-	};
+	private _nameBtnColor = if (_isCopyTarget) then {COLOR_GREEN} else {[0, 0, 0, 0]};
+	_ctrlName ctrlSetBackgroundColor _nameBtnColor;
+	_ctrlName ctrlEnable _isCopyTarget;
 	_ctrlName setVariable ["radioId", _radioId];
 	_ctrlName setVariable ["radioIndex", _radioIndex];
 	_ctrlName ctrlCommit 0;
@@ -163,7 +160,8 @@ private _yOffset = 0;
 		private _pttNum = _btnIndex + 1; // 1, 2, 3, 4 (where 4 represents X/none)
 		private _actualPTT = if (_pttNum == 4) then {0} else {_pttNum}; // Convert button 4 to PTT 0
 		
-		private _ctrlPTT = _display ctrlCreate ["RscButton", _baseIDC + 3 + _btnIndex, _group];
+		private _pttBtnClass = if (_pttNum <= 3 && _ptt == _pttNum) then {"ARM_RscButtonGreen"} else {if (_pttNum == 4 && _ptt == 0) then {"ARM_RscButtonRed"} else {"ARM_RscButtonGrey40"}};
+		private _ctrlPTT = _display ctrlCreate [_pttBtnClass, _baseIDC + 3 + _btnIndex, _group];
 		_ctrlPTT ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
 		_ctrlPTT ctrlSetText _btnText;
 		_ctrlPTT ctrlSetTextColor COLOR_WHITE_100;
@@ -180,15 +178,15 @@ private _yOffset = 0;
 		};
 		
 		// Highlight active PTT
+		private _pttBtnColor = COLOR_GREY_40;
 		if (_pttNum <= 3 && _ptt == _pttNum) then {
-			_ctrlPTT ctrlSetBackgroundColor COLOR_GREEN;
+			_pttBtnColor = COLOR_GREEN;
 		} else {
 			if (_pttNum == 4 && _ptt == 0) then {
-				_ctrlPTT ctrlSetBackgroundColor COLOR_RED;
-			} else {
-				_ctrlPTT ctrlSetBackgroundColor COLOR_GREY_40;
+				_pttBtnColor = COLOR_RED;
 			};
 		};
+		_ctrlPTT ctrlSetBackgroundColor _pttBtnColor;
 		
 		_ctrlPTT ctrlEnable _isEnabled;
 		_ctrlPTT ctrlCommit 0;
@@ -236,7 +234,7 @@ private _yOffset = 0;
 	_xPos = _xPos + 0.054;
 	
 	// Channel Decrease Button
-	private _ctrlChannelDec = _display ctrlCreate ["RscButton", _baseIDC + 8, _group];
+	private _ctrlChannelDec = _display ctrlCreate ["ARM_RscButtonGrey40", _baseIDC + 8, _group];
 	_ctrlChannelDec ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
 	_ctrlChannelDec ctrlSetText "-";
 	_ctrlChannelDec ctrlSetTextColor COLOR_WHITE_100;
@@ -259,7 +257,7 @@ private _yOffset = 0;
 	_xPos = _xPos + 0.26 + 0.004;
 	
 	// Channel Increase Button
-	private _ctrlChannelInc = _display ctrlCreate ["RscButton", _baseIDC + 10, _group];
+	private _ctrlChannelInc = _display ctrlCreate ["ARM_RscButtonGrey40", _baseIDC + 10, _group];
 	_ctrlChannelInc ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
 	_ctrlChannelInc ctrlSetText "+";
 	_ctrlChannelInc ctrlSetTextColor COLOR_WHITE_100;
@@ -310,17 +308,15 @@ private _yOffset = 0;
 		private _btnValue = _btnData select 1;
 		private _btnIndex = _forEachIndex;
 		
-		private _ctrlEar = _display ctrlCreate ["RscButton", _baseIDC + 12 + _btnIndex, _group];
+		private _earBtnClass = if (_ear == _btnValue) then {"ARM_RscButtonGreen"} else {"ARM_RscButtonGrey40"};
+		private _ctrlEar = _display ctrlCreate [_earBtnClass, _baseIDC + 12 + _btnIndex, _group];
 		_ctrlEar ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
 		_ctrlEar ctrlSetText _btnText;
 		_ctrlEar ctrlSetTextColor COLOR_WHITE_100;
 		
 		// Highlight active ear
-		if (_ear == _btnValue) then {
-			_ctrlEar ctrlSetBackgroundColor COLOR_GREEN;
-		} else {
-			_ctrlEar ctrlSetBackgroundColor COLOR_GREY_40;
-		};
+		private _earBtnColor = if (_ear == _btnValue) then {COLOR_GREEN} else {COLOR_GREY_40};
+		_ctrlEar ctrlSetBackgroundColor _earBtnColor;
 		
 		_ctrlEar ctrlCommit 0;
 		
@@ -354,7 +350,7 @@ private _yOffset = 0;
 	_xPos = _xPos + 0.064;
 	
 	// Volume Decrease Button
-	private _ctrlVolumeDec = _display ctrlCreate ["RscButton", _baseIDC + 16, _group];
+	private _ctrlVolumeDec = _display ctrlCreate ["ARM_RscButtonGrey40", _baseIDC + 16, _group];
 	_ctrlVolumeDec ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
 	_ctrlVolumeDec ctrlSetText "-";
 	_ctrlVolumeDec ctrlSetTextColor COLOR_WHITE_100;
@@ -427,7 +423,7 @@ private _yOffset = 0;
 	_xPos = _xPos + 0.07 + 0.004;
 	
 	// Volume Increase Button
-	private _ctrlVolumeInc = _display ctrlCreate ["RscButton", _baseIDC + 18, _group];
+	private _ctrlVolumeInc = _display ctrlCreate ["ARM_RscButtonGrey40", _baseIDC + 18, _group];
 	_ctrlVolumeInc ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
 	_ctrlVolumeInc ctrlSetText "+";
 	_ctrlVolumeInc ctrlSetTextColor COLOR_WHITE_100;
@@ -456,15 +452,12 @@ private _yOffset = 0;
 	// Read-only indicator — changing radio power state via the ACRE API is not
 	// currently supported. The button is intentionally disabled to reflect this.
 	// Savestates always restore power as ON; the power state field is not persisted.
-	private _ctrlPower = _display ctrlCreate ["RscButton", _baseIDC + 19, _group];
+	private _powerBtnClass = if (_isOn) then {"ARM_RscButtonGreen"} else {"ARM_RscButtonRed"};
+	private _ctrlPower = _display ctrlCreate [_powerBtnClass, _baseIDC + 19, _group];
 	_ctrlPower ctrlSetPosition [_xPos, _yRow, 0.09, BUTTON_HEIGHT];
-	if (_isOn) then {
-		_ctrlPower ctrlSetText "ON";
-		_ctrlPower ctrlSetBackgroundColor COLOR_GREEN;
-	} else {
-		_ctrlPower ctrlSetText "OFF";
-		_ctrlPower ctrlSetBackgroundColor COLOR_RED;
-	};
+	private _powerColor = if (_isOn) then {COLOR_GREEN} else {COLOR_RED};
+	_ctrlPower ctrlSetText (if (_isOn) then {"ON"} else {"OFF"});
+	_ctrlPower ctrlSetBackgroundColor _powerColor;
 	_ctrlPower ctrlSetTextColor COLOR_WHITE_100;
 	_ctrlPower ctrlEnable false; // Read-only: no ACRE API available to toggle power
 	_ctrlPower ctrlCommit 0;

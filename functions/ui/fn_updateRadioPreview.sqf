@@ -130,7 +130,8 @@ private _yOffset = 0;
 		_pttColor = COLOR_GREEN;
 	};
 	
-	private _ctrlPTTDisplay = _display ctrlCreate ["RscButton", _baseIDC + 3, _group];
+	private _pttBtnClass = if (_ptt > 0 && _ptt <= 3) then {"ARM_RscButtonGreen"} else {"ARM_RscButtonRed"};
+	private _ctrlPTTDisplay = _display ctrlCreate [_pttBtnClass, _baseIDC + 3, _group];
 	_ctrlPTTDisplay ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
 	_ctrlPTTDisplay ctrlSetText _pttText;
 	_ctrlPTTDisplay ctrlSetTextColor COLOR_WHITE_100;
@@ -181,7 +182,7 @@ private _yOffset = 0;
 	if (_ear == "left") then { _earText = "L"; };
 	if (_ear == "right") then { _earText = "R"; };
 	
-	private _ctrlEarDisplay = _display ctrlCreate ["RscButton", _baseIDC + 12, _group];
+	private _ctrlEarDisplay = _display ctrlCreate ["ARM_RscButtonGreen", _baseIDC + 12, _group];
 	_ctrlEarDisplay ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
 	_ctrlEarDisplay ctrlSetText _earText;
 	_ctrlEarDisplay ctrlSetTextColor COLOR_WHITE_100;
@@ -211,15 +212,12 @@ private _yOffset = 0;
 	
 	// === POWER BUTTON ===
 	// Power Display (read-only button)
-	private _ctrlPowerDisplay = _display ctrlCreate ["RscButton", _baseIDC + 19, _group];
+	private _powerBtnClass = if (_isOn) then {"ARM_RscButtonGreen"} else {"ARM_RscButtonRed"};
+	private _ctrlPowerDisplay = _display ctrlCreate [_powerBtnClass, _baseIDC + 19, _group];
 	_ctrlPowerDisplay ctrlSetPosition [_xPos, _yRow, 0.09, BUTTON_HEIGHT];
-	if (_isOn) then {
-		_ctrlPowerDisplay ctrlSetText "ON";
-		_ctrlPowerDisplay ctrlSetBackgroundColor COLOR_GREEN;
-	} else {
-		_ctrlPowerDisplay ctrlSetText "OFF";
-		_ctrlPowerDisplay ctrlSetBackgroundColor COLOR_RED;
-	};
+	private _powerColor = if (_isOn) then {COLOR_GREEN} else {COLOR_RED};
+	_ctrlPowerDisplay ctrlSetText (if (_isOn) then {"ON"} else {"OFF"});
+	_ctrlPowerDisplay ctrlSetBackgroundColor _powerColor;
 	_ctrlPowerDisplay ctrlSetTextColor COLOR_WHITE_100;
 	_ctrlPowerDisplay ctrlEnable false;
 	_ctrlPowerDisplay ctrlCommit 0;
@@ -228,7 +226,7 @@ private _yOffset = 0;
 	// === COPY BUTTON ===
 	// Enters copy mode: highlights matching radio names in the inventory green
 	// so the player can click one to paste these preview settings onto it.
-	private _ctrlCopyButton = _display ctrlCreate ["RscButton", _baseIDC + 20, _group];
+	private _ctrlCopyButton = _display ctrlCreate ["ARM_RscButtonGrey40", _baseIDC + 20, _group];
 	_ctrlCopyButton ctrlSetPosition [_xPos, _yRow, 0.09, BUTTON_HEIGHT];
 	_ctrlCopyButton ctrlSetText "Copy";
 	_ctrlCopyButton ctrlSetTextColor COLOR_WHITE_100;

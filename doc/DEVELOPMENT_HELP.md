@@ -45,6 +45,18 @@ This section lists the main dialog ID (IDD) and the control IDCs used in the Rad
   - Misc controls
     - 16011 → CloseButton — Close dialog button
 
+## Widget Base Classes (radioSettingsDialog.hpp)
+
+These classes are defined in `radioSettingsDialog.hpp` and used as the `ctrlCreate` class argument for dynamically built controls. They ensure `colorFocused` always matches `colorBackground`, preventing the "pressed" highlight when a button retains focus after a click.
+
+| Class | Background | Active Background | Use case |
+|---|---|---|---|
+| `ARM_RscButton` | `COLOR_BLACK_50` | `COLOR_GREY_20` | Base class (not used directly for dynamic controls) |
+| `ARM_RscButtonGrey40` | `COLOR_GREY_40` | `COLOR_GREY_50` | Channel ±, Volume ±, Copy, Load, Save, Apply buttons |
+| `ARM_RscButtonGreen` | `COLOR_GREEN` | `COLOR_GREEN_ACTIVE` | Active PTT/ear selection, ear preview display, copy-target name |
+| `ARM_RscButtonRed` | `COLOR_RED` | `COLOR_RED_ACTIVE` | PTT X (no PTT), power OFF indicator |
+| `ARM_RscButtonTransparent` | `COLOR_BLACK_0` | `COLOR_BLACK_0` | Radio name label (non-copy mode) — invisible, not clickable |
+
 Notes
 - Access controls in scripts like this:
   - `_disp = findDisplay 16000; _ctrl = _disp displayCtrl 16010;` (gets the Radios Inventory control group)
