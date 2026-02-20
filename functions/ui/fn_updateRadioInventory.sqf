@@ -294,8 +294,8 @@ private _yOffset = 0;
 		// Enter key: apply the typed channel number and keep the full display text
 		_ctrlChannelDisplay ctrlAddEventHandler ["KeyDown", {
 			params ["_ctrl", "_key"];
-			// Enter key DIK code 0x1C = 28
-			if (_key == 28) then {
+			// Enter key: main (DIK 28) or numpad (DIK 156)
+			if (_key == 28 || _key == 156) then {
 				[_ctrl] call AcreRadioManager_fnc_validateChannelInput;
 				private _value = parseNumber (ctrlText _ctrl);
 				if (_value >= 1) then {
@@ -484,8 +484,8 @@ private _yOffset = 0;
 	// Add Enter key handler to apply volume
 	_ctrlVolumeEdit ctrlAddEventHandler ["KeyDown", {
 		params ["_ctrl", "_key"];
-		// Enter key code is 28 (0x1C)
-		if (_key == 28) then {
+		// Enter key: main (DIK 28) or numpad (DIK 156)
+		if (_key == 28 || _key == 156) then {
 			[_ctrl, true] call AcreRadioManager_fnc_validateVolumeInput; // Round when Enter is pressed
 			
 			private _editBaseIDC = ctrlIDC _ctrl - 17;
