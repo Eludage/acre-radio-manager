@@ -4,7 +4,7 @@ This document describes the architectural patterns and design decisions of the A
 
 ## Overview
 
-Acre Radio Manager is a client-side Arma 3 mod that allows players to manage their ACRE radio settings through an intuitive interface. The mod provides a centralized location to view all radios in inventory and adjust settings like ear assignment, channel selection, and volume control.
+Acre Radio Manager is a client-side Arma 3 mod that allows players to manage their ACRE radio settings through a single interface. The mod provides a centralized location to view all radios in inventory and adjust settings like ear assignment, channel selection, and volume control.
 
 ## Core Architectural Principles
 
@@ -13,23 +13,18 @@ Acre Radio Manager is a client-side Arma 3 mod that allows players to manage the
 - **Personal settings** - Each player manages their own radio settings independently
 - **ACRE integration** - Interfaces with ACRE's radio system through their public API
 
-### 2. Single Player Focus
-- **No synchronization needed** - Radio settings are personal to each player
-- **Local state only** - All state is stored in local namespaces
-- **ACE integration** - Menu accessible through ACE Self-Interact menu
-
-### 3. Namespace Usage
+### 2. Namespace Usage
 
 #### `uiNamespace` (Dialog State)
 Used for state that is ephemeral and tied to the dialog session (persists until game restart):
-- **Radio Settings Cache**: Temporary cache of radio settings being edited
-- **Current Radios**: List of radios in player's inventory (queried fresh from ACRE each dialog open)
+- **Current Radios**: Live inventory radio data, queried fresh from ACRE on each dialog open (`AcreRadioManager_currentRadios`)
+- **Preview Radios**: Radio data shown in the Preview section — mirrors inventory normally, diverges when a savestate is loaded (`AcreRadioManager_previewRadios`)
+- **Dialog Session State**: Copy mode source, preview-live flag, IDC→radioId map, hint counter, etc.
+- **Channel Count Cache**: Per-radio-type max channel count to avoid repeated config lookups (`AcreRadioManager_channelCountCache`)
 
 #### `profileNamespace` (Persistent State)
 Used for state that persists across game sessions and survives crashes:
-- **Presets**: Saved radio configurations
-- **Last Preset**: Name of most recently used preset
-- **Last Radio Settings**: Cached settings from last session for crash recovery
+- **Savestates**: All saved radio configurations, stored as a HashMap keyed by name (`AcreRadioManager_savestates`). Includes the auto-saved "Last Presets" entry.
 
 ## Function Architecture
 
@@ -37,26 +32,24 @@ Used for state that persists across game sessions and survives crashes:
 
 #### 1. Core Functions (`functions/core/`)
 - **Entry Points**: Dialog opening, initialization
-- **Registration**: ACE interaction menu registration
-- **Currently**: 1 function (fn_openRadioSettings)
+- **Currently**: 1 function (`fn_openRadioSettings`)
+- **Note**: ACE Self-Interact menu registration is handled declaratively in `config.cpp` (CfgVehicles), not through a function
 
-#### 2. Action Functions (`functions/actions/*/`)
+#### 2. Action Functions (`functions/actions/`)
 - **UI Event Handlers**: Respond to button clicks and user interactions
 - **Radio Control**: Apply settings to ACRE radios
-- **Preset Management**: Load/save preset configurations
+- **Preset Management**: Load/save/apply/rename/remove savestate configurations
+- **Copy Settings**: Copy preview radio settings onto a matching inventory radio
 - **Pattern**: Get user input → validate → call ACRE API → update UI
-- **To be organized** into subfolders by UI section
 
 #### 3. UI Functions (`functions/ui/`)
-- **UI Updates**: Read state from ACRE and update controls
-- **List Population**: Populate listboxes with radios and settings
+- **UI Updates**: Read state from `uiNamespace` and rebuild controls
+- **List Population**: Populate inventory panel, preview panel and savestate list
 - **UI Refresh**: Update UI elements based on current state
-- **Font Size**: Adjust UI font sizes dynamically
 
 #### 4. Data Functions (`functions/data/`)
-- **Presets**: Load and save radio preset configurations
-- **Settings Cache**: Cache and retrieve radio settings
-- **ACRE Interface**: Query ACRE API for radio information
+- **ACRE Interface**: Query ACRE API for all radios and their current settings, cache result in `uiNamespace`
+- Currently one function: `fn_getRadioList`
 
 #### 5. Utility Functions (`functions/utilities/`)
 - **Helper Functions**: Formatting and validation
@@ -105,9 +98,9 @@ Used for state that persists across game sessions and survives crashes:
    - Initializes UI state
    ↓
 3. UI population function
-   - Query ACRE for radios in inventory
-   - Populate radios inventory listbox
-   - Load last radio settings from profileNamespace (if available)
+   - Query ACRE for radios in inventory (`fn_getRadioList`)
+   - Initialise `previewRadios` to match current inventory
+   - Populate inventory panel, preview panel, and savestate list
    ↓
 4. Display ready for user interaction
 ```
@@ -152,8 +145,7 @@ The mod interacts with ACRE through their public API:
 - Settings are applied immediately when changed
 
 #### 3. Options (Bottom)
-- Preset management buttons (Load, Save, New)
-- Font size adjustment (+/-)
+- Preset management buttons (Load, Apply, Save, New, Rename, Delete)
 - Close button
 
 ## Key Design Decisions
@@ -178,11 +170,6 @@ Each radio in inventory gets a full row with:
 - Current ear indicator
 - Direct controls (PTT, channel buttons, etc.)
 
-### 4. Font Size Flexibility
-Adjustable font size for accessibility:
-```sqf
-private _fontSizeLevel = uiNamespace getVariable ["AcreRadioManager_fontSizeLevel", 2]; // 0-4, default 2
-```
 
 ## Error Handling
 
@@ -231,27 +218,5 @@ The mod should gracefully handle different ACRE versions:
 
 ## Future Considerations
 
-### Planned Features
-1. **Multi-radio quick settings** - Apply settings to multiple radios at once
-2. **Favorite channels** - Mark frequently used channels
-3. **Radio group presets** - Different presets for different radio types
-4. **Visual indicators** - Show which radio is actively transmitting
-
 ### Known Limitations
-1. **Client-side only** - Cannot save settings server-side
-2. **ACRE dependency** - Requires ACRE to be functional
-3. **No history** - Cannot undo setting changes
-4. **Preset compatibility** - Presets may not work if radio inventory changes
-
-## Summary
-
-Acre Radio Manager follows a simple **action → API → UI update** pattern:
-- User actions trigger ACRE API calls
-- ACRE handles the radio system changes
-- UI updates to reflect new state
-
-This architecture ensures:
-- **Simplicity**: Minimal state management required
-- **Reliability**: ACRE handles the complex radio logic
-- **Maintainability**: Clear separation between UI and radio control
-- **Extensibility**: Easy to add new features following established patterns
+1. **No history** - Cannot undo setting changes
