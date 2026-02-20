@@ -1,6 +1,6 @@
 # Acre Radio Manager
 
-Acre Radio Manager is a client-side Arma 3 mod that provides an intuitive interface for managing ACRE radio settings. It allows players to view all their radios in one place and quickly adjust settings like ear assignment, channel selection, and volume control.
+Acre Radio Manager is a client-side Arma 3 mod that provides an one page interface for managing ACRE radio settings. It allows players to view all their radios in one place and quickly adjust settings like ear assignment, channel selection, and volume control.
 
 ## Features
 
@@ -15,17 +15,13 @@ Acre Radio Manager is a client-side Arma 3 mod that provides an intuitive interf
 - **Channel Control**: Change radio channels quickly with visual feedback (for supported radios)
 - **Volume Adjustment**: Set individual volume levels for each radio in 10% increments
 - **Real-time Application**: All changes are applied immediately
+- **Copy Settings**: Copy all settings from a previewed radio and apply them to a matching radio in your inventory
 
 ### Preset System
 - **Save Presets**: Save your current radio configuration with a custom name
 - **Load Presets**: Quickly restore saved radio configurations
-- **Last Used Preset**: One-click reload of your most recently used preset
+- **Last Used Preset**: One-click reload of your most recently used preset (useful after game crash or reloading your kit in the ace arsenal)
 - **Profile Persistence**: Presets are saved across game sessions
-
-### User Interface
-- **Clean Layout**: Organized sections for inventory, settings, and options
-- **Adjustable Font Size**: Increase or decrease UI text size for better readability (5 levels)
-- **Intuitive Controls**: Direct access to all radio settings without complex menus
 
 ## Supported Radio Types
 
@@ -33,19 +29,18 @@ The mod provides different levels of functionality depending on the radio type:
 
 | Radio Type | PTT Assignment | Channel Change | Ear Assignment | Volume Control | Power On/Off |
 |-----------|---------------|----------------|----------------|----------------|-------------|
-| AN/PRC-117F | ✓ | ✓ | ✓ | ✓ | ✓ |
-| AN/PRC-152 | ✓ | ✓ | ✓ | ✓ | ✓ |
-| AN/PRC-148 | ✓ | ✗ | ✓ | ✓ | ✓ |
-| AN/PRC-343 | ✓ | ✗ | ✓ | ✓ | ✓ |
-| AN/PRC-77 | ✓ | ✗ | ✓ | ✓ | ✓ |
-| Beofeng 888S | ✓ | ✗ | ✓ | ✓ | ✓ |
-| Other ACRE Radios | ✓ | ✗ | ✓ | ✓ | ✓ |
+| AN/PRC-117F | ✓ | ✓ | ✓ | ✓ | ✗ |
+| AN/PRC-152 | ✓ | ✓ | ✓ | ✓ | ✗ |
+| AN/PRC-148 | ✓ | ✗ | ✓ | ✓ | ✗ |
+| AN/PRC-343 | ✓ | ✗ | ✓ | ✓ | ✗ |
+| AN/PRC-77 | ✓ | ✗ | ✓ | ✓ | ✗ |
+| Beofeng 888S | ✓ | ✗ | ✓ | ✓ | ✗ |
 
-**Note**: Radios without channel change support will display "Radio not supported" in the channel section. All other functions remain fully operational.
+**Note**: Radios without channel change support will display "Radio not supported" in the channel section. All other functions remain fully operational. Please let me know if you're using radios from other mods and which mods those are so I can add them to this table.
 
 ## Installation
 
-1. Subscribe to the mod on Steam Workshop (coming soon)
+1. Subscribe to the mod on Steam Workshop
 2. Enable the mod in the Arma 3 Launcher
 3. Ensure ACRE2 and ACE3 are also enabled
 4. Launch Arma 3 and join a mission with ACRE radios
@@ -77,6 +72,16 @@ The mod provides different levels of functionality depending on the radio type:
 - Volume is adjusted in 10% increments (0, 10, 20, ..., 100)
 - Manual entries are automatically rounded to the nearest 10%
 
+### Copying Settings from a Preview
+This is useful when you've loaded a savestate and want to selectively apply one radio's settings to your inventory without applying the whole preset:
+1. Load a preset — the Preview section shows the saved settings
+2. Click the **Copy** button on the radio in the Preview whose settings you want
+3. Inventory radios of the same type will become clickable as copy targets
+4. Click the target inventory radio to apply the settings
+5. The copy is applied immediately and copy mode is cleared automatically
+
+**Note**: Only radios of the exact same type can be used as a copy target.
+
 ### Working with Presets
 1. **Save Current Configuration**:
    - Click "+" button to create new preset
@@ -87,17 +92,12 @@ The mod provides different levels of functionality depending on the radio type:
    - Select your desired preset from the list
    - Radio settings will be applied automatically
 
-### Adjusting UI
-- Use **-** and **+** buttons in the Options section to decrease/increase font size
-- Font size setting is saved across sessions
-
 ## How It Works
 
 ### Radio Detection
 The mod automatically detects all ACRE radios in your inventory:
 - Handheld radios (AN/PRC-343, AN/PRC-152, etc.)
 - Backpack radios (AN/PRC-117F, AN/PRC-77, etc.)
-- Vehicle radios (when you're the radio operator)
 
 ### Settings Scope
 All settings are **personal to you** and don't affect other players:
@@ -108,8 +108,7 @@ All settings are **personal to you** and don't affect other players:
 ### Preset Matching
 When loading a preset:
 - The mod matches radios by **type** (not by specific instance)
-- If you have multiple radios of the same type, settings apply to the first one
-- If a preset includes a radio type you don't have, that entry is skipped
+- The preset can only be applied if your current inventory has **exactly the same radio types and counts** as when the preset was saved — partial or mismatched loads are rejected with an error message
 
 ## Dependencies
 
@@ -127,16 +126,10 @@ The repository includes several developer-facing documents in the `doc/` folder:
 - `DEVELOPMENT_HELP.md` — developer reference (control ID reference, namespaces, and variables)
 - `ARCHITECTURE.md` — architecture overview (function organization, data flow patterns, design decisions)
 
-## Building the Mod
-
-Build the mod using Arma 3 Tools (Addon Builder) or compatible PBO packing tools.
-
 ## Known Limitations
 
 - **Maximum 12 radios**: The UI displays a maximum of 12 radios at once. If you carry more than 12 radios, only the first 12 will be shown in the manager
 - **Power state is read-only**: The ON/OFF indicator in the inventory is display-only and cannot be toggled. The ACRE2 API does not currently expose a way to change radio power state programmatically. Power state is also not stored in presets — all radios are assumed to be on when a preset is applied
-- **Client-side only**: Settings are not saved server-side and reset on mission restart
-- **ACRE dependency**: Requires ACRE2 to be loaded and functional
 - **No undo**: Setting changes cannot be undone (but presets can be reloaded)
 - **Preset compatibility**: Presets work best when you have the same radios as when the preset was saved
 
