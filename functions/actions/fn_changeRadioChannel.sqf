@@ -119,9 +119,11 @@ if (_newChannel != _currentChannel) then {
 	// Update display control
 	_displayCtrl ctrlSetText format ["%1: %2", _newChannel, _channelName];
 	
-	// Refresh radio data and update Radio Preview
+	// Refresh radio data and update Radio Preview only when showing live inventory
 	[] call AcreRadioManager_fnc_getRadioList;
-	[] call AcreRadioManager_fnc_updateRadioPreview;
+	if (uiNamespace getVariable ["AcreRadioManager_previewIsLive", true]) then {
+		[] call AcreRadioManager_fnc_updateRadioPreview;
+	};
 	
 	true
 } else {

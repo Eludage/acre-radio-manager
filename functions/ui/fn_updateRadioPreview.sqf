@@ -87,6 +87,8 @@ private _yOffset = 0;
 	private _ear = _radioData select 6;
 	private _volume = _radioData select 7;
 	private _isOn = _radioData select 8;
+	// Index 9 holds a baseClass override when loaded from a savestate (no live radio ID available)
+	private _radioBaseClass = if (count _radioData > 9) then { _radioData select 9 } else { "" };
 	
 	// Calculate base IDC for this radio (16400 for first radio, 16425 for second, etc.)
 	private _baseIDC = 16400 + (_radioIndex * 25);
@@ -142,7 +144,8 @@ private _yOffset = 0;
 	
 	// === CHANNEL SECTION ===
 	// Determine if radio supports channel changing (only PRC-117F and PRC-152)
-	private _baseClass = [_radioId] call acre_api_fnc_getBaseRadio;
+	// Use stored baseClass override (savestate rows) or look it up from the live radio ID.
+	private _baseClass = if (_radioBaseClass != "") then { _radioBaseClass } else { [_radioId] call acre_api_fnc_getBaseRadio };
 	private _isRadioSupported = (_baseClass find "ACRE_PRC117F" >= 0) || (_baseClass find "ACRE_PRC152" >= 0);
 	
 	// Channel Label
@@ -240,8 +243,8 @@ private _yOffset = 0;
 		private _previewRadios = uiNamespace getVariable ["AcreRadioManager_previewRadios", []];
 		if (_srcIndex < 0 || _srcIndex >= count _previewRadios) exitWith {};
 		private _srcData = _previewRadios select _srcIndex;
-		private _srcRadioId = _srcData select 0;
-		private _srcBaseClass = [_srcRadioId] call acre_api_fnc_getBaseRadio;
+		// Use stored baseClass override if available (savestate preview rows have no live radio ID)
+		private _srcBaseClass = if (count _srcData > 9) then { _srcData select 9 } else { [(_srcData select 0)] call acre_api_fnc_getBaseRadio };
 		uiNamespace setVariable ["AcreRadioManager_copySource", [
 			_srcBaseClass,
 			_srcData select 3, // ptt

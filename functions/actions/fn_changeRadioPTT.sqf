@@ -127,7 +127,9 @@ if (_conflictingRadio != "") then {
 private _display = findDisplay 16000;
 if (!isNull _display) then {
 	[] call AcreRadioManager_fnc_updateRadioInventory;
-	[] call AcreRadioManager_fnc_updateRadioPreview;
+	if (uiNamespace getVariable ["AcreRadioManager_previewIsLive", true]) then {
+		[] call AcreRadioManager_fnc_updateRadioPreview;
+	};
 };
 
 true

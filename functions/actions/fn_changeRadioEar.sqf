@@ -45,9 +45,12 @@ private _acreSpatial = toUpper _newEar;
 private _result = [_radioId, _acreSpatial] call acre_api_fnc_setRadioSpatial;
 
 // Refresh radio data and rebuild inventory (recreates ear buttons with correct class so
-// colorFocused matches the new active state) and update Radio Preview
+// colorFocused matches the new active state).
+// Only update Radio Preview when showing live inventory.
 [] call AcreRadioManager_fnc_getRadioList;
 [] call AcreRadioManager_fnc_updateRadioInventory;
-[] call AcreRadioManager_fnc_updateRadioPreview;
+if (uiNamespace getVariable ["AcreRadioManager_previewIsLive", true]) then {
+	[] call AcreRadioManager_fnc_updateRadioPreview;
+};
 
 true

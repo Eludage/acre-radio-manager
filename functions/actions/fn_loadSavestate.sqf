@@ -1,7 +1,11 @@
 /*
  * Author: Eludage
  * Loads a savestate into the Radio Preview area.
- * Does NOT apply settings to actual radios - only updates the preview display.
+ * Builds preview rows directly from the savestate data using config lookups for
+ * icon/name and preset data for channel names — independent of the current inventory.
+ * Does NOT apply settings to actual radios.
+ * The Apply button (fn_applySavestate) enforces that count and types match the
+ * current inventory before settings are written to ACRE.
  *
  * Arguments:
  * 0: _savestateName <STRING> - Name of the savestate to load
@@ -36,46 +40,56 @@ if (isNil "_savestateData" || typeName _savestateData != "ARRAY") exitWith {
 	false
 };
 
-// Get current inventory radios as the data source for icon, name, ID etc.
-private _currentRadios = uiNamespace getVariable ["AcreRadioManager_currentRadios", []];
-if (_currentRadios isEqualTo "" || count _currentRadios == 0) exitWith {
-	["No radios in inventory"] call AcreRadioManager_fnc_showHint;
+if (count _savestateData == 0) exitWith {
+	["Savestate is empty."] call AcreRadioManager_fnc_showHint;
 	false
 };
 
-// Build preview radio data by overlaying savestate settings onto current inventory
+// Build preview radio data directly from savestate entries.
+// Savestate entry format: [ptt, channel, ear, volume, baseClass]
+// Preview row format:     [radioId, icon, displayName, ptt, channel, channelName, ear, volume, isOn, baseClass]
+// The baseClass at index 9 signals fn_updateRadioPreview that no live radio ID is available.
 private _previewRadios = [];
 {
-	private _radioData = +_x; // deep copy to avoid modifying currentRadios
+	private _radioSettings = _x;
 	private _radioIndex = _forEachIndex;
 
-	if (_radioIndex < count _savestateData) then {
-		private _radioSettings = _savestateData select _radioIndex;
+	if (count _radioSettings < 5) exitWith {
+		diag_log format ["ERROR: fn_loadSavestate - entry %1 missing baseClass", _radioIndex];
+	};
 
-		// Format: [ptt, channel, ear, volume]
-		if (count _radioSettings >= 4) then {
-			private _ptt = _radioSettings select 0;
-			private _channel = _radioSettings select 1;
-			private _ear = _radioSettings select 2;
-			private _volume = _radioSettings select 3;
+	private _ptt       = _radioSettings select 0;
+	private _channel   = _radioSettings select 1;
+	private _ear       = _radioSettings select 2;
+	private _volume    = _radioSettings select 3;
+	private _baseClass = _radioSettings select 4;
 
-			_radioData set [3, _ptt];
-			_radioData set [4, _channel];
+	// Synthetic ID — never passed to ACRE; preview reads baseClass from index 9
+	private _radioId = format ["AcreRadioManager_savestate_%1", _radioIndex];
 
-			// Resolve channel name via helper
-			private _radioId = _radioData select 0;
-			private _channelName = [_radioId, _channel] call AcreRadioManager_fnc_getChannelName;
+	// Look up icon and display name from config
+	private _icon = getText (configFile >> "CfgWeapons" >> _baseClass >> "picture");
+	private _displayName = getText (configFile >> "CfgWeapons" >> _baseClass >> "displayName");
+	if (_displayName == "") then { _displayName = _baseClass; };
 
-			_radioData set [5, _channelName];
-			_radioData set [6, _ear];
-			_radioData set [7, _volume];
+	// Resolve channel name via preset data (no live radio ID needed)
+	private _channelName = format ["Channel %1", _channel];
+	private _isChannelRadio = (_baseClass find "ACRE_PRC117F" >= 0) || (_baseClass find "ACRE_PRC152" >= 0);
+	if (_isChannelRadio) then {
+		private _preset = [_baseClass] call acre_api_fnc_getPreset;
+		private _fieldValue = [_baseClass, _preset, _channel, "label"] call acre_api_fnc_getPresetChannelField;
+		if (!isNil "_fieldValue" && { typeName _fieldValue == "STRING" } && { _fieldValue != "" }) then {
+			_channelName = _fieldValue;
 		};
 	};
 
-	_previewRadios pushBack _radioData;
-} forEach _currentRadios;
+	private _previewRow = [_radioId, _icon, _displayName, _ptt, _channel, _channelName, _ear, _volume, true, _baseClass];
+	_previewRadios pushBack _previewRow;
 
-// Store preview state and refresh only the preview UI - inventory is unchanged
+} forEach _savestateData;
+
+// Store preview state - mark as NOT live so inventory changes no longer overwrite it
+uiNamespace setVariable ["AcreRadioManager_previewIsLive", false];
 uiNamespace setVariable ["AcreRadioManager_previewRadios", _previewRadios];
 
 private _display = findDisplay 16000;

@@ -144,8 +144,10 @@ private _radioData = [];
 
 // Store in uiNamespace for access by other functions
 uiNamespace setVariable ["AcreRadioManager_currentRadios", _radioData];
-// Inventory changes always sync the preview state
-uiNamespace setVariable ["AcreRadioManager_previewRadios", _radioData];
+// Only sync previewRadios when showing live inventory (not when a savestate is loaded)
+if (uiNamespace getVariable ["AcreRadioManager_previewIsLive", true]) then {
+	uiNamespace setVariable ["AcreRadioManager_previewRadios", _radioData];
+};
 
 // Return the radio data array
 _radioData

@@ -53,10 +53,10 @@ private _targetBaseIDC = 16100 + (_targetRadioIndex * 25);
 // Clear copy mode so highlights are removed from inventory names
 uiNamespace setVariable ["AcreRadioManager_copySource", nil];
 
-// Refresh data and all panels
+// Refresh inventory data and panel — preview is intentionally left unchanged
+// so the loaded savestate remains visible for further copying.
 [] call AcreRadioManager_fnc_getRadioList;
 [] call AcreRadioManager_fnc_updateRadioInventory;
-[] call AcreRadioManager_fnc_updateRadioPreview;
 
 ["Settings copied."] call AcreRadioManager_fnc_showHint;
 
