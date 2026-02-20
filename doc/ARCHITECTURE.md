@@ -79,21 +79,20 @@ Used for state that persists across game sessions and survives crashes:
    - Refreshes display to show current state
 ```
 
-### Pattern 2: Load Radio Preset
+### Pattern 2: Load Radio Savestate
 
 ```
-1. User clicks "Load Preset"
+1. User clicks "Load" on a savestate
    ↓
-2. Action function (fn_loadPreset.sqf)
-   - Retrieves preset from profileNamespace
-   - Validates preset data
+2. Action function (fn_loadSavestate.sqf)
+   - Retrieves savestate from profileNamespace
+   - Validates savestate data
    ↓
-3. For each radio in preset:
-   - Match radio in inventory by type
-   - Call ACRE API to apply settings
+3. Preview area is overlaid with savestate settings
+   - Actual ACRE radios and inventory are NOT modified
    ↓
 4. UI update
-   - Refresh entire display to show new settings
+   - Refresh preview panel to show loaded settings
 ```
 
 ### Pattern 3: Dialog Initialization
@@ -123,8 +122,9 @@ private _radios = [] call acre_api_fnc_getCurrentRadioList;
 
 ### Settings Per Radio
 For each radio, the mod manages:
-- **Ear Assignment**: Left or right ear (for headsets/earpieces)
-- **Channel**: Current channel number (1-N depending on radio type)
+- **PTT Assignment**: Which PTT key (1–3) or none (0) triggers this radio
+- **Ear Assignment**: Left, right, or center (bilateral) audio output
+- **Channel**: Current channel number (1–N depending on radio type); supports direct text input for PRC-117F and PRC-152
 - **Volume**: Volume level (0.0 to 1.0)
 
 ### ACRE API Integration
@@ -146,9 +146,9 @@ The mod interacts with ACRE through their public API:
 #### 2. Radio Preview (Middle)
 - Shows detailed settings for selected radio
 - Provides controls for changing:
-  - Ear assignment (Left/Right buttons)
-  - Channel (dropdown or +/- buttons)
-  - Volume (slider or dropdown)
+  - Ear assignment (Left/Center/Right buttons)
+  - Channel (edit field with direct number input for supported radios, +/- buttons)
+  - Volume (edit field + +/- buttons)
 - Settings are applied immediately when changed
 
 #### 3. Options (Bottom)

@@ -12,6 +12,7 @@ This section describes the intended behavior across the key user interactions.
 - **Savestate added**: A new entry is created and **pre-filled with the current inventory** state so it can immediately be renamed and used.
 - **Savestate loaded**: Settings are overlaid onto the **preview area only**. The actual ACRE radio settings and the inventory are untouched.
 - **Savestate saved**: Stores the current **inventory** state into the savestate, not the preview state.
+- **Savestate applied**: Settings from the savestate are applied to the actual ACRE radios in the player's inventory. Radios are matched by base class type (order-independent). The inventory and preview are both refreshed afterwards.
 
 ## Dialog and Control ID Reference
 
@@ -35,6 +36,7 @@ This section lists the main dialog ID (IDD) and the control IDCs used in the Rad
     - 16010 → RadiosInventoryGroup — control group for dynamically created radio inventory controls
     - 16100-16399 → Dynamic radio controls (max 12 radios, 25 IDCs per radio)
       - baseIDC + 1 (Name): normally disabled `RscButton` with transparent background; turns green and clickable when copy mode is active and the radio type matches the copy source
+      - baseIDC + 9 (Channel Display/Edit): `ARM_RscEdit` (left-aligned edit field) for supported radios (PRC-117F, PRC-152), allowing direct channel number input; `RscText` read-only label for unsupported radios
   - Radio Preview controls
     - 16020 → RadioPreviewGroup — control group for dynamically created radio preview controls
     - 16400-16699 → Dynamic radio preview controls (max 12 radios, 25 IDCs per radio)
@@ -56,6 +58,8 @@ These classes are defined in `radioSettingsDialog.hpp` and used as the `ctrlCrea
 | `ARM_RscButtonGreen` | `COLOR_GREEN` | `COLOR_GREEN_ACTIVE` | Active PTT/ear selection, ear preview display, copy-target name |
 | `ARM_RscButtonRed` | `COLOR_RED` | `COLOR_RED_ACTIVE` | PTT X (no PTT), power OFF indicator |
 | `ARM_RscButtonTransparent` | `COLOR_BLACK_0` | `COLOR_BLACK_0` | Radio name label (non-copy mode) — invisible, not clickable |
+| `ARM_RscEdit` | `COLOR_GREY_15` | n/a | Left-aligned edit field — channel direct-input (inventory), volume edit |
+| `ARM_RscEditCentered` | `COLOR_GREY_15` | n/a | Centered edit field variant (`style = 66`) — savestate rename input |
 
 Notes
 - Access controls in scripts like this:
@@ -93,7 +97,13 @@ This section documents the runtime namespaces and variables used by Acre Radio M
 - `AcreRadioManager_copySource`: Array or nil — Active copy mode source data set when the player clicks a Copy button in the preview area. nil when copy mode is inactive. Format: `[baseClass, ptt, channel, ear, volume]`. Cleared automatically after a successful paste (inventory name click) or when a new Copy is pressed.
 - `AcreRadioManager_previewRadios`: Array or String — Radio info arrays used exclusively by the Radio Preview section. Same format as `AcreRadioManager_currentRadios`. Stays in sync with inventory on any inventory change. Diverges when a savestate is loaded via `fn_loadSavestate`, which overlays savestate settings without modifying `currentRadios`.
 
+#### Preview / Session State
+- `AcreRadioManager_previewIsLive`: Boolean — `true` when the Radio Preview section is mirroring the live inventory state; `false` when a savestate has been loaded into the preview. Set to `true` on every dialog open.
+- `AcreRadioManager_limitHintShown`: Boolean — One-shot flag that prevents the "Radio limit reached" hint from firing on every UI rebuild within the same dialog session. Reset to `false` on dialog open.
+- `AcreRadioManager_idcToRadioMap`: HashMap — Maps each radio's base IDC (e.g. 16100) to its ACRE radio instance ID string. Rebuilt every time `fn_updateRadioInventory` runs. Used by event handlers that need the radio ID from an IDC.
+
 #### Radio Settings Cache
+- `AcreRadioManager_channelCountCache`: HashMap — Caches the maximum channel count per radio base class (e.g. `"ACRE_PRC343"` → `16`) to avoid repeated config lookups. Populated lazily on first channel change for each radio type.
 - `AcreRadioManager_radioSettings`: HashMap — Cached settings for all radios during dialog session. Map of radio class name → settings hashmap.
   - Each settings hashmap contains:
     - "ear": String — "left" or "right" - which ear the radio is on
