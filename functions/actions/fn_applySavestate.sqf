@@ -142,7 +142,7 @@ private _newPTT = ["", "", ""];
 } forEach _pairs;
 
 // Apply accumulated PTT assignments
-_newPTT call acre_api_fnc_setMultiPushToTalkAssignment;
+[_newPTT] call acre_api_fnc_setMultiPushToTalkAssignment;
 
 // Refresh radio data and UI
 [] call AcreRadioManager_fnc_getRadioList;
