@@ -47,7 +47,8 @@ class CfgFunctions
         class actions
         {
             file = "AcreRadioManager\functions\actions";
-            class changeRadioChannel {}; // Changes radio channel and updates UI
+            class changeRadioChannel {}; // Changes radio channel by increment and updates UI
+            class changeRadioChannelDirect {}; // Sets radio channel directly to a given number and updates UI
             class changeRadioEar {}; // Changes radio ear/spatial assignment and updates UI
             class changeRadioVolume {}; // Changes radio volume and updates UI
             class changeRadioPTT {}; // Changes radio PTT assignment with smart swapping
@@ -80,6 +81,7 @@ class CfgFunctions
             file = "AcreRadioManager\functions\utilities";
             class debugLogRadioList {}; // Logs radio list to debug console
             class validateVolumeInput {}; // Validates and clamps volume input (0-100), optionally rounds to nearest 10
+            class validateChannelInput {}; // Validates and clamps channel input (1-99), strips non-numeric characters
             class getChannelName {}; // Resolves channel display name from ACRE preset data for a given radio and channel number
             class showHint {}; // Displays a hint message that auto-clears after 5 seconds
         };

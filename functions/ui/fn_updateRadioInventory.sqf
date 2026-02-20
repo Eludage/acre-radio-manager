@@ -243,8 +243,10 @@ private _yOffset = 0;
 	_ctrlChannelDec ctrlCommit 0;
 	_xPos = _xPos + BUTTON_WIDTH + 0.004;
 	
-	// Channel Display
-	private _ctrlChannelDisplay = _display ctrlCreate ["RscText", _baseIDC + 9, _group];
+	// Channel Display / Edit
+	// For supported radios, use an edit field to allow direct channel input by typing
+	private _channelDisplayClass = if (_isRadioSupported) then {"ARM_RscEdit"} else {"RscText"};
+	private _ctrlChannelDisplay = _display ctrlCreate [_channelDisplayClass, _baseIDC + 9, _group];
 	_ctrlChannelDisplay ctrlSetPosition [_xPos, _yRow, 0.26, BUTTON_HEIGHT];
 	if (_isRadioSupported) then {
 		_ctrlChannelDisplay ctrlSetText format ["%1: %2", _channel, _channelName];
@@ -255,6 +257,79 @@ private _yOffset = 0;
 	_ctrlChannelDisplay ctrlSetBackgroundColor COLOR_GREY_30;
 	_ctrlChannelDisplay ctrlCommit 0;
 	_xPos = _xPos + 0.26 + 0.004;
+
+	// Edit field event handlers — only wired up when radio supports direct channel input
+	if (_isRadioSupported) then {
+		_ctrlChannelDisplay setVariable ["radioId", _radioId];
+		_ctrlChannelDisplay setVariable ["channelNum", _channel];
+
+		// On click: clear the field entirely so the player types a fresh number without leftover digits
+		_ctrlChannelDisplay ctrlAddEventHandler ["MouseButtonDown", {
+			params ["_ctrl", "_button"];
+			if (_button != 0) exitWith {};
+			_ctrl ctrlSetText "";
+		}];
+
+		// On each key release: strip non-numeric characters and auto-apply when two digits are entered
+		_ctrlChannelDisplay ctrlAddEventHandler ["KeyUp", {
+			params ["_ctrl"];
+			// If channel was already committed (text is "N: Name"), skip to avoid re-processing digits in the channel name
+			if (ctrlText _ctrl find ": " >= 0) exitWith {};
+			[_ctrl] call AcreRadioManager_fnc_validateChannelInput;
+			private _value = parseNumber (ctrlText _ctrl);
+			// Two digits entered — treat the same as pressing Enter
+			if (_value >= 10) then {
+				private _editDisplay = ctrlParent _ctrl;
+				private _editBaseIDC = ctrlIDC _ctrl - 9;
+				private _editRadioId = _ctrl getVariable ["radioId", ""];
+				if (_editRadioId != "") then {
+					[_editRadioId, _value, _ctrl] call AcreRadioManager_fnc_changeRadioChannelDirect;
+					_ctrl setVariable ["channelNum", _value];
+					// Move focus to Dec button so the edit field loses focus
+					ctrlSetFocus (_editDisplay displayCtrl (_editBaseIDC + 8));
+				};
+			};
+		}];
+
+		// Enter key: apply the typed channel number and keep the full display text
+		_ctrlChannelDisplay ctrlAddEventHandler ["KeyDown", {
+			params ["_ctrl", "_key"];
+			// Enter key DIK code 0x1C = 28
+			if (_key == 28) then {
+				[_ctrl] call AcreRadioManager_fnc_validateChannelInput;
+				private _value = parseNumber (ctrlText _ctrl);
+				if (_value >= 1) then {
+					private _editRadioId = _ctrl getVariable ["radioId", ""];
+					if (_editRadioId != "") then {
+						[_editRadioId, _value, _ctrl] call AcreRadioManager_fnc_changeRadioChannelDirect;
+						_ctrl setVariable ["channelNum", _value];
+						// Move focus away so the cursor leaves the edit field
+						ctrlSetFocus (ctrlParent _ctrl displayCtrl (ctrlIDC _ctrl - 1));
+					};
+				};
+			};
+		}];
+
+		// Focus loss: apply if the typed value is a valid channel, otherwise restore the last good display
+		_ctrlChannelDisplay ctrlAddEventHandler ["KillFocus", {
+			params ["_ctrl"];
+			// Use parseNumber directly — it reads only the leading number, so "12: Channel 2" → 12
+			// Calling validateChannelInput here would concatenate all digits in the string and corrupt the value
+			private _value = parseNumber (ctrlText _ctrl);
+			private _editRadioId = _ctrl getVariable ["radioId", ""];
+			if (_value >= 1 && _value <= 99 && _editRadioId != "") then {
+				[_editRadioId, _value, _ctrl] call AcreRadioManager_fnc_changeRadioChannelDirect;
+				_ctrl setVariable ["channelNum", _value];
+			} else {
+				// Restore last known good display when input is empty or out of range
+				private _storedChannel = _ctrl getVariable ["channelNum", 1];
+				if (_editRadioId != "") then {
+					private _restoredName = [_editRadioId, _storedChannel] call AcreRadioManager_fnc_getChannelName;
+					_ctrl ctrlSetText format ["%1: %2", _storedChannel, _restoredName];
+				};
+			};
+		}];
+	};
 	
 	// Channel Increase Button
 	private _ctrlChannelInc = _display ctrlCreate ["ARM_RscButtonGrey40", _baseIDC + 10, _group];
@@ -273,16 +348,20 @@ private _yOffset = 0;
 			private _radioIdFromBtn = _ctrl getVariable ["radioId", ""];
 			if (_radioIdFromBtn != "") then {
 				[_radioIdFromBtn, -1, _displayCtrl] call AcreRadioManager_fnc_changeRadioChannel;
+				// Sync stored channel number so the edit field's KillFocus fallback stays accurate
+				_displayCtrl setVariable ["channelNum", parseNumber (ctrlText _displayCtrl)];
 			};
 		}];
 		_ctrlChannelDec setVariable ["radioId", _radioId];
-		
+
 		_ctrlChannelInc ctrlAddEventHandler ["ButtonClick", {
 			params ["_ctrl"];
 			private _displayCtrl = ctrlParent _ctrl displayCtrl (ctrlIDC _ctrl - 1); // Get channel display control
 			private _radioIdFromBtn = _ctrl getVariable ["radioId", ""];
 			if (_radioIdFromBtn != "") then {
 				[_radioIdFromBtn, 1, _displayCtrl] call AcreRadioManager_fnc_changeRadioChannel;
+				// Sync stored channel number so the edit field's KillFocus fallback stays accurate
+				_displayCtrl setVariable ["channelNum", parseNumber (ctrlText _displayCtrl)];
 			};
 		}];
 		_ctrlChannelInc setVariable ["radioId", _radioId];
