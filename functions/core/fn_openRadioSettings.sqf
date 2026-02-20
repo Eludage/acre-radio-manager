@@ -32,6 +32,8 @@ private _dialogOpened = createDialog "AcreRadioManager_Dialog";
 if (_dialogOpened) then {
 	// Mark preview as live (showing inventory data, not a loaded savestate)
 	uiNamespace setVariable ["AcreRadioManager_previewIsLive", true];
+	// Reset one-shot flag so the radio-limit hint can fire once for this session
+	uiNamespace setVariable ["AcreRadioManager_limitHintShown", false];
 	// Initialize previewRadios to match inventory on open
 	uiNamespace setVariable ["AcreRadioManager_previewRadios", uiNamespace getVariable ["AcreRadioManager_currentRadios", []]];
 	[] call AcreRadioManager_fnc_updateRadioInventory;
