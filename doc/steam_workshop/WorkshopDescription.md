@@ -1,6 +1,6 @@
 [h1]Acre Radio Manager: Radio Settings Management[/h1]
 
-[b]Acre Radio Manager[/b] is a client-side mod for Arma 3 that gives players a single, intuitive interface to manage all their ACRE radio settings without diving into individual radio menus.
+[b]Acre Radio Manager[/b] is a client-side mod for Arma 3 that gives players a single interface to manage all their ACRE radio settings without diving into individual radio menus.
 
 [h2]Features[/h2]
 
@@ -14,7 +14,7 @@
 [*][b]Radio preview panel[/b] — compare settings side by side with a live or savestate-loaded preview.
 [*][b]Savestate system[/b] — save named radio configurations and restore them at any time. Savestates are matched to radios by type, not position, so they survive inventory reorders.
 [*][b]Copy settings[/b] — copy settings from any preview radio directly onto a matching inventory radio.
-[*][b]Last Presets auto-save[/b] — your radio configuration at dialog close is always preserved and reloadable.
+[*][b]Last Presets auto-save[/b] — your radio configuration at dialog close is always preserved and reloadable. (Helpful after a game crash or after reloading your kit in the Arsenal)
 [*][b]Client-side only[/b] — no server setup or other player requirements.
 [/list]
 
@@ -58,7 +58,7 @@ Other than that, there are currently no known issues.
 [h2]License[/h2]
 
 [list]
-[*]You're [b]allowed[/b] to freely use this mod and/or change parts of it, although it's preferred if you create a Merge-Request in the [url=https://github.com/Eludage/AcreRadioManager]GitHub-Project[/url].
+[*]You're [b]allowed[/b] to freely use this mod and/or change parts of it, although it's preferred if you create a Merge-Request in the [url=https://github.com/Eludage/acre-radio-manager]GitHub-Project[/url].
 [*]You're [b]not allowed[/b] to reupload this mod without any meaningful modifications. If you're reuploading a modified version, you must give credit to this mod.
 [/list]
 
@@ -73,7 +73,11 @@ All [b]Acre Radio Manager[/b] documentation is available in the mod's GitHub rep
 
 [h2]Issue Tracker / Bug Reports[/h2]
 
-Please report bugs and issues on the dedicated [url=https://github.com/Eludage/AcreRadioManager/issues]GitHub issue tracker[/url].
+Please report bugs and issues on the dedicated [url=https://github.com/Eludage/acre-radio-manager/issues]GitHub issue tracker[/url].
+
+[h2]Eludage's QoL Collection[/h2]
+
+If you enjoy this mod, have a look at [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3670450844]my other QoL mods[/url].
 
 [h2]Credits[/h2]
 
