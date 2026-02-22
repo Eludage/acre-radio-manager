@@ -1,0 +1,46 @@
+https://acre2.idi-systems.com/wiki/radios/bf-888s
+
+BF-888S
+Operation
+Interface
+Volume Dial
+Channel Dial
+Mission Editor Reference
+Adding radio to unit/object cargo inventory space
+Channel Preset Data Fields
+The BF-888S is a low cost portable UHF radio with range of up to 5km in ideal conditions. It has 16 programmable channel presets.
+
+Operation
+Interface
+BF-888S Interface
+The BF-888S interface is extremely simple, consisting of only two dials.
+
+Volume Dial
+The right-hand dial sets the radio volume.
+
+Channel Dial
+The left-hand dial sets the radio channel, from 1 to 16 as programmed.
+
+Mission Editor Reference
+Adding radio to unit/object cargo inventory space
+Class name: ACRE_BF888S
+
+Can be added using the following methods.
+
+To a unit’s inventory:
+
+unit addItem “ACRE_BF888S”;
+unit addItemToVest “ACRE_BF888S”;
+unit addItemToUniform “ACRE_BF888S”;
+unit addItemToBackpack “ACRE_BF888S”;
+To an object’s cargo inventory:
+
+object addItemCargo [“ACRE_BF888S”,1];
+object addItemCargoGlobal [“ACRE_BF888S”,1];
+Channel Preset Data Fields
+Field name	Description
+frequencyTX	Transmit Frequency
+frequencyRX	Receive Frequency
+CTCSSTx	CTCSS Transmit Code
+CTCSSRx	CTCSS Receive Code
+Modulation	Modulation (AM / FM)

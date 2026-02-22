@@ -1,0 +1,1557 @@
+https://acre2.idi-systems.com/wiki/frameworks/functions-list
+
+Functions List
+Public API functions for use by mission makers and other mods to interface with ACRE2. Backwards compatibility is supported for the following functions as much as possible.
+
+acre_api_fnc_addDisplayPassthroughKeys
+Description
+
+Adds key handling compatibility to a custom display, which otherwise does not pass through CBA keybinds. Must be called after display has been loaded.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Display	DISPLAY	 
+Return Value
+
+Description	Datatype(s)
+Successfully added passthrough key handling	BOOL
+Example
+
+[display] call acre_api_fnc_addDisplayPassthroughKeys
+acre_api_fnc_addNotificationDisplay
+Description
+
+Adds notification system support to given display ID (IDD).
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Display ID	NUMBER	 
+Return Value
+
+Description	Datatype(s)
+Display priority index	NUMBER
+Example
+
+[3333] call acre_api_fnc_addNotificationDisplay
+acre_api_fnc_addRackToVehicle
+Description
+
+Initialises all racks in the vehicle. Must be executed in the server. If no condition is specified, the radio will be configured to match the vehicle preset defined using acre_api_fnc_setVehicleRacksPreset or the preset of the first player that matches the given condition if the vehicle preset is not defined.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Vehicle	OBJECT	objNull
+1	Rack configuration	ARRAY	 
+0	Base classname of the rack (Without ID)	STRING	””
+1	Rackname - this is diplayed to the user. Ideally short	STRING	””
+2	Rack short name - displayed in GUI information. Max 4 characters	STRING	””
+3	Is mounted radio removable	BOOLEAN	false
+4	Access - Determines who can use the rack	ARRAY	[“inside”]
+5	Disabled positions - Blacklist rack use positions	ARRAY	[]
+6	Base classname of the mounted radio (Without ID). Empty string for no radio	STRING	””
+7	Components	ARRAY	[]
+8	Connected intercoms	ARRAY	[]
+2	Force initialisation	BOOL	false
+3	Condition called with argument “_unit”. If a longer function is given, it should be precompiled.	CODE	{}
+Return Value
+
+Description	Datatype(s)
+Rack added successfully	BOOL
+Example
+
+[cursorTarget, ["ACRE_VRC103", "Upper Dash", "Dash", false, ["external"], [], "ACRE_PRC117F", [], ["intercom_1"]], false] call acre_api_fnc_addRackToVehicle
+acre_api_fnc_addSpectatorRadio
+Description
+
+Adds a radio to the unit’s spectator radio list. Unit must be local.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Player unit	OBJECT	objNull
+1	Unique Radio or Rack ID	STRING	””
+Return Value
+
+Description	Datatype(s)
+Radio successfully added	BOOL
+Example
+
+[player, "acre_prc343_id_1"] call acre_api_fnc_addSpectatorRadio
+acre_api_fnc_areVehicleRacksInitialized
+Description
+
+Checks whether the vehicle racks have been initialized for the given vehicle.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Vehicle	OBJECT	 
+Return Value
+
+Description	Datatype(s)
+Vehicle racks initialized	BOOL
+Example
+
+[cursorTarget] call acre_api_fnc_areVehicleRacksInitialized
+acre_api_fnc_babelAddLanguageType
+Description
+
+Creates a new language to be used by the babel system.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Language ID (used internally for identifying the language or specifying languages via other API methods)	STRING	 
+1	Language display name	STRING	 
+Return Value
+
+Description	Datatype(s)
+Setup successful	BOOL
+Example
+
+["en", "English"] call acre_api_fnc_babelAddLanguageType;
+acre_api_fnc_babelGetLanguageId
+Description
+
+Gets the babel language key from the display name.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Language display name	STRING	 
+Return Value
+
+Description	Datatype(s)
+Language ID	STRING
+Example
+
+["English"] call acre_api_fnc_babelGetLanguageId;
+acre_api_fnc_babelGetLanguageName
+Description
+
+Gets the babel language display name from the language ID.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Language ID	STRING	 
+Return Value
+
+Description	Datatype(s)
+Language display name	STRING
+Example
+
+["en"] call acre_api_fnc_babelGetLanguageName;
+acre_api_fnc_babelGetSpeakingLanguageId
+Description
+
+Gets the ID of the language which is actively being spoken (set with babelSetSpeakingLanguage).
+
+Parameters
+
+None
+
+Return Value
+
+Description	Datatype(s)
+Language ID	STRING
+Example
+
+[] call acre_api_fnc_babelGetSpeakingLanguageId;
+acre_api_fnc_babelSetSpeakingLanguage
+Description
+
+Sets the language the player will speak in.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Language ID	STRING	 
+Return Value
+
+Description	Datatype(s)
+Setup successful	BOOL
+Example
+
+["en"] call acre_api_fnc_babelSetSpeakingLanguage;
+acre_api_fnc_babelSetSpokenLanguages
+Description
+
+Sets the languages that the local player can speak.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+None	Language IDs	ARRAY	 
+Return Value
+
+Description	Datatype(s)
+Setup successful	BOOL
+Example
+
+["en"] call acre_api_fnc_babelSetSpokenLanguages;
+acre_api_fnc_babelSetupMission
+Description
+
+Provides functionality to allow for easy setup of side-specific languages. An array is provided for each configurable side which specifies the languages that side can speak.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+None	Array of sides and languages	ARRAY	 
+0	Side	SIDE	 
+1	Language display name	STRING	 
+Return Value
+
+Description	Datatype(s)
+Setup successful	BOOL
+Example
+
+[ [west, "English", "French"], [east, "Russian"], [civilian, "French"] ] call acre_api_fnc_babelSetupMission;
+[ [west, "English", "French"], [east, "Russian", "French" ] ] call acre_api_fnc_babelSetupMission;
+acre_api_fnc_copyPreset
+Description
+
+Copies all parameters of the source preset to a new destination preset name.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Radio base type	STRING	 
+1	Preset name to copy	STRING	 
+2	Destination preset name	STRING	 
+Return Value
+
+Description	Datatype(s)
+Copy preset successful	BOOLEAN
+Example
+
+["ACRE_PRC152", "default2", "balls"] call acre_api_fnc_copyPreset
+acre_api_fnc_filterUnitLoadout
+Description
+
+Filters unitLoadout for ACRE ID classes and replacing them for base classes.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Loadout	ARRAY or OBJECT or STRING or CONFIG	getUnitLoadout acre_player
+Return Value
+
+Description	Datatype(s)
+Loadout	ARRAY
+Example
+
+_loadout = [_loadout] call acre_api_fnc_filterUnitLoadout;
+_loadout = [getUnitLoadout _unit] call acre_api_fnc_filterUnitLoadout;
+_loadout = [player] call acre_api_fnc_filterUnitLoadout;
+acre_api_fnc_getAllRadios
+Description
+
+Returns all radios defined in CfgAcreRadios. Caches result for future calls.
+
+Parameters
+
+None
+
+Return Value
+
+Description	Datatype(s)
+1: Radio Class Names	ARRAY
+Example
+
+[] call acre_api_fnc_getAllRadios;
+acre_api_fnc_getAllRadiosByType
+Description
+
+Returns a list of unique radio IDs of local player or unit possesses of a given type. In the case of a unit for the second parameter it will find the radio IDs for that unit instead of the local player.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Radio type	STRING	 
+1	Optional unit or List of String	ARRAY, OBJECT	[]
+Return Value
+
+Description	Datatype(s)
+Array of Radio IDs	ARRAY
+Example
+
+_radioIds = ["ACRE_PRC152"] call acre_api_fnc_getAllRadiosByType
+_radioIds = ["ACRE_PRC152", _unit] call acre_api_fnc_getAllRadiosByType
+acre_api_fnc_getBaseRadio
+Description
+
+Takes an actual unique radio ID, and returns its actual base radio type
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Radio item name with ID	STRING	 
+Return Value
+
+Description	Datatype(s)
+The base radio class	STRING
+Example
+
+["ACRE_PRC148_ID_15"] call acre_api_fnc_getBaseRadio;
+acre_api_fnc_getCurrentRadio
+Description
+
+Returns the unique radio ID of the currently active radio for the local player object.
+
+Parameters
+
+None
+
+Return Value
+
+Description	Datatype(s)
+Radio ID	STRING
+Example
+
+[] call acre_api_fnc_getCurrentRadio;
+acre_api_fnc_getCurrentRadioChannelNumber
+Description
+
+Returns the channel number that the currently active radio is on.
+
+Parameters
+
+None
+
+Return Value
+
+Description	Datatype(s)
+Channel number. Returns -1 if no active radio or the channel can’t be found.	NUMBER
+Example
+
+[] call acre_api_fnc_getCurrentRadioChannelNumber;
+acre_api_fnc_getCurrentRadioList
+Description
+
+Retrieves the array of current unique radio IDs that are on the local player.
+
+Parameters
+
+None
+
+Return Value
+
+Description	Datatype(s)
+Array of radio IDs which are strings	ARRAY
+Example
+
+[] call acre_api_fnc_getCurrentRadioList;
+acre_api_fnc_getDisplayName
+Description
+
+Gets the display name for a radio ID.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Radio ID	STRING	 
+Return Value
+
+Description	Datatype(s)
+Radio display name	STRING
+Example
+
+["ACRE_PRC343_ID_1"] call acre_api_fnc_getDisplayName
+acre_api_fnc_getGlobalVolume
+Description
+
+Gets the current global output volume for all ACRE voices and radios.
+
+Parameters
+
+None
+
+Return Value
+
+Description	Datatype(s)
+The current ACRE global volume (between 0 and 1)	NUMBER
+Example
+
+[] call acre_api_fnc_getGlobalVolume;
+acre_api_fnc_getMountedRackRadio
+Description
+
+Gets the mounted rack radio.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Rack unique ID	STRING	 
+Return Value
+
+Description	Datatype(s)
+Mounted radio unique ID, “” if no radio is mounted	STRING
+Example
+
+["ACRE_VRC103_ID_1"] call acre_api_fnc_getMountedRackRadio
+acre_api_fnc_getMultiPushToTalkAssignment
+Description
+
+Returns the current radios assigned to Multiple Push-to-Talk keys, or Alternate PTT keys.
+
+Parameters
+
+None
+
+Return Value
+
+Description	Datatype(s)
+The array of radio ID’s which are assigned to each PTT talk key. These are returned in order, from key 1-3	ARRAY
+Example
+
+_mpttRadioList = [] call acre_api_fnc_getMultiPushToTalkAssignment;
+acre_api_fnc_getPTTDelay
+Description
+
+Gets the current delay value for releasing radio PTT events. The default value for this is 200ms, or 0.2
+
+Parameters
+
+None
+
+Return Value
+
+Description	Datatype(s)
+The delay time in seconds to release PTT radio events.	NUMBER
+Example
+
+_delay = [] call acre_api_fnc_getPTTDelay
+acre_api_fnc_getPreset
+Description
+
+Gets the preset name to utilize on the provided radio class during initialization.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Radio base type	STRING	 
+Return Value
+
+Description	Datatype(s)
+The string name of the current preset	STRING
+Example
+
+_currentPreset = ["ACRE_PRC152"] call acre_api_fnc_getPreset;
+acre_api_fnc_getPresetChannelData
+Description
+
+Returns the full ACRE2 channel Hash data of the specified preset name for the specified radio. The channel number must be a valid channel for that type of radio.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Base radio class	STRING	 
+1	Preset name	STRING	 
+2	Channel number	NUMBER	 
+Return Value
+
+Description	Datatype(s)
+Hash containing all the channel preset information	HASH
+Example
+
+_presetData = ["ACRE_PRC152", "default", 4] call acre_api_fnc_getPresetChannelData;
+acre_api_fnc_getPresetChannelField
+Description
+
+Returns the value of the channel field for the given radio preset.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Radio Base class	STRING	 
+1	Preset name	STRING	 
+2	Channel number	NUMBER	 
+3	Field name	STRING	 
+Return Value
+
+Description	Datatype(s)
+Value of the given field	ANY
+Example
+
+["ACRE_PRC148", "default", 2, "label"] call acre_api_fnc_getPresetChannelField;
+acre_api_fnc_getPresetData
+Description
+
+Returns the full preset data of the specified preset name for the specified radio.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Radio base class	STRING	 
+1	Preset Name	STRING	 
+Return Value
+
+Description	Datatype(s)
+Preset data	HASH
+Example
+
+_presetData = ["ACRE_PRC152", "default"] call acre_api_fnc_getPresetData;
+acre_api_fnc_getRadioAudioSource
+Description
+
+Gets the audio source currently selected on the provided radio ID.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Radio ID	STRING	 
+Return Value
+
+Description	Datatype(s)
+Audio Source	STRING
+Example
+
+_audioSource = ["ACRE_PRC148_ID_123"] call acre_api_fnc_getRadioAudioSource
+acre_api_fnc_getRadioByType
+Description
+
+Returns the unique radio ID of the first radio the local player or unit possesses of a given type. This function does not compensate for units with multiple radios of the same type. There is no guarantee of which radio it will return. In the case of a unit for the second parameter it will find the radio ID for that unit instead of the local player.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Radio type	STRING	 
+1	Optional unit or List of String	ARRAY, OBJECT	[]
+Return Value
+
+Description	Datatype(s)
+Radio ID	STRING
+Example
+
+_radioId = ["ACRE_PRC152"] call acre_api_fnc_getRadioByType
+_radioId = ["ACRE_PRC152", _unit] call acre_api_fnc_getRadioByType
+acre_api_fnc_getRadioChannel
+Description
+
+Returns the channel number of the currently active channel on the provided radio ID.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Radio ID	STRING	 
+Return Value
+
+Description	Datatype(s)
+Channel number, 1-N depending on the radio	NUMBER
+Example
+
+_currentChannel = ["ACRE_PRC152_ID_123"] call acre_api_fnc_getRadioChannel;
+acre_api_fnc_getRadioOnOffState
+Description
+
+Gets the status (ON/OFF) for the given radio.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Radio ID	STRING	 
+Return Value
+
+Description	Datatype(s)
+TRUE if radio is ON, False if the radio is OFF	BOOLEAN
+Example
+
+["ACRE_PR77_ID_1"] call acre_api_fnc_getRadioOnOffState
+acre_api_fnc_getRadioSpatial
+Description
+
+Gets what spatialization zone the specified radio ID is currently in. “LEFT”, “RIGHT” or “CENTER”
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Radio ID	STRING	 
+Return Value
+
+Description	Datatype(s)
+“LEFT”, “RIGHT” or “CENTER”	STRING
+Example
+
+["ACRE_PRC148_ID_1"] call acre_api_fnc_getRadioSpatial;
+acre_api_fnc_getRadioVolume
+Description
+
+Gets the volume for the given radio.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Radio ID	STRING	 
+Return Value
+
+Description	Datatype(s)
+Volume value between 0 and 1, -1 if error	NUMBER
+Example
+
+["ACRE_PRC148_ID_1"] call acre_api_fnc_getRadioVolume
+acre_api_fnc_getRevealToAI
+Description
+
+Returns whether the player reveal to AI direct speech system is enabled. Return value is only valid on a player client.
+
+Parameters
+
+None
+
+Return Value
+
+Description	Datatype(s)
+AI enabled	NUMBER
+Example
+
+[] call acre_api_fnc_getRevealToAI;
+acre_api_fnc_getSelectableVoiceCurve
+Description
+
+Retrieves the scale of how far the local player’s voice will be heard from.
+
+Parameters
+
+None
+
+Return Value
+
+Description	Datatype(s)
+Voice curve scale	NUMBER
+Example
+
+_ret = [] call acre_api_fnc_getSelectableVoiceCurve;
+acre_api_fnc_getVOIPChannelName
+Description
+
+Get the VOIP channel name.
+
+Parameters
+
+None
+
+Return Value
+
+Description	Datatype(s)
+VOIP Channel Name	STRING
+Example
+
+[] call acre_api_fnc_getVOIPChannelName
+acre_api_fnc_getVOIPChannelUID
+Description
+
+Get the VOIP channel UID.
+
+Parameters
+
+None
+
+Return Value
+
+Description	Datatype(s)
+VOIP Channel UID	STRING
+Example
+
+[] call acre_api_fnc_getVOIPChannelUID
+acre_api_fnc_getVOIPServerName
+Description
+
+Get the VOIP server name.
+
+Parameters
+
+None
+
+Return Value
+
+Description	Datatype(s)
+VOIP Server Name	STRING
+Example
+
+[] call acre_api_fnc_getVOIPServerName
+acre_api_fnc_getVOIPServerUID
+Description
+
+Get the VOIP server UID.
+
+Parameters
+
+None
+
+Return Value
+
+Description	Datatype(s)
+VOIP Server UID	STRING
+Example
+
+[] call acre_api_fnc_getVOIPServerUID
+acre_api_fnc_getVehicleRacks
+Description
+
+Gets all racks in a vehicle.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Vehicle	OBJECT	 
+Return Value
+
+Description	Datatype(s)
+List of vehicle racks	ARRAY
+Example
+
+[cursorTarget] call acre_api_fnc_getVehicleRacks
+acre_api_fnc_getVehicleRacksPreset
+Description
+
+Gets the preset name used for initialising the vehicle racks.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Vehicle	OBJECT	objNull
+Return Value
+
+Description	Datatype(s)
+Preset name (“” if undefined)	STRING
+Example
+
+[cursorTarget] call acre_api_fnc_getVehicleRacksPreset
+acre_api_fnc_godModeConfigureAccess
+Description
+
+Configures the access to God Mode.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Access to the BI Chat Channel functionality	BOOL	false
+1	Access to Group presets functionality	BOOL	false
+Return Value
+
+Description	Datatype(s)
+Handled	BOOL
+Example
+
+[true, false] call acre_api_fnc_godModeConfigureAccess
+acre_api_fnc_godModeGetGroupTargets
+Description
+
+Returns given group’s current targets.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Group (0-based index or -1 for current channel)	NUMBER	0
+Return Value
+
+Description	Datatype(s)
+Group targets	ARRAY
+Example
+
+[0] call acre_api_fnc_godModeGetGroupTargets
+acre_api_fnc_godModeModifyGroup
+Description
+
+Modifies who can hear a message from God Mode.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Unit or UID or array of either or code returning array of units	OBJECT, STRING, ARRAY, CODE	[]
+1	Group to effect (0-based index)	NUMBER	0
+2	Action. 0 for set, 1 for add and 2 for subtract	NUMBER	0
+Return Value
+
+Description	Datatype(s)
+Group modified successfully	BOOL
+Example
+
+[[unit1, unit2], 0, 1] call acre_api_fnc_godModeModifyGroup
+[["76561198040512062", "76561198046921073"], 0, 1] call acre_api_fnc_godModeModifyGroup
+[{allUnits select {alive _x}}, 0, 1] call acre_api_fnc_godModeModifyGroup
+acre_api_fnc_godModeNameGroup
+Description
+
+Sets a visible name for the given God Mode group.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Name	STRING	 
+1	Group to effect (0-based index)	NUMBER	0
+Return Value
+
+Description	Datatype(s)
+Group name set successfully	BOOL
+Example
+
+["Admin", 0] call acre_api_fnc_godModeNameGroup
+acre_api_fnc_godModeSendText
+Description
+
+Sends a text message to the specified God Mode group.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Text	STRING	””
+1	Group ID (0-based index)	NUMBER	0
+Return Value
+
+Description	Datatype(s)
+Text message sent successfully	BOOL
+Example
+
+["sample text", 2] call acre_api_fnc_godModeSendText
+acre_api_fnc_hasBaseRadio
+Description
+
+Checks whether the given unit has a base radio.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Unit	OBJECT	 
+Return Value
+
+Description	Datatype(s)
+Has base radio	BOOLEAN
+Example
+
+_result = [player] call acre_api_fnc_hasBaseRadio;
+acre_api_fnc_hasKindOfRadio
+Description
+
+Checks whether the provided unit has a radio of the specified radio type in their inventory.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Unit or array of item classnames	OBJECT, ARRAY	 
+1	Radio base type	STRING	 
+Return Value
+
+Description	Datatype(s)
+Has kind of radio	BOOLEAN
+Example
+
+_hasRadio = [player, "ACRE_PRC148"] call acre_api_fnc_hasKindOfRadio
+acre_api_fnc_hasRadio
+Description
+
+Checks whether the provided unit has an ACRE radio in their inventory.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Unit	OBJECT	 
+Return Value
+
+Description	Datatype(s)
+Whether the unit or player has a radio	BOOLEAN
+Example
+
+_hasRadio = [player] call acre_api_fnc_hasRadio;
+acre_api_fnc_initVehicleRacks
+Description
+
+Initialises all racks in the vehicle. Must be executed in the server. If no condition is specified, the radio will be configured to match the vehicle preset defined using acre_api_fnc_setVehicleRacksPreset or the preset of the first player that matches the given condition if the vehicle preset is not defined.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Vehicle	OBJECT	 
+1	Condition called with argument “_unit”. If a longer function is given, it should be precompiled.	CODE	{}
+Return Value
+
+Description	Datatype(s)
+Setup successful	BOOL
+Example
+
+[cursorTarget, {}] call acre_api_fnc_initVehicleRacks
+acre_api_fnc_isBaseRadio
+Description
+
+Checks if a class name is a base radio or not. Base radios are ACRE radios without IDs. e.g. “ACRE_PRC148” would return true, “ACRE_PRC148_ID_1” would return false
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Item name	STRING	 
+Return Value
+
+Description	Datatype(s)
+Is base radio	BOOLEAN
+Example
+
+_result = ["ACRE_PRC343"] call acre_api_fnc_isBaseRadio;
+acre_api_fnc_isBroadcasting
+Description
+
+Checks whether the provided unit is currently broadcasting on a radio.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Unit	OBJECT	 
+Return Value
+
+Description	Datatype(s)
+Broadcasting	BOOLEAN
+Example
+
+_isBroadcasting = [player] call acre_api_fnc_isBroadcasting;
+acre_api_fnc_isInitialized
+Description
+
+Checks whether the ACRE radios have initialized. This means that they have been replaced with ID specified radios.
+
+Parameters
+
+None
+
+Return Value
+
+Description	Datatype(s)
+All radios on unit are initialized	BOOLEAN
+Example
+
+_status = [] call acre_api_fnc_isInitialized;
+acre_api_fnc_isKindOf
+Description
+
+Checks whether the provided weapon/item is the specified ACRE radio type.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Radio ID/Item classname	STRING	 
+1	Radio base type	STRING	 
+Return Value
+
+Description	Datatype(s)
+Whether the provided item is of the radio base type	BOOLEAN
+Example
+
+_ret = ["ACRE_PRC117F_ID_123", "ACRE_PRC117F"] call acre_api_fnc_isKindOf;
+acre_api_fnc_isRackRadioRemovable
+Description
+
+Checks wether a rack can have its radios unmounted.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Unique rack ID	STRING	 
+Return Value
+
+Description	Datatype(s)
+Racked radio can be unmounted	BOOL
+Example
+
+["ACRE_VRC103_ID_1"] call acre_api_fnc_isRackRadioRemovable
+acre_api_fnc_isRadio
+Description
+
+Returns true or false whether the provided classname is a ACRE radio or not. This function returns false on Radio Base Classes.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Classname	STRING	 
+Return Value
+
+Description	Datatype(s)
+Whether the provided object class name is a radio or not	BOOLEAN
+Example
+
+_isRadio = ["NVGoggles"] call acre_api_fnc_isRadio;
+acre_api_fnc_isRadioSpeaker
+Description
+
+Returns true or false whether the provided radio ID has audio source set to speaker or not.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Radio ID	STRING	 
+Return Value
+
+Description	Datatype(s)
+Is Audio Source Speaker	BOOL
+Example
+
+_isSpeaker = ["ACRE_PRC148_ID_123"] call acre_api_fnc_isRadioSpeaker
+acre_api_fnc_isSpeaking
+Description
+
+Checks whether the provided unit is currently speaking, either on radio or direct.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Unit	OBJECT	 
+Return Value
+
+Description	Datatype(s)
+Is unit speaking	BOOLEAN
+Example
+
+_isSpeaking = [player] call acre_api_fnc_isSpeaking;
+acre_api_fnc_isSpectator
+Description
+
+Checks whether the provided unit (or by default local player) is spectating.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Unit	OBJECT	acre_player
+Return Value
+
+Description	Datatype(s)
+Spectating	BOOL
+Example
+
+_isSpectator = [] call acre_api_fnc_isSpectator;
+_isSpectator = [player] call acre_api_fnc_isSpectator;
+acre_api_fnc_isVOIPConnected
+Description
+
+Check if the VOIP plugin is connected.
+
+Parameters
+
+None
+
+Return Value
+
+Description	Datatype(s)
+Is VOIP Plugin Connected	BOOL
+Example
+
+[] call acre_api_fnc_isVOIPConnected
+acre_api_fnc_mountRackRadio
+Description
+
+Sets the given radio as mounted. Must be executed on the server.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Rack ID	STRING	””
+1	Base radio to mount	STRING	””
+Return Value
+
+Description	Datatype(s)
+Setup successful	BOOL
+Example
+
+["ACRE_VRC103_ID_1", "ACRE_PRC117F"] call acre_api_fnc_mountRackRadio
+acre_api_fnc_removeAllRacksFromVehicle
+Description
+
+Removes all Racks from a vehicle. Must be executed on the server.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Vehicle	OBJECT	objNull
+Return Value
+
+Description	Datatype(s)
+Racks removed successfully	BOOL
+Example
+
+[cursorTarget] call acre_api_fnc_removeAllRacksFromVehicle
+acre_api_fnc_removeAllSpectatorRadios
+Description
+
+Removes all spectator radios. Unit must be local.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Player unit	OBJECT	objNull
+Return Value
+
+Description	Datatype(s)
+Radios successfully removed	BOOL
+Example
+
+[player] call acre_api_fnc_removeAllSpectatorRadios
+acre_api_fnc_removeRackFromVehicle
+Description
+
+Removes a specific Rack from a vehicle. Must be executed on the server.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Vehicle	OBJECT	objNull
+1	Unique rack ID	STRING	 
+Return Value
+
+Description	Datatype(s)
+Rack removed successfully	BOOL
+Example
+
+[cursorTarget, "ACRE_VRC103_ID_1"] call acre_api_fnc_removeRackFromVehicle
+acre_api_fnc_removeSpectatorRadio
+Description
+
+Removes a radio from the unit’s spectator radio list. Unit must be local.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Player unit	OBJECT	objNull
+1	Unique Radio or Rack ID	STRING	””
+Return Value
+
+Description	Datatype(s)
+Radio successfully removed	BOOL
+Example
+
+[player, "acre_prc343_id_1"] call acre_api_fnc_removeSpectatorRadio
+acre_api_fnc_replaceRacksOnVehicle
+Description
+
+Replaces all config-defined Racks on a vehicle with a different class of Rack, while keeping the same name, allowedPositions, etc. Must be executed on the server.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Vehicle	OBJECT	objNull
+1	Rack classname to remove	STRING	””
+2	Rack classname to add	STRING	””
+3	Condition called with argument “_unit” for rack init. If a longer function is given, it should be precompiled.	CODE	{}
+Return Value
+
+Description	Datatype(s)
+Racks replaced successfully	BOOL
+Example
+
+[cursorTarget, "ACRE_VRC103", "ACRE_VRC64", {}] call acre_api_fnc_replaceRacksOnVehicle
+acre_api_fnc_setCurrentRadio
+Description
+
+Sets the currently active radio by radio ID.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Radio ID	STRING	 
+Return Value
+
+Description	Datatype(s)
+Successful	BOOLEAN
+Example
+
+_success = ["ACRE_PRC148_ID_7"] call acre_api_fnc_setCurrentRadio;
+acre_api_fnc_setCurrentRadioChannelNumber
+Description
+
+Set the channel number that the currently active radio is on.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Channel number	NUMBER	 
+Return Value
+
+Description	Datatype(s)
+Successful	BOOLEAN
+Example
+
+_success = [5] call acre_api_fnc_setCurrentRadioChannelNumber;
+acre_api_fnc_setCurveModel
+Description
+
+Sets the curve model for all clients. This model affects the dropoff for direct speech. ACRE_CURVE_MODEL_ORIGINAL > The volume range is static and based off a custom curve. ACRE_CURVE_MODEL_SELECTABLE_A > This method allows you to use the acre_api_fnc_setSelectableVoiceCurve to change how far the voice curve goes. The curve that the it modifies in mode A is the default X3DAudio curve based off the inverse square law. ACRE_CURVE_MODEL_SELECTABLE_B > Same as above but it modifies the distance of the custom curve available when using the ACRE_CURVE_MODEL_ORIGINAL mode.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	“ACRE_CURVE_MODEL_ORIGINAL”, “ACRE_CURVE_MODEL_SELECTABLE_A” or “ACRE_CURVE_MODEL_SELECTABLE_B”	STRING	 
+Return Value
+
+None
+
+Example
+
+["ACRE_CURVE_MODEL_ORIGINAL"] call acre_api_fnc_setCurveModel;
+acre_api_fnc_setCurveModelScale
+Description
+
+Sets the curve scale for all clients. This can be used as a modifier for all voice curves.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Curve scale	NUMBER	 
+Return Value
+
+None
+
+Example
+
+[1.0] call acre_api_fnc_setCurveModelScale;
+acre_api_fnc_setCustomSignalFunc
+Description
+
+This overrides the signal calculation function in ACRE2 with a defined function. It is recommended to read this documentation page for further details and some examples: https://acre2.idi-systems.com/wiki/frameworks/custom-signal-processing The arguments passed to the function are the frequency (MHz), power of transmitter (mA), classname of recieving radio, classname of broadcasting radio. Example - [30, 5000, “ACRE_PRC343_ID_1”, “ACRE_PRC343_ID_2”] The expected return of the function is [_signalStrengthPercent,_signalStrengthDBm] - where signal strength is a value between 0 and 1, and DBm strength of the radiosignal for the receiving radio. Calling the function with an empty code will remove the custom signal function.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Function to use	CODE	 
+Return Value
+
+None
+
+Example
+
+[mySignalFunc] call acre_api_fnc_setCustomSignalFunc
+[{}] call acre_api_fnc_setCustomSignalFunc
+acre_api_fnc_setGlobalVolume
+Description
+
+Sets the global volume of the output from ACRE. 1 is normal, 0 is silent
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Volume between 0 and 1	NUMBER	 
+Return Value
+
+Description	Datatype(s)
+Volume	NUMBER
+Example
+
+[0.05] call acre_api_fnc_setGlobalVolume;
+acre_api_fnc_setItemRadioReplacement
+Description
+
+DEPRECATED! Replaced by CBA Setting. Set the radio type to replace “ItemRadio” in unit inventories. By default this is the “ACRE_PRC343”
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Radio base type	STRING	 
+Return Value
+
+Description	Datatype(s)
+Success	BOOLEAN
+Example
+
+["ACRE_PRC148"] call acre_api_fnc_setItemRadioReplacement;
+acre_api_fnc_setMultiPushToTalkAssignment
+Description
+
+Sets the assignment order for the Multi-Push-To-Talk keys, also known as Alternate Push-to-Talk keys. These assign the keys 1-3, in order, to the ID’s provided in the array. All radios must be valid assigned ACRE radio id’s and must be present on the local player.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Array of radio IDs	ARRAY	 
+Return Value
+
+Description	Datatype(s)
+Successful	BOOLEAN
+Example
+
+_personalRadio = [“ACRE_PRC343”] call acre_api_fnc_getRadioByType;
+_handheldRadio = [“ACRE_PRC152”] call acre_api_fnc_getRadioByType;
+_manpackRadio = [“ACRE_PRC117F”] call acre_api_fnc_getRadioByType;
+_success = [ [ _personalRadio, _handheldRadio, _manpackRadio ] ] call acre_api_fnc_setMultiPushToTalkAssignment;
+acre_api_fnc_setPTTDelay
+Description
+
+The amount of time in seconds to delay releasing the radio PTT key.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Delay in seconds between 0 and 1.	NUMBER	 
+Return Value
+
+Description	Datatype(s)
+Successful	BOOLEAN
+Example
+
+_delay = [0.2] call acre_api_fnc_setPTTDelay;
+acre_api_fnc_setPreset
+Description
+
+Sets the preset name to utilize on the provided radio class during initialization.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Radio base type	STRING	 
+1	Preset name	STRING	 
+Return Value
+
+Description	Datatype(s)
+Successful	BOOLEAN
+Example
+
+_success = ["ACRE_PRC152", "default2"] call acre_api_fnc_setPreset;
+acre_api_fnc_setPresetChannelData
+Description
+
+Sets the full data set to be utilized for the specified preset name. You should use the return value from getPresetChannelData to provide new data to this function. Improper data will most likely break ACRE on all clients. The channel number must be a valid channel for that type of radio. This function must be called on all clients and the server to work properly.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Radio base type	STRING	 
+1	Preset name	STRING	 
+2	Channel number	NUMBER	 
+3	Preset data	HASH	 
+Return Value
+
+Description	Datatype(s)
+Successful	BOOLEAN
+Example
+
+_success = ["ACRE_PRC152", "new_preset", 4, _presetData] call acre_api_fnc_setPresetChannelData;
+acre_api_fnc_setPresetChannelField
+Description
+
+Sets the value of a given channel field for the given radio preset. This function must be called on all clients and the server to work properly.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Radio Base class	STRING	 
+1	Preset name	STRING	 
+2	Channel number	NUMBER	 
+3	Field name	STRING	 
+4	value	ANY	 
+Return Value
+
+Description	Datatype(s)
+Success on setting the channel field data	BOOLEAN
+Example
+
+["ACRE_PRC148", "default", 5, "label", "COY"] call acre_api_fnc_setPresetChannelField;
+acre_api_fnc_setPresetData
+Description
+
+Sets the full data set to be utilized for the specified preset name. Improper data will most likely break ACRE on all clients. This function must be called on all clients and the server to work properly.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Radio base type	STRING	 
+1	Preset name	STRING	 
+2	Preset data	HASH	 
+Return Value
+
+Description	Datatype(s)
+Successful	BOOLEAN
+Example
+
+_success = ["ACRE_PRC152", "new_preset", _presetData] call acre_api_fnc_setPresetData;
+acre_api_fnc_setRadioAudioSource
+Description
+
+Sets the audio source on the provided radio ID. Possible Values for ACRE_PRC148: [“INTAUDIO”, “TOPAUDIO”, “TOPSIDETON”, “SIDEAUDIO”, “SIDESIDETON”] Possible Values for ACRE_PRC152: [“INTAUDIO”, “TOPAUDIO”] Possible Values for ACRE_SEM52SL: [“INTSPEAKER”, “HEADSET”] Possible Values for ACRE_SEM70: [“INTSPEAKER”, “HEADSET”]
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Radio ID	STRING	 
+1	Audio Source	STRING	 
+Return Value
+
+Description	Datatype(s)
+Success	BOOLEAN
+Example
+
+_success = ["ACRE_PRC148_ID_123", "INTAUDIO"] call acre_api_fnc_setRadioAudioSource
+acre_api_fnc_setRadioChannel
+Description
+
+Sets the channel number of the currently active channel on the provided radio ID.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Radio ID	STRING	 
+1	Channel number	NUMBER	 
+Return Value
+
+Description	Datatype(s)
+Successful	BOOLEAN
+Example
+
+_success = ["ACRE_PRC152_ID_123", 5] call acre_api_fnc_setRadioChannel;
+acre_api_fnc_setRadioSpatial
+Description
+
+Sets what spatialization zone the specified radio ID should be in. “LEFT”, “RIGHT” or “CENTER”.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Radio ID	STRING	 
+1	Spatial “LEFT”, “RIGHT” or “CENTER”	STRING	 
+Return Value
+
+Description	Datatype(s)
+Successful	BOOLEAN
+Example
+
+_success = ["ACRE_PRC148_ID_3", "LEFT" ] call acre_api_fnc_setRadioSpatial;
+acre_api_fnc_setRadioSpeaker
+Description
+
+Sets the audio source to speaker or back to default on the provided radio ID.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Radio ID	STRING	 
+1	Speaker	BOOL	 
+Return Value
+
+Description	Datatype(s)
+Success	BOOLEAN
+Example
+
+_success = ["ACRE_PRC148_ID_123", true] call acre_api_fnc_setRadioSpeaker
+_success = ["ACRE_PRC148_ID_123", false] call acre_api_fnc_setRadioSpeaker
+acre_api_fnc_setRadioVolume
+Description
+
+Set the radio volume for the specified radio.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Radio ID	STRING	 
+1	Volume between 0 and 1	NUMBER	 
+Return Value
+
+Description	Datatype(s)
+Successful	BOOLEAN
+Example
+
+["ACRE_PRC343_ID_1",0.5] call acre_api_fnc_setRadioVolume;
+acre_api_fnc_setSelectableVoiceCurve
+Description
+
+Sets the selectable voice curve scale. This can be used to make the local player’s voice travel further or lesser. Typically 0.1 is used for whispering and 1.3 is used for shouting.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Voice Curve Level	NUMBER	 
+Return Value
+
+None
+
+Example
+
+[0.7] call acre_api_fnc_setSelectableVoiceCurve
+acre_api_fnc_setSpectator
+Description
+
+Pass true or false to set the unit as a “spectator” or not. This will override current alive status, and join the player to dead channel regardless.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	true or false on whether the unit should locally be considered a spectator	BOOLEAN	 
+Return Value
+
+Description	Datatype(s)
+Successful	BOOLEAN
+Example
+
+_ret = [true] call acre_api_fnc_setSpectator;
+acre_api_fnc_setVehicleRacksPreset
+Description
+
+Sets the preset name used for initialising the vehicle racks.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Vehicle	OBJECT	objNull
+1	Preset name	STRING	””
+Return Value
+
+Description	Datatype(s)
+Successfully set the vehicle preset	BOOL
+Example
+
+[cursorTarget, "default4"] call acre_api_fnc_setVehicleRacksPreset
+acre_api_fnc_setupMission
+Description
+
+This function generically sets up a mission so that each side will have their own radios as well as speak their own separate languages. Further API calls will be needed to allow them to speak to each other, or configure specific intermingling channels. This function should allow for the most basic and common TVT and gameplay setups; allowing for different radios that do not interfere, as well as different languages. Call this on all clients.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Babel - true to set up a unique babel language for each side.	BOOLEAN	 
+1	Radio - true to set up different frequencies for each side by using different presets.	BOOLEAN	 
+Return Value
+
+None
+
+Example
+
+[true, true] call acre_api_fnc_setupMission;
+acre_api_fnc_setupRadios
+Description
+
+When run locally, it will set the currently carried radios to the selected channels.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+None	[RadioSetting1, RadioSetting2, …]	ARRAY	 
+0	Radio Type (Base Class)	STRING	 
+1	Radio Channel or [Channel, Block] or Frequency (MHz or [MHz, KHz]) or	ARRAY	 
+Return Value
+
+Description	Datatype(s)
+Successful	BOOLEAN
+Example
+
+_success = [ ["ACRE_PRC343", [2,3]], ["ACRE_PRC152", 3], ["ACRE_PRC77", [31,15]] ] call acre_api_fnc_setupRadios;
+// Will set PRC343 to Ch2 Blk3, PRC152 to Ch3 and PRC77 to 31.15 MHz
+
+_success = [ ["ACRE_PRC343", 6], ["ACRE_PRC152", 2], ["ACRE_PRC152", 3] ] call acre_api_fnc_setupRadios;
+// Will set PRC343 to Ch6 Blk1, the first PRC152 to Ch2 and the second PRC152 to Ch3
+
+_success = [ ["ACRE_SEM52SL", 8], ["ACRE_SEM70", [34,075]] ] call acre_api_fnc_setupRadios;
+// Will set SEM52SL to Ch8 and SEM70 to 34.075 MHz
+acre_api_fnc_unmountRackRadio
+Description
+
+Removes a mounted radio. Must be executed on the server.
+
+Parameters
+
+Index	Description	Datatype(s)	Default Value
+0	Rack ID	STRING	””
+1	Radio to unmount	STRING	””
+Return Value
+
+Description	Datatype(s)
+Setup successful	BOOL
+Example
+
+["ACRE_VRC103_ID_1", "ACRE_PRC117F_ID_1"] call acre_api_fnc_unmountRackRadio
