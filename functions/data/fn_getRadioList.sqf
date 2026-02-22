@@ -51,8 +51,8 @@ private _radioData = [];
 	// Get radio base class (e.g., "ACRE_PRC343" from "ACRE_PRC343_ID_1")
 	private _baseClass = [_radioId] call acre_api_fnc_getBaseRadio;
 	
-	// Get display name from config (e.g., "AN/PRC-343")
-	private _displayName = getText (configFile >> "CfgWeapons" >> _baseClass >> "displayName");
+	// Get display name via ACRE API
+	private _displayName = [_radioId] call acre_api_fnc_getDisplayName;
 	
 	// Get radio icon/picture from config
 	private _icon = getText (configFile >> "CfgWeapons" >> _baseClass >> "picture");
@@ -98,30 +98,16 @@ private _radioData = [];
 		};
 	};
 	
-	// Get volume (0.0 to 1.0)
+	// Get volume (0.0 to 1.0), returns -1 on error
 	private _volume = [_radioId] call acre_api_fnc_getRadioVolume;
-	// Convert to number if string or nil
-	if (isNil "_volume") then {
+	if (isNil "_volume" || _volume < 0) then {
 		_volume = 0.5;
-	} else {
-		if (typeName _volume == "STRING") then {
-			_volume = parseNumber _volume;
-		};
 	};
 	
-	// Check if radio is powered on
+	// Check if radio is powered on (ACRE returns BOOLEAN)
 	private _isOn = [_radioId] call acre_api_fnc_getRadioOnOffState;
-	// Convert to boolean (ACRE returns 1 for ON, 0 for OFF)
-	if (isNil "_isOn") then {
+	if (isNil "_isOn" || typeName _isOn != "BOOL") then {
 		_isOn = true; // Assume on if can't determine
-	} else {
-		if (typeName _isOn == "SCALAR") then {
-			_isOn = (_isOn == 1); // Convert 1/0 to true/false
-		} else {
-			if (typeName _isOn != "BOOL") then {
-				_isOn = true; // Assume on if unexpected type
-			};
-		};
 	};
 	
 	// Build radio info array

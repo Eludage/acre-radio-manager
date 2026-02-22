@@ -74,12 +74,12 @@ if (_maxChannel == 0) then {
 			_maxChannel = getNumber (configFile >> "CfgAcreRadios" >> _baseClass >> "numberOfChannels");
 		};
 		
-		// If config lookup failed, count channels by iterating preset data
+		// If config lookup failed, count channels by iterating preset data (channels are 1-based)
 		if (_maxChannel == 0) then {
-			for "_i" from 0 to 99 do {
+			for "_i" from 1 to 100 do {
 				private _testData = [_baseClass, "default", _i] call acre_api_fnc_getPresetChannelData;
 				if (isNil "_testData") exitWith {
-					_maxChannel = _i;
+					_maxChannel = _i - 1;
 				};
 			};
 		};
