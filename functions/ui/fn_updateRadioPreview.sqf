@@ -143,10 +143,10 @@ private _yOffset = 0;
 	_xPos = _xPos + BUTTON_WIDTH + 0.01;
 	
 	// === CHANNEL SECTION ===
-	// Determine if radio supports channel changing (only PRC-117F and PRC-152)
+	// Determine if radio supports channel changing (PRC-117F, PRC-152 and PRC-148)
 	// Use stored baseClass override (savestate rows) or look it up from the live radio ID.
 	private _baseClass = if (_radioBaseClass != "") then { _radioBaseClass } else { [_radioId] call acre_api_fnc_getBaseRadio };
-	private _isRadioSupported = (_baseClass find "ACRE_PRC117F" >= 0) || (_baseClass find "ACRE_PRC152" >= 0);
+	private _isRadioSupported = (_baseClass find "ACRE_PRC117F" >= 0) || (_baseClass find "ACRE_PRC152" >= 0) || (_baseClass find "ACRE_PRC148" >= 0);
 	
 	// Channel Label
 	private _ctrlChannelLabel = _display ctrlCreate ["RscText", _baseIDC + 7, _group];
@@ -161,7 +161,13 @@ private _yOffset = 0;
 	private _ctrlChannelDisplay = _display ctrlCreate ["RscText", _baseIDC + 9, _group];
 	_ctrlChannelDisplay ctrlSetPosition [_xPos, _yRow, 0.26, BUTTON_HEIGHT];
 	if (_isRadioSupported) then {
-		_ctrlChannelDisplay ctrlSetText format ["%1: %2", _channel, _channelName];
+		if (_baseClass find "ACRE_PRC148" >= 0) then {
+			private _grp = floor((_channel - 1) / 16) + 1;
+			private _localCh = ((_channel - 1) mod 16) + 1;
+			_ctrlChannelDisplay ctrlSetText format ["Gr: %1, Ch: %2, %3", _grp, _localCh, _channelName];
+		} else {
+			_ctrlChannelDisplay ctrlSetText format ["%1: %2", _channel, _channelName];
+		};
 	} else {
 		_ctrlChannelDisplay ctrlSetText "Radio not supported";
 	};

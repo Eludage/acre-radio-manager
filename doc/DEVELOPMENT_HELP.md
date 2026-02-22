@@ -102,8 +102,8 @@ This section documents the runtime namespaces and variables used by Acre Radio M
 - `AcreRadioManager_limitHintShown`: Boolean — One-shot flag that prevents the "Radio limit reached" hint from firing on every UI rebuild within the same dialog session. Reset to `false` on dialog open.
 - `AcreRadioManager_idcToRadioMap`: HashMap — Maps each radio's base IDC (e.g. 16100) to its ACRE radio instance ID string. Rebuilt every time `fn_updateRadioInventory` runs. Used by event handlers that need the radio ID from an IDC.
 
-#### Radio Settings Cache
-- `AcreRadioManager_channelCountCache`: HashMap — Caches the maximum channel count per radio base class (e.g. `"ACRE_PRC343"` → `16`) to avoid repeated config lookups. Populated lazily on first channel change for each radio type.
+#### Radio Settings Cache (`missionNamespace`)
+- `AcreRadioManager_channelCountCache`: HashMap — Caches the maximum channel count per radio base class (e.g. `"ACRE_PRC343"` → `16`) to avoid repeated config lookups. Populated lazily on first channel change for each radio type. Stored in `missionNamespace` so it is cleared on mission restart (channel counts are mission-specific).
 - `AcreRadioManager_radioSettings`: HashMap — Cached settings for all radios during dialog session. Map of radio class name → settings hashmap.
   - Each settings hashmap contains:
     - "ear": String — "left" or "right" - which ear the radio is on

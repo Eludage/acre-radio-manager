@@ -225,8 +225,10 @@ private _yOffset = 0;
 	_xPos = _xPos + 0.006;
 	
 	// === CHANNEL SECTION ===
-	// Determine if radio supports channel changing (only PRC-117F and PRC-152)
-	private _isRadioSupported = (_baseClass find "ACRE_PRC117F" >= 0) || (_baseClass find "ACRE_PRC152" >= 0);
+	// Determine if radio supports channel changing via +/- buttons
+	private _isRadioSupported = (_baseClass find "ACRE_PRC117F" >= 0) || (_baseClass find "ACRE_PRC152" >= 0) || (_baseClass find "ACRE_PRC148" >= 0);
+	// Determine if radio also supports direct channel input via edit field (PRC-117F and PRC-152 only)
+	private _isDirectEdit = (_baseClass find "ACRE_PRC117F" >= 0) || (_baseClass find "ACRE_PRC152" >= 0);
 	
 	// Channel Label
 	private _ctrlChannelLabel = _display ctrlCreate ["RscText", _baseIDC + 7, _group];
@@ -248,12 +250,18 @@ private _yOffset = 0;
 	_xPos = _xPos + BUTTON_WIDTH + 0.004;
 	
 	// Channel Display / Edit
-	// For supported radios, use an edit field to allow direct channel input by typing
-	private _channelDisplayClass = if (_isRadioSupported) then {"ARM_RscEdit"} else {"RscText"};
+	// PRC-117F and PRC-152 use an edit field (direct typing); PRC-148 uses a read-only text field (+/- only)
+	private _channelDisplayClass = if (_isDirectEdit) then {"ARM_RscEdit"} else {"RscText"};
 	private _ctrlChannelDisplay = _display ctrlCreate [_channelDisplayClass, _baseIDC + 9, _group];
 	_ctrlChannelDisplay ctrlSetPosition [_xPos, _yRow, 0.26, BUTTON_HEIGHT];
 	if (_isRadioSupported) then {
-		_ctrlChannelDisplay ctrlSetText format ["%1: %2", _channel, _channelName];
+		if (_baseClass find "ACRE_PRC148" >= 0) then {
+			private _grp = floor((_channel - 1) / 16) + 1;
+			private _localCh = ((_channel - 1) mod 16) + 1;
+			_ctrlChannelDisplay ctrlSetText format ["Gr %1, Ch %2, %3", _grp, _localCh, _channelName];
+		} else {
+			_ctrlChannelDisplay ctrlSetText format ["%1: %2", _channel, _channelName];
+		};
 	} else {
 		_ctrlChannelDisplay ctrlSetText "Radio not supported";
 	};
@@ -262,8 +270,8 @@ private _yOffset = 0;
 	_ctrlChannelDisplay ctrlCommit 0;
 	_xPos = _xPos + 0.26 + 0.004;
 
-	// Edit field event handlers — only wired up when radio supports direct channel input
-	if (_isRadioSupported) then {
+	// Edit field event handlers — only wired up for radios that support direct channel input (PRC-117F, PRC-152)
+	if (_isDirectEdit) then {
 		_ctrlChannelDisplay setVariable ["radioId", _radioId];
 		_ctrlChannelDisplay setVariable ["channelNum", _channel];
 
@@ -352,8 +360,8 @@ private _yOffset = 0;
 			private _radioIdFromBtn = _ctrl getVariable ["radioId", ""];
 			if (_radioIdFromBtn != "") then {
 				[_radioIdFromBtn, -1, _displayCtrl] call AcreRadioManager_fnc_changeRadioChannel;
-				// Sync stored channel number so the edit field's KillFocus fallback stays accurate
-				_displayCtrl setVariable ["channelNum", parseNumber (ctrlText _displayCtrl)];
+				// Sync stored channel number so the edit field's KillFocus fallback stays accurate (not needed for read-only fields)
+				_displayCtrl setVariable ["channelNum", [_radioIdFromBtn] call acre_api_fnc_getRadioChannel];
 			};
 		}];
 		_ctrlChannelDec setVariable ["radioId", _radioId];
@@ -364,8 +372,8 @@ private _yOffset = 0;
 			private _radioIdFromBtn = _ctrl getVariable ["radioId", ""];
 			if (_radioIdFromBtn != "") then {
 				[_radioIdFromBtn, 1, _displayCtrl] call AcreRadioManager_fnc_changeRadioChannel;
-				// Sync stored channel number so the edit field's KillFocus fallback stays accurate
-				_displayCtrl setVariable ["channelNum", parseNumber (ctrlText _displayCtrl)];
+				// Sync stored channel number so the edit field's KillFocus fallback stays accurate (not needed for read-only fields)
+				_displayCtrl setVariable ["channelNum", [_radioIdFromBtn] call acre_api_fnc_getRadioChannel];
 			};
 		}];
 		_ctrlChannelInc setVariable ["radioId", _radioId];

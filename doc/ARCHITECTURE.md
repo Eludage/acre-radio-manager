@@ -20,7 +20,10 @@ Used for state that is ephemeral and tied to the dialog session (persists until 
 - **Current Radios**: Live inventory radio data, queried fresh from ACRE on each dialog open (`AcreRadioManager_currentRadios`)
 - **Preview Radios**: Radio data shown in the Preview section — mirrors inventory normally, diverges when a savestate is loaded (`AcreRadioManager_previewRadios`)
 - **Dialog Session State**: Copy mode source, preview-live flag, IDC→radioId map, hint counter, etc.
-- **Channel Count Cache**: Per-radio-type max channel count to avoid repeated config lookups (`AcreRadioManager_channelCountCache`)
+
+#### `missionNamespace` (Mission-scoped Cache)
+Used for state that is mission-specific and should be cleared on mission restart:
+- **Channel Count Cache**: Per-radio-type max channel count to avoid repeated config lookups (`AcreRadioManager_channelCountCache`). Mission-scoped because the number of programmed channels depends on the mission preset configuration.
 
 #### `profileNamespace` (Persistent State)
 Used for state that persists across game sessions and survives crashes:

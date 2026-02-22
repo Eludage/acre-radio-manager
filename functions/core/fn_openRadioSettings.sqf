@@ -15,6 +15,11 @@
 // Retrieve current radio list and store in uiNamespace
 private _radioList = [] call AcreRadioManager_fnc_getRadioList;
 
+// Clear channel count cache so each dialog open re-detects the real channel count.
+// Stored in missionNamespace so it survives dialog close, but must be fresh on each open
+// in case the mission preset configuration changed.
+missionNamespace setVariable ["AcreRadioManager_channelCountCache", createHashMap];
+
 // Debug: Log radio list
 // [_radioList] call AcreRadioManager_fnc_debugLogRadioList;
 
