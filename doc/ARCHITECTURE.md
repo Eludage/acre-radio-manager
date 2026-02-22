@@ -20,7 +20,10 @@ Used for state that is ephemeral and tied to the dialog session (persists until 
 - **Current Radios**: Live inventory radio data, queried fresh from ACRE on each dialog open (`AcreRadioManager_currentRadios`)
 - **Preview Radios**: Radio data shown in the Preview section — mirrors inventory normally, diverges when a savestate is loaded (`AcreRadioManager_previewRadios`)
 - **Dialog Session State**: Copy mode source, preview-live flag, IDC→radioId map, hint counter, etc.
-- **Channel Count Cache**: Per-radio-type max channel count to avoid repeated config lookups (`AcreRadioManager_channelCountCache`)
+
+#### `missionNamespace` (Mission-scoped Cache)
+Used for state that is mission-specific and should be cleared on mission restart:
+- **Channel Count Cache**: Per-radio-type max channel count to avoid repeated config lookups (`AcreRadioManager_channelCountCache`). Mission-scoped because the number of programmed channels depends on the mission preset configuration.
 
 #### `profileNamespace` (Persistent State)
 Used for state that persists across game sessions and survives crashes:
@@ -117,7 +120,10 @@ private _radios = [] call acre_api_fnc_getCurrentRadioList;
 For each radio, the mod manages:
 - **PTT Assignment**: Which PTT key (1–3) or none (0) triggers this radio
 - **Ear Assignment**: Left, right, or center (bilateral) audio output
-- **Channel**: Current channel number (1–N depending on radio type); supports direct text input for PRC-117F and PRC-152
+- **Channel**: Current channel number (1–N depending on radio type)
+  - **Direct input + +/-**: PRC-117F, PRC-152 (up to 99 channels, `"N: Name"` format)
+  - **+/- only, group/block display**: PRC-148 (`"Gr X, Ch Y, Name"`), PRC-343 (`"Bl X, Ch Y, Name"`) — 16-per-group structure, ACRE read-back boundary detection
+  - **+/- only, flat display**: BF-888S (`"N: Name"`, 16 channels)
 - **Volume**: Volume level (0.0 to 1.0)
 
 ### ACRE API Integration
@@ -187,9 +193,9 @@ if (isNull _display) exitWith { false };
 // ACRE is loaded
 if (isNil "acre_api_fnc_getCurrentRadioList") exitWith { false };
 
-// Radio is valid
-private _radio = uiNamespace getVariable ["AcreRadioManager_selectedRadio", ""];
-if (_radio == "") exitWith { false };
+// Radios are available
+private _radios = uiNamespace getVariable ["AcreRadioManager_currentRadios", []];
+if (_radios isEqualTo [] || _radios isEqualTo "") exitWith { false };
 ```
 
 ## Performance Considerations

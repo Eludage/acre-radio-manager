@@ -42,7 +42,7 @@ if (isNil "acre_api_fnc_getRadioChannel" || isNil "acre_api_fnc_setRadioChannel"
 private _baseClass = [_radioId] call acre_api_fnc_getBaseRadio;
 
 // Get max channel count from cache or config
-private _channelCache = uiNamespace getVariable ["AcreRadioManager_channelCountCache", createHashMap];
+private _channelCache = missionNamespace getVariable ["AcreRadioManager_channelCountCache", createHashMap];
 private _maxChannel = _channelCache getOrDefault [_baseClass, 0];
 
 if (_maxChannel == 0) then {
@@ -50,24 +50,38 @@ if (_maxChannel == 0) then {
 	if ((_baseClass find "ACRE_PRC117F" >= 0) || (_baseClass find "ACRE_PRC152" >= 0)) then {
 		_maxChannel = 99;
 	} else {
-		// Look up from config
-		_maxChannel = getNumber (configFile >> "CfgWeapons" >> _baseClass >> "numChannels");
-		if (_maxChannel == 0) then {
-			_maxChannel = getNumber (configFile >> "CfgAcreRadios" >> _baseClass >> "numChannels");
-		};
-		if (_maxChannel == 0) then {
-			_maxChannel = getNumber (configFile >> "CfgWeapons" >> _baseClass >> "numberOfChannels");
-		};
-		if (_maxChannel == 0) then {
-			_maxChannel = getNumber (configFile >> "CfgAcreRadios" >> _baseClass >> "numberOfChannels");
+		// PRC-148: its CfgWeapons numChannels = 16 (channels per group knob), not the total
+		// programmed channel count. Use getPresetData to read the actual channels array length.
+		if (_baseClass find "ACRE_PRC148" >= 0) then {
+			private _preset = [_baseClass] call acre_api_fnc_getPreset;
+			private _presetData = [_baseClass, _preset] call acre_api_fnc_getPresetData;
+			if (!isNil "_presetData" && { typeName _presetData == "HASHMAP" } && { "channels" in _presetData }) then {
+				_maxChannel = count (_presetData get "channels");
+			};
+			if (_maxChannel == 0) then { _maxChannel = 16; }; // fallback
+		} else {
+			_maxChannel = getNumber (configFile >> "CfgWeapons" >> _baseClass >> "numChannels");
+			if (_maxChannel == 0) then {
+				_maxChannel = getNumber (configFile >> "CfgAcreRadios" >> _baseClass >> "numChannels");
+			};
+			if (_maxChannel == 0) then {
+				_maxChannel = getNumber (configFile >> "CfgWeapons" >> _baseClass >> "numberOfChannels");
+			};
+			if (_maxChannel == 0) then {
+				_maxChannel = getNumber (configFile >> "CfgAcreRadios" >> _baseClass >> "numberOfChannels");
+			};
 		};
 
-		// If config lookup failed, count channels by iterating preset data
+		// Count programmed channels by iterating preset data (channels are 1-based).
+		// Use the active preset name so the count matches the actual mission configuration.
+		// ACRE returns an empty HashMap {} (not nil) for channels beyond the programmed count.
 		if (_maxChannel == 0) then {
-			for "_i" from 0 to 99 do {
-				private _testData = [_baseClass, "default", _i] call acre_api_fnc_getPresetChannelData;
-				if (isNil "_testData") exitWith {
-					_maxChannel = _i;
+			private _preset = [_baseClass] call acre_api_fnc_getPreset;
+			for "_i" from 1 to 100 do {
+				private _testData = [_baseClass, _preset, _i] call acre_api_fnc_getPresetChannelData;
+				// ACRE returns a Location type (not nil/HashMap) for channels beyond the programmed count
+				if (isNil "_testData" || { typeName _testData != "HASHMAP" } || { count _testData == 0 }) exitWith {
+					_maxChannel = _i - 1;
 				};
 			};
 		};
@@ -80,7 +94,7 @@ if (_maxChannel == 0) then {
 
 	// Cache the result
 	_channelCache set [_baseClass, _maxChannel];
-	uiNamespace setVariable ["AcreRadioManager_channelCountCache", _channelCache];
+	missionNamespace setVariable ["AcreRadioManager_channelCountCache", _channelCache];
 };
 
 // Clamp to valid channel range
