@@ -8,7 +8,7 @@
 [*][b]Inventory overview[/b] — all ACRE radios currently in your inventory displayed in a single panel with their key settings at a glance.
 [*][b]PTT assignment[/b] — assign radios to Push-To-Talk keys 1, 2, or 3 with smart swapping logic that prevents duplicate PTT assignments.
 [*][b]Ear assignment[/b] — switch any radio between left, center, and right ear output in one click.
-[*][b]Channel control[/b] — change channels with +/- buttons or type a channel number directly (supported radios: AN/PRC-117F, AN/PRC-152). Two-digit input applies immediately.
+[*][b]Channel control[/b] — change channels with +/- buttons or type a channel number directly. Two-digit input applies immediately. See the radio support table below for per-type details.
 [*][b]Volume control[/b] — set per-radio volume in 10% increments using +/- buttons or by typing a value directly.
 [*][b]Immediate application[/b] — all changes take effect instantly, no Save button required.
 [*][b]Radio preview panel[/b] — compare settings side by side with a live or savestate-loaded preview.
@@ -20,12 +20,21 @@
 
 [h2]Supported Radio Types[/h2]
 
-All ACRE radios support PTT assignment, ear assignment, and volume control. Channel changing is supported on:
-[list]
-[*][b]AN/PRC-117F[/b] — full support including direct channel input
-[*][b]AN/PRC-152[/b] — full support including direct channel input
-[/list]
-Other radio types (AN/PRC-343, AN/PRC-148, AN/PRC-77, Baofeng 888S, etc.) show a "Radio not supported" label in the channel section but remain fully functional for all other settings.
+All ACRE radios support PTT assignment, ear assignment, and volume control.
+
+[table]
+[tr][th]Radio[/th][th]Channel change[/th][th]Channel display[/th][/tr]
+[tr][td]AN/PRC-117F[/td][td]+/- buttons and direct input[/td][td]N: Name[/td][/tr]
+[tr][td]AN/PRC-152[/td][td]+/- buttons and direct input[/td][td]N: Name[/td][/tr]
+[tr][td]AN/PRC-148[/td][td]+/- buttons only[/td][td]Gr X, Ch Y, Name[/td][/tr]
+[tr][td]AN/PRC-343[/td][td]+/- buttons only[/td][td]Bl X, Ch Y, Name[/td][/tr]
+[tr][td]Baofeng BF-888S[/td][td]+/- buttons only[/td][td]N: Name[/td][/tr]
+[tr][td]AN/PRC-77[/td][td]Not supported[/td][td]—[/td][/tr]
+[tr][td]SEM 52 SL[/td][td]Not supported[/td][td]—[/td][/tr]
+[tr][td]SEM 70[/td][td]Not supported[/td][td]—[/td][/tr]
+[/table]
+
+Radios without channel support show a "Radio not supported" label in the channel field but are fully functional for all other settings. Power state is read-only for all radio types — the ACRE API does not expose a way to toggle it programmatically.
 
 [h2]Installation[/h2]
 
@@ -48,9 +57,9 @@ Other radio types (AN/PRC-343, AN/PRC-148, AN/PRC-77, Baofeng 888S, etc.) show a
 [h2]Compatibility / Restrictions[/h2]
 
 [list]
-[*][b]Radio power state[/b] is read-only. The ACRE API does not expose a method to toggle radio power programmatically, so the power indicator in the UI is informational only. Savestates do not save or restore power state.
+[*][b]Radio power state[/b] is read-only. See the supported radio types table above.
 [*][b]Maximum 12 radios[/b] are shown in the inventory panel. If you carry more, a hint is displayed and only the first 12 are listed.
-[*][b]Channel support[/b] is limited to AN/PRC-117F and AN/PRC-152. All other radios show a "Radio not supported" label in the channel field.
+[*][b]Channel support[/b] varies by radio type — see the supported radio types table above.
 [/list]
 
 Other than that, there are currently no known issues.

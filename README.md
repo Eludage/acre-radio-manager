@@ -29,12 +29,20 @@ The mod provides different levels of functionality depending on the radio type:
 
 | Radio Type | PTT Assignment | Channel Change | Ear Assignment | Volume Control | Power On/Off |
 |-----------|---------------|----------------|----------------|----------------|-------------|
-| AN/PRC-117F | ✓ | ✓ | ✓ | ✓ | ✗ |
-| AN/PRC-152 | ✓ | ✓ | ✓ | ✓ | ✗ |
-| AN/PRC-148 | ✓ | ✗ | ✓ | ✓ | ✗ |
-| AN/PRC-343 | ✓ | ✗ | ✓ | ✓ | ✗ |
+| AN/PRC-117F | ✓ | ✓ (direct input and +/-) | ✓ | ✓ | ✗ |
+| AN/PRC-152 | ✓ | ✓ (direct input and +/-) | ✓ | ✓ | ✗ |
+| AN/PRC-148 | ✓ | ✓ (+/- only) | ✓ | ✓ | ✗ |
+| AN/PRC-343 | ✓ | ✓ (+/- only) | ✓ | ✓ | ✗ |
+| Baofeng BF-888S | ✓ | ✓ (+/- only) | ✓ | ✓ | ✗ |
 | AN/PRC-77 | ✓ | ✗ | ✓ | ✓ | ✗ |
-| Beofeng 888S | ✓ | ✗ | ✓ | ✓ | ✗ |
+| SEM 52 SL | ✓ | ✗ | ✓ | ✓ | ✗ |
+| SEM 70 | ✓ | ✗ | ✓ | ✓ | ✗ |
+
+**Channel display formats:**
+- AN/PRC-117F and AN/PRC-152: `N: Name` — supports typing a channel number directly
+- AN/PRC-148: `Gr X, Ch Y, Name` — 16 channels per group
+- AN/PRC-343: `Bl X, Ch Y, Name` — 16 channels per block
+- Baofeng BF-888S: `N: Name` — 16 flat channels
 
 **Note**: Radios without channel change support will display "Radio not supported" in the channel section. All other functions remain fully operational. Please let me know if you're using radios from other mods and which mods those are so I can add them to this table.
 
