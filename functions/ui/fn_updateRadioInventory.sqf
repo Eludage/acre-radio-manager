@@ -226,7 +226,7 @@ private _yOffset = 0;
 	
 	// === CHANNEL SECTION ===
 	// Determine if radio supports channel changing via +/- buttons
-	private _isRadioSupported = (_baseClass find "ACRE_PRC117F" >= 0) || (_baseClass find "ACRE_PRC152" >= 0) || (_baseClass find "ACRE_PRC148" >= 0);
+	private _isRadioSupported = (_baseClass find "ACRE_PRC117F" >= 0) || (_baseClass find "ACRE_PRC152" >= 0) || (_baseClass find "ACRE_PRC148" >= 0) || (_baseClass find "ACRE_BF888S" >= 0);
 	// Determine if radio also supports direct channel input via edit field (PRC-117F and PRC-152 only)
 	private _isDirectEdit = (_baseClass find "ACRE_PRC117F" >= 0) || (_baseClass find "ACRE_PRC152" >= 0);
 	

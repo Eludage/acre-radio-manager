@@ -143,10 +143,10 @@ private _yOffset = 0;
 	_xPos = _xPos + BUTTON_WIDTH + 0.01;
 	
 	// === CHANNEL SECTION ===
-	// Determine if radio supports channel changing (PRC-117F, PRC-152 and PRC-148)
+	// Determine if radio supports channel changing (PRC-117F, PRC-152, PRC-148 and BF-888S)
 	// Use stored baseClass override (savestate rows) or look it up from the live radio ID.
 	private _baseClass = if (_radioBaseClass != "") then { _radioBaseClass } else { [_radioId] call acre_api_fnc_getBaseRadio };
-	private _isRadioSupported = (_baseClass find "ACRE_PRC117F" >= 0) || (_baseClass find "ACRE_PRC152" >= 0) || (_baseClass find "ACRE_PRC148" >= 0);
+	private _isRadioSupported = (_baseClass find "ACRE_PRC117F" >= 0) || (_baseClass find "ACRE_PRC152" >= 0) || (_baseClass find "ACRE_PRC148" >= 0) || (_baseClass find "ACRE_BF888S" >= 0);
 	
 	// Channel Label
 	private _ctrlChannelLabel = _display ctrlCreate ["RscText", _baseIDC + 7, _group];
