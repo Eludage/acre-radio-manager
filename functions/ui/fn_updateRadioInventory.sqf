@@ -267,6 +267,7 @@ private _yOffset = 0;
 	};
 	_ctrlChannelDisplay ctrlSetTextColor COLOR_WHITE_100;
 	_ctrlChannelDisplay ctrlSetBackgroundColor COLOR_GREY_30;
+	_ctrlChannelDisplay ctrlSetFontHeight 0.04;
 	_ctrlChannelDisplay ctrlCommit 0;
 	_xPos = _xPos + 0.26 + 0.004;
 
