@@ -226,7 +226,7 @@ private _yOffset = 0;
 	
 	// === CHANNEL SECTION ===
 	// Determine if radio supports channel changing via +/- buttons
-	private _isRadioSupported = (_baseClass find "ACRE_PRC117F" >= 0) || (_baseClass find "ACRE_PRC152" >= 0) || (_baseClass find "ACRE_PRC148" >= 0) || (_baseClass find "ACRE_BF888S" >= 0);
+	private _isRadioSupported = (_baseClass find "ACRE_PRC117F" >= 0) || (_baseClass find "ACRE_PRC152" >= 0) || (_baseClass find "ACRE_PRC148" >= 0) || (_baseClass find "ACRE_BF888S" >= 0) || (_baseClass find "ACRE_PRC343" >= 0);
 	// Determine if radio also supports direct channel input via edit field (PRC-117F and PRC-152 only)
 	private _isDirectEdit = (_baseClass find "ACRE_PRC117F" >= 0) || (_baseClass find "ACRE_PRC152" >= 0);
 	
@@ -255,10 +255,11 @@ private _yOffset = 0;
 	private _ctrlChannelDisplay = _display ctrlCreate [_channelDisplayClass, _baseIDC + 9, _group];
 	_ctrlChannelDisplay ctrlSetPosition [_xPos, _yRow, 0.26, BUTTON_HEIGHT];
 	if (_isRadioSupported) then {
-		if (_baseClass find "ACRE_PRC148" >= 0) then {
-			private _grp = floor((_channel - 1) / 16) + 1;
+		if ((_baseClass find "ACRE_PRC148" >= 0) || (_baseClass find "ACRE_PRC343" >= 0)) then {
+			private _blkOrGrp = floor((_channel - 1) / 16) + 1;
 			private _localCh = ((_channel - 1) mod 16) + 1;
-			_ctrlChannelDisplay ctrlSetText format ["Gr %1, Ch %2, %3", _grp, _localCh, _channelName];
+			private _prefix = if (_baseClass find "ACRE_PRC343" >= 0) then {"Bl"} else {"Gr"};
+			_ctrlChannelDisplay ctrlSetText format ["%1 %2, Ch %3, %4", _prefix, _blkOrGrp, _localCh, _channelName];
 		} else {
 			_ctrlChannelDisplay ctrlSetText format ["%1: %2", _channel, _channelName];
 		};

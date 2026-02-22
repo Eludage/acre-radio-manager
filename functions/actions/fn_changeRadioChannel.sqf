@@ -53,11 +53,12 @@ if (_currentChannel < 1) then {
 // Get base class for channel count and name lookup
 private _baseClass = [_radioId] call acre_api_fnc_getBaseRadio;
 
-// PRC-148: no ACRE API reliably exposes the total programmed channel count.
+// PRC-148 / PRC-343: no ACRE API reliably exposes the total programmed channel count.
 // Strategy: request the change, then read back what ACRE actually accepted.
 // If the channel didn't move we've hit a boundary — wrap to the other end.
 // To find the max channel, probe with 999; ACRE clamps to the actual maximum.
-if (_baseClass find "ACRE_PRC148" >= 0) then {
+// Both radios share a 16-per-group/block structure; only the display label differs.
+if ((_baseClass find "ACRE_PRC148" >= 0) || (_baseClass find "ACRE_PRC343" >= 0)) then {
 	[_radioId, (_currentChannel + _increment)] call acre_api_fnc_setRadioChannel;
 	private _newChannel = [_radioId] call acre_api_fnc_getRadioChannel;
 	
@@ -74,9 +75,10 @@ if (_baseClass find "ACRE_PRC148" >= 0) then {
 	};
 	
 	private _channelName = [_radioId, _newChannel] call AcreRadioManager_fnc_getChannelName;
-	private _grp = floor((_newChannel - 1) / 16) + 1;
+	private _blkOrGrp = floor((_newChannel - 1) / 16) + 1;
 	private _localCh = ((_newChannel - 1) mod 16) + 1;
-	_displayCtrl ctrlSetText format ["Gr %1, Ch %2, %3", _grp, _localCh, _channelName];
+	private _prefix = if (_baseClass find "ACRE_PRC343" >= 0) then {"Bl"} else {"Gr"};
+	_displayCtrl ctrlSetText format ["%1 %2, Ch %3, %4", _prefix, _blkOrGrp, _localCh, _channelName];
 	
 	[] call AcreRadioManager_fnc_getRadioList;
 	if (uiNamespace getVariable ["AcreRadioManager_previewIsLive", true]) then {
