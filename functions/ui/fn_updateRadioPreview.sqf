@@ -56,7 +56,7 @@ if (isNull _group) exitWith {
 
 // Get radio data from uiNamespace (preview state - may differ from inventory after loading a savestate)
 private _radios = uiNamespace getVariable ["AcreRadioManager_previewRadios", []];
-if (_radios isEqualTo "") exitWith {
+if (count _radios == 0) exitWith {
 	true
 };
 

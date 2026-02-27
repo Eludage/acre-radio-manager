@@ -195,7 +195,7 @@ if (isNil "acre_api_fnc_getCurrentRadioList") exitWith { false };
 
 // Radios are available
 private _radios = uiNamespace getVariable ["AcreRadioManager_currentRadios", []];
-if (_radios isEqualTo [] || _radios isEqualTo "") exitWith { false };
+if (count _radios == 0) exitWith { false };
 ```
 
 ## Performance Considerations

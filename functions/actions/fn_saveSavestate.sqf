@@ -28,7 +28,7 @@ if (_savestateName == "Last Presets") exitWith {
 
 // Get current radio list from uiNamespace
 private _radios = uiNamespace getVariable ["AcreRadioManager_currentRadios", []];
-if (_radios isEqualTo "") exitWith {
+if (count _radios == 0) exitWith {
 	["No radios in inventory"] call AcreRadioManager_fnc_showHint;
 	false
 };

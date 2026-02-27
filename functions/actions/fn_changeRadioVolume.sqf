@@ -57,8 +57,9 @@ if (!isNull _display) then {
 	};
 };
 
-// Refresh radio data and update Radio Preview only when showing live inventory
+// Refresh radio data and update UI
 [] call AcreRadioManager_fnc_getRadioList;
+[] call AcreRadioManager_fnc_updateRadioInventory;
 if (uiNamespace getVariable ["AcreRadioManager_previewIsLive", true]) then {
 	[] call AcreRadioManager_fnc_updateRadioPreview;
 };

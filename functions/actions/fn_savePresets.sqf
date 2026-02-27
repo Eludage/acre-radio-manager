@@ -16,7 +16,7 @@
 
 // Get current radio list from uiNamespace
 private _radios = uiNamespace getVariable ["AcreRadioManager_currentRadios", []];
-if (_radios isEqualTo "") exitWith {
+if (count _radios == 0) exitWith {
 	true // No radios, but not an error
 };
 

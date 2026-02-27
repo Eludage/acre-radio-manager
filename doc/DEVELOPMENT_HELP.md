@@ -77,7 +77,7 @@ This section documents the runtime namespaces and variables used by Acre Radio M
 ### Namespace `uiNamespace`
 
 #### UI State
-- `AcreRadioManager_currentRadios`: Array or String — Array of radio info arrays, or "" if no radios. Queried fresh from ACRE on each dialog open via `fn_getRadioList`.
+- `AcreRadioManager_currentRadios`: Array — Array of radio info arrays, or `[]` if no radios. Queried fresh from ACRE on each dialog open via `fn_getRadioList`.
   - Each radio info array contains (in order):
     - 0: String — Radio instance ID (e.g., "ACRE_PRC343_ID_1")
     - 1: String — Icon path
@@ -92,7 +92,7 @@ This section documents the runtime namespaces and variables used by Acre Radio M
 - `AcreRadioManager_selectedSavestateIndex`: Number — Index of currently selected savestate for removal. -1 when no selection.
 - `AcreRadioManager_hintCounter`: Number — Monotonically incrementing counter used by `fn_showHint` to prevent stale spawned clears from wiping a newer hint. Incremented on every `fn_showHint` call.
 - `AcreRadioManager_copySource`: Array or nil — Active copy mode source data set when the player clicks a Copy button in the preview area. nil when copy mode is inactive. Format: `[baseClass, ptt, channel, ear, volume]`. Cleared automatically after a successful paste (inventory name click) or when a new Copy is pressed.
-- `AcreRadioManager_previewRadios`: Array or String — Radio info arrays used exclusively by the Radio Preview section. Same format as `AcreRadioManager_currentRadios`. Stays in sync with inventory on any inventory change. Diverges when a savestate is loaded via `fn_loadSavestate`, which overlays savestate settings without modifying `currentRadios`.
+- `AcreRadioManager_previewRadios`: Array — Radio info arrays used exclusively by the Radio Preview section. Same format as `AcreRadioManager_currentRadios`. Stays in sync with inventory on any inventory change. Diverges when a savestate is loaded via `fn_loadSavestate`, which overlays savestate settings without modifying `currentRadios`.
 
 #### Preview / Session State
 - `AcreRadioManager_previewIsLive`: Boolean — `true` when the Radio Preview section is mirroring the live inventory state; `false` when a savestate has been loaded into the preview. Set to `true` on every dialog open.

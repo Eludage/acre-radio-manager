@@ -59,7 +59,7 @@ if (isNull _group) exitWith {
 
 // Get radio data from uiNamespace
 private _radios = uiNamespace getVariable ["AcreRadioManager_currentRadios", []];
-if (_radios isEqualTo "") exitWith {
+if (count _radios == 0) exitWith {
 	true
 };
 

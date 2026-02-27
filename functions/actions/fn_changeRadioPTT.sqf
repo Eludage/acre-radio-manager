@@ -40,7 +40,7 @@ if (isNil "acre_api_fnc_getMultiPushToTalkAssignment" || isNil "acre_api_fnc_set
 
 // Get radio list to count total radios
 private _radios = uiNamespace getVariable ["AcreRadioManager_currentRadios", []];
-if (_radios isEqualTo "") exitWith {
+if (count _radios == 0) exitWith {
 	diag_log "ERROR: No radio data available";
 	false
 };
