@@ -30,12 +30,15 @@
 #define COLOR_GREY_50 [0.5, 0.5, 0.5, 1]
 #define COLOR_WHITE_100 [1, 1, 1, 1]
 
-// Size constants
-#define ITEM_HEIGHT 0.08
-#define BUTTON_HEIGHT 0.06
-#define ENTRY_PADDING 0.01
-#define BUTTON_WIDTH 0.06
-#define NAME_FIELD_WIDTH 0.17
+// Size constants (reference: 16:9 small interface, safezoneW ≈ 0.86)
+// _scale is derived from the savestate group's usable width (0.17 * safezoneW minus the
+// 0.021 VScrollbar) divided by the sum of all unscaled control widths in a row (0.39).
+private _scale = (0.17 * safezoneW - 0.021) / 0.39;
+private _btnW        = 0.06  * _scale;
+private _btnH        = 0.06  * _scale;
+private _nameFieldW  = 0.17  * _scale;
+private _entryPad    = 0.01  * _scale;
+private _itemH       = 0.08  * _scale;
 
 private _display = findDisplay 16000;
 if (isNull _display) exitWith {
@@ -79,7 +82,7 @@ private _controls = allControls _group;
 	ctrlDelete _x;
 } forEach _controls;
 
-private _yOffset = 0.01;
+private _yOffset = 0.01 * _scale;
 
 {
 	private _savestateName = _x;
@@ -87,14 +90,14 @@ private _yOffset = 0.01;
 	private _baseIDC = 16700 + (_index * 5);
 	
 	private _yRow = _yOffset;
-	private _xPos = 0.01;
+	private _xPos = 0.01 * _scale;
 	
 	// Determine if this is the special "Last Presets" entry
 	private _isLastPresets = (_savestateName == "Last Presets");
 	
 	// === NAME EDIT FIELD ===
 	private _ctrlEdit = _display ctrlCreate ["ARM_RscEdit", _baseIDC + 0, _group];
-	_ctrlEdit ctrlSetPosition [_xPos, _yRow, NAME_FIELD_WIDTH, BUTTON_HEIGHT];
+	_ctrlEdit ctrlSetPosition [_xPos, _yRow, _nameFieldW, _btnH];
 	_ctrlEdit ctrlSetText _savestateName;
 	_ctrlEdit ctrlSetTextColor COLOR_WHITE_100;
 	_ctrlEdit ctrlSetBackgroundColor COLOR_GREY_15;
@@ -147,11 +150,11 @@ private _yOffset = 0.01;
 		}];
 	};
 	
-	_xPos = _xPos + NAME_FIELD_WIDTH + ENTRY_PADDING;
+	_xPos = _xPos + _nameFieldW + _entryPad;
 	
 	// === LOAD BUTTON ===
 	private _ctrlLoad = _display ctrlCreate ["ARM_RscButtonGrey40", _baseIDC + 1, _group];
-	_ctrlLoad ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
+	_ctrlLoad ctrlSetPosition [_xPos, _yRow, _btnW, _btnH];
 	_ctrlLoad ctrlSetText "Load";
 	_ctrlLoad ctrlSetTextColor COLOR_WHITE_100;
 	_ctrlLoad ctrlSetBackgroundColor COLOR_GREY_40;
@@ -167,11 +170,11 @@ private _yOffset = 0.01;
 		};
 	}];
 	
-	_xPos = _xPos + BUTTON_WIDTH + ENTRY_PADDING;
+	_xPos = _xPos + _btnW + _entryPad;
 	
 	// === SAVE BUTTON ===
 	private _ctrlSave = _display ctrlCreate ["ARM_RscButtonGrey40", _baseIDC + 2, _group];
-	_ctrlSave ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
+	_ctrlSave ctrlSetPosition [_xPos, _yRow, _btnW, _btnH];
 	_ctrlSave ctrlSetText "Save";
 	_ctrlSave ctrlSetTextColor COLOR_WHITE_100;
 	_ctrlSave ctrlSetBackgroundColor COLOR_GREY_40;
@@ -188,11 +191,11 @@ private _yOffset = 0.01;
 		};
 	}];
 	
-	_xPos = _xPos + BUTTON_WIDTH + ENTRY_PADDING;
+	_xPos = _xPos + _btnW + _entryPad;
 	
 	// === APPLY BUTTON ===
 	private _ctrlApply = _display ctrlCreate ["ARM_RscButtonGrey40", _baseIDC + 3, _group];
-	_ctrlApply ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
+	_ctrlApply ctrlSetPosition [_xPos, _yRow, _btnW, _btnH];
 	_ctrlApply ctrlSetText "Apply";
 	_ctrlApply ctrlSetTextColor COLOR_WHITE_100;
 	_ctrlApply ctrlSetBackgroundColor COLOR_GREY_40;
@@ -213,7 +216,7 @@ private _yOffset = 0.01;
 		_ctrlEdit ctrlSetBackgroundColor COLOR_GREY_30;
 	};
 	
-	_yOffset = _yOffset + ITEM_HEIGHT;
+	_yOffset = _yOffset + _itemH;
 	
 } forEach _savestateNames;
 

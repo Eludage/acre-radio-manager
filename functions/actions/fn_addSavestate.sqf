@@ -32,7 +32,7 @@ while {_newName in _savestates} do {
 // Store current inventory as initial savestate data
 private _currentRadios = uiNamespace getVariable ["AcreRadioManager_currentRadios", []];
 private _savestateData = [];
-if (!(_currentRadios isEqualTo "")) then {
+if (count _currentRadios > 0) then {
 	{
 		private _radioData = _x;
 		private _radioId = _radioData select 0;

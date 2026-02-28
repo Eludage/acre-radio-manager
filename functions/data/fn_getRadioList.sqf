@@ -7,7 +7,7 @@
  *
  * Return Value:
  * Array of Arrays - Each array contains radio information [id, icon, name, ptt, channel, channelName, ear, volume, isOn]
- * Returns empty string "" if no radios found
+ * Returns empty array [] if no radios found
  *
  * Example:
  * private _radios = [] call AcreRadioManager_fnc_getRadioList;
@@ -20,17 +20,17 @@
 
 // Check if ACRE is loaded
 if (isNil "acre_api_fnc_getCurrentRadioList") exitWith {
-	uiNamespace setVariable ["AcreRadioManager_currentRadios", ""];
-	""
+	uiNamespace setVariable ["AcreRadioManager_currentRadios", []];
+	[]
 };
 
 // Get all radios in player's inventory
 private _radios = [] call acre_api_fnc_getCurrentRadioList;
 
-// If no radios, set variable to empty string and exit
+// If no radios, set variable to empty array and exit
 if (count _radios == 0) exitWith {
-	uiNamespace setVariable ["AcreRadioManager_currentRadios", ""];
-	""
+	uiNamespace setVariable ["AcreRadioManager_currentRadios", []];
+	[]
 };
 
 // Get PTT assignments - ACRE returns flat array where index = PTT number

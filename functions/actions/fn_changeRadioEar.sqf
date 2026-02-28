@@ -44,10 +44,22 @@ private _acreSpatial = toUpper _newEar;
 // Set new ear assignment via ACRE API
 private _result = [_radioId, _acreSpatial] call acre_api_fnc_setRadioSpatial;
 
-// Refresh radio data and rebuild inventory (recreates ear buttons with correct class so
-// colorFocused matches the new active state).
+// Update in-memory radio data directly to avoid stale reads from ACRE.
+// Ear is stored at index 6 in each radio entry.
+private _currentRadiosData = uiNamespace getVariable ["AcreRadioManager_currentRadios", []];
+{
+	if ((_x select 0) == _radioId) then { _x set [6, _newEar]; };
+} forEach _currentRadiosData;
+
+if (uiNamespace getVariable ["AcreRadioManager_previewIsLive", true]) then {
+	private _previewRadiosData = uiNamespace getVariable ["AcreRadioManager_previewRadios", []];
+	{
+		if ((_x select 0) == _radioId) then { _x set [6, _newEar]; };
+	} forEach _previewRadiosData;
+};
+
+// Rebuild inventory (recreates ear buttons with correct active class/color).
 // Only update Radio Preview when showing live inventory.
-[] call AcreRadioManager_fnc_getRadioList;
 [] call AcreRadioManager_fnc_updateRadioInventory;
 if (uiNamespace getVariable ["AcreRadioManager_previewIsLive", true]) then {
 	[] call AcreRadioManager_fnc_updateRadioPreview;

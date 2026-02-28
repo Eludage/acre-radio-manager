@@ -39,11 +39,13 @@
 #define COLOR_RED [0.5, 0.2, 0.2, 1]
 #define COLOR_RED_ACTIVE [0.6, 0.3, 0.3, 1]
 
-// Size constants
-#define ITEM_HEIGHT 0.07
-#define ITEM_PADDING 0.01
-#define BUTTON_WIDTH 0.05
-#define BUTTON_HEIGHT 0.056
+// Size constants (reference: 16:9 small interface, safezoneW ≈ 0.86)
+// _scale is derived from the inventory group's usable width (0.68 * safezoneW minus the
+// 0.021 VScrollbar) divided by the sum of all unscaled control widths in a row (1.572).
+private _scale = (0.68 * safezoneW - 0.021) / 1.572;
+private _btnW  = 0.05  * _scale;
+private _btnH  = 0.056 * _scale;
+private _itemH = 0.07  * _scale;
 
 private _display = findDisplay 16000;
 if (isNull _display) exitWith {
@@ -59,7 +61,7 @@ if (isNull _group) exitWith {
 
 // Get radio data from uiNamespace
 private _radios = uiNamespace getVariable ["AcreRadioManager_currentRadios", []];
-if (_radios isEqualTo "") exitWith {
+if (count _radios == 0) exitWith {
 	true
 };
 
@@ -107,15 +109,15 @@ private _yOffset = 0;
 	_idcToRadioMap set [_baseIDC, _radioId];
 	
 	// All controls on same Y position for single row
-	private _yRow = _yOffset + 0.006;
-	private _xPos = 0.01;
+	private _yRow = _yOffset + 0.006 * _scale;
+	private _xPos = 0.01 * _scale;
 	
 	// === ICON ===
 	private _ctrlIcon = _display ctrlCreate ["RscPicture", _baseIDC + 0, _group];
-	_ctrlIcon ctrlSetPosition [_xPos, _yRow, 0.064, 0.064];
+	_ctrlIcon ctrlSetPosition [_xPos, _yRow, 0.064 * _scale, 0.064 * _scale];
 	_ctrlIcon ctrlSetText _icon;
 	_ctrlIcon ctrlCommit 0;
-	_xPos = _xPos + 0.07;
+	_xPos = _xPos + 0.07 * _scale;
 	
 	// === RADIO NAME ===
 	// In copy mode, turns into a green clickable button for matching radio types.
@@ -124,10 +126,10 @@ private _yOffset = 0;
 	
 	private _nameBtnClass = if (_isCopyTarget) then {"ARM_RscButtonGreen"} else {"ARM_RscButtonTransparent"};
 	private _ctrlName = _display ctrlCreate [_nameBtnClass, _baseIDC + 1, _group];
-	_ctrlName ctrlSetPosition [_xPos, _yRow, 0.20, BUTTON_HEIGHT];
+	_ctrlName ctrlSetPosition [_xPos, _yRow, 0.20 * _scale, _btnH];
 	_ctrlName ctrlSetText _displayName;
 	_ctrlName ctrlSetTextColor COLOR_WHITE_100;
-	_ctrlName ctrlSetFontHeight 0.04; // Match RscText default used in preview
+	_ctrlName ctrlSetFontHeight (0.04 * _scale); // Match RscText default used in preview
 	private _nameBtnColor = if (_isCopyTarget) then {COLOR_GREEN} else {[0, 0, 0, 0]};
 	_ctrlName ctrlSetBackgroundColor _nameBtnColor;
 	_ctrlName ctrlEnable _isCopyTarget;
@@ -143,17 +145,17 @@ private _yOffset = 0;
 			[_targetRadioId, _targetRadioIndex] call AcreRadioManager_fnc_copyRadioSettings;
 		};
 	}];
-	_xPos = _xPos + 0.204;
+	_xPos = _xPos + 0.20 * _scale + 0.004 * _scale;
 	
 	// === PTT SECTION ===
 	// PTT Label
 	private _ctrlPTTLabel = _display ctrlCreate ["RscText", _baseIDC + 2, _group];
-	_ctrlPTTLabel ctrlSetPosition [_xPos, _yRow, 0.056, BUTTON_HEIGHT];
+	_ctrlPTTLabel ctrlSetPosition [_xPos, _yRow, 0.056 * _scale, _btnH];
 	_ctrlPTTLabel ctrlSetText "PTT";
 	_ctrlPTTLabel ctrlSetTextColor COLOR_GREY_70;
 	_ctrlPTTLabel ctrlSetBackgroundColor [0, 0, 0, 0];
 	_ctrlPTTLabel ctrlCommit 0;
-	_xPos = _xPos + 0.06;
+	_xPos = _xPos + 0.06 * _scale;
 	
 	// PTT Buttons: 1, 2, 3, X
 	private _pttButtons = ["1", "2", "3", "X"];
@@ -166,7 +168,7 @@ private _yOffset = 0;
 		
 		private _pttBtnClass = if (_pttNum <= 3 && _ptt == _pttNum) then {"ARM_RscButtonGreen"} else {if (_pttNum == 4 && _ptt == 0) then {"ARM_RscButtonRed"} else {"ARM_RscButtonGrey40"}};
 		private _ctrlPTT = _display ctrlCreate [_pttBtnClass, _baseIDC + 3 + _btnIndex, _group];
-		_ctrlPTT ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
+		_ctrlPTT ctrlSetPosition [_xPos, _yRow, _btnW, _btnH];
 		_ctrlPTT ctrlSetText _btnText;
 		_ctrlPTT ctrlSetTextColor COLOR_WHITE_100;
 		
@@ -219,10 +221,10 @@ private _yOffset = 0;
 			}];
 		};
 		
-		_xPos = _xPos + BUTTON_WIDTH + 0.004;
+		_xPos = _xPos + _btnW + 0.004 * _scale;
 	} forEach _pttButtons;
 	
-	_xPos = _xPos + 0.006;
+	_xPos = _xPos + 0.006 * _scale;
 	
 	// === CHANNEL SECTION ===
 	// Determine if radio supports channel changing via +/- buttons
@@ -232,28 +234,28 @@ private _yOffset = 0;
 	
 	// Channel Label
 	private _ctrlChannelLabel = _display ctrlCreate ["RscText", _baseIDC + 7, _group];
-	_ctrlChannelLabel ctrlSetPosition [_xPos, _yRow, 0.05, BUTTON_HEIGHT];
+	_ctrlChannelLabel ctrlSetPosition [_xPos, _yRow, 0.05 * _scale, _btnH];
 	_ctrlChannelLabel ctrlSetText "CH";
 	_ctrlChannelLabel ctrlSetTextColor COLOR_GREY_70;
 	_ctrlChannelLabel ctrlSetBackgroundColor [0, 0, 0, 0];
 	_ctrlChannelLabel ctrlCommit 0;
-	_xPos = _xPos + 0.054;
+	_xPos = _xPos + 0.054 * _scale;
 	
 	// Channel Decrease Button
 	private _ctrlChannelDec = _display ctrlCreate ["ARM_RscButtonGrey40", _baseIDC + 8, _group];
-	_ctrlChannelDec ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
+	_ctrlChannelDec ctrlSetPosition [_xPos, _yRow, _btnW, _btnH];
 	_ctrlChannelDec ctrlSetText "-";
 	_ctrlChannelDec ctrlSetTextColor COLOR_WHITE_100;
 	_ctrlChannelDec ctrlSetBackgroundColor COLOR_GREY_40;
 	_ctrlChannelDec ctrlEnable _isRadioSupported;
 	_ctrlChannelDec ctrlCommit 0;
-	_xPos = _xPos + BUTTON_WIDTH + 0.004;
+	_xPos = _xPos + _btnW + 0.004 * _scale;
 	
 	// Channel Display / Edit
 	// PRC-117F and PRC-152 use an edit field (direct typing); PRC-148 uses a read-only text field (+/- only)
 	private _channelDisplayClass = if (_isDirectEdit) then {"ARM_RscEdit"} else {"RscText"};
 	private _ctrlChannelDisplay = _display ctrlCreate [_channelDisplayClass, _baseIDC + 9, _group];
-	_ctrlChannelDisplay ctrlSetPosition [_xPos, _yRow, 0.26, BUTTON_HEIGHT];
+	_ctrlChannelDisplay ctrlSetPosition [_xPos, _yRow, 0.26 * _scale, _btnH];
 	if (_isRadioSupported) then {
 		if ((_baseClass find "ACRE_PRC148" >= 0) || (_baseClass find "ACRE_PRC343" >= 0)) then {
 			private _blkOrGrp = floor((_channel - 1) / 16) + 1;
@@ -268,9 +270,9 @@ private _yOffset = 0;
 	};
 	_ctrlChannelDisplay ctrlSetTextColor COLOR_WHITE_100;
 	_ctrlChannelDisplay ctrlSetBackgroundColor COLOR_GREY_30;
-	_ctrlChannelDisplay ctrlSetFontHeight 0.04;
+	_ctrlChannelDisplay ctrlSetFontHeight (0.04 * _scale);
 	_ctrlChannelDisplay ctrlCommit 0;
-	_xPos = _xPos + 0.26 + 0.004;
+	_xPos = _xPos + 0.26 * _scale + 0.004 * _scale;
 
 	// Edit field event handlers — only wired up for radios that support direct channel input (PRC-117F, PRC-152)
 	if (_isDirectEdit) then {
@@ -347,7 +349,7 @@ private _yOffset = 0;
 	
 	// Channel Increase Button
 	private _ctrlChannelInc = _display ctrlCreate ["ARM_RscButtonGrey40", _baseIDC + 10, _group];
-	_ctrlChannelInc ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
+	_ctrlChannelInc ctrlSetPosition [_xPos, _yRow, _btnW, _btnH];
 	_ctrlChannelInc ctrlSetText "+";
 	_ctrlChannelInc ctrlSetTextColor COLOR_WHITE_100;
 	_ctrlChannelInc ctrlSetBackgroundColor COLOR_GREY_40;
@@ -381,17 +383,17 @@ private _yOffset = 0;
 		_ctrlChannelInc setVariable ["radioId", _radioId];
 	};
 	
-	_xPos = _xPos + BUTTON_WIDTH + 0.01;
+	_xPos = _xPos + _btnW + 0.01 * _scale;
 	
 	// === EAR SECTION ===
 	// Ear Label
 	private _ctrlEarLabel = _display ctrlCreate ["RscText", _baseIDC + 11, _group];
-	_ctrlEarLabel ctrlSetPosition [_xPos, _yRow, 0.056, BUTTON_HEIGHT];
+	_ctrlEarLabel ctrlSetPosition [_xPos, _yRow, 0.056 * _scale, _btnH];
 	_ctrlEarLabel ctrlSetText "Ear";
 	_ctrlEarLabel ctrlSetTextColor COLOR_GREY_70;
 	_ctrlEarLabel ctrlSetBackgroundColor [0, 0, 0, 0];
 	_ctrlEarLabel ctrlCommit 0;
-	_xPos = _xPos + 0.06;
+	_xPos = _xPos + 0.06 * _scale;
 	
 	// Ear Buttons: L, B, R
 	private _earButtons = [["L", "left"], ["B", "center"], ["R", "right"]];
@@ -403,7 +405,7 @@ private _yOffset = 0;
 		
 		private _earBtnClass = if (_ear == _btnValue) then {"ARM_RscButtonGreen"} else {"ARM_RscButtonGrey40"};
 		private _ctrlEar = _display ctrlCreate [_earBtnClass, _baseIDC + 12 + _btnIndex, _group];
-		_ctrlEar ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
+		_ctrlEar ctrlSetPosition [_xPos, _yRow, _btnW, _btnH];
 		_ctrlEar ctrlSetText _btnText;
 		_ctrlEar ctrlSetTextColor COLOR_WHITE_100;
 		
@@ -427,24 +429,24 @@ private _yOffset = 0;
 		_ctrlEar setVariable ["earValue", _btnValue];
 		_ctrlEar setVariable ["baseIDC", _baseIDC];
 		
-		_xPos = _xPos + BUTTON_WIDTH + 0.004;
+		_xPos = _xPos + _btnW + 0.004 * _scale;
 	} forEach _earButtons;
 	
-	_xPos = _xPos + 0.01;
+	_xPos = _xPos + 0.01 * _scale;
 	
 	// === VOLUME SECTION ===
 	// Volume Label  
 	private _ctrlVolumeLabel = _display ctrlCreate ["RscText", _baseIDC + 15, _group];
-	_ctrlVolumeLabel ctrlSetPosition [_xPos, _yRow, 0.06, BUTTON_HEIGHT];
+	_ctrlVolumeLabel ctrlSetPosition [_xPos, _yRow, 0.06 * _scale, _btnH];
 	_ctrlVolumeLabel ctrlSetText "Vol";
 	_ctrlVolumeLabel ctrlSetTextColor COLOR_GREY_70;
 	_ctrlVolumeLabel ctrlSetBackgroundColor [0, 0, 0, 0];
 	_ctrlVolumeLabel ctrlCommit 0;
-	_xPos = _xPos + 0.064;
+	_xPos = _xPos + 0.064 * _scale;
 	
 	// Volume Decrease Button
 	private _ctrlVolumeDec = _display ctrlCreate ["ARM_RscButtonGrey40", _baseIDC + 16, _group];
-	_ctrlVolumeDec ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
+	_ctrlVolumeDec ctrlSetPosition [_xPos, _yRow, _btnW, _btnH];
 	_ctrlVolumeDec ctrlSetText "-";
 	_ctrlVolumeDec ctrlSetTextColor COLOR_WHITE_100;
 	_ctrlVolumeDec ctrlSetBackgroundColor COLOR_GREY_40;
@@ -466,11 +468,11 @@ private _yOffset = 0;
 	}];
 	_ctrlVolumeDec setVariable ["radioId", _radioId];
 	
-	_xPos = _xPos + BUTTON_WIDTH + 0.004;
+	_xPos = _xPos + _btnW + 0.004 * _scale;
 	
 	// Volume Display (Edit field)
 	private _ctrlVolumeEdit = _display ctrlCreate ["ARM_RscEditCentered", _baseIDC + 17, _group];
-	_ctrlVolumeEdit ctrlSetPosition [_xPos, _yRow, 0.07, BUTTON_HEIGHT];
+	_ctrlVolumeEdit ctrlSetPosition [_xPos, _yRow, 0.07 * _scale, _btnH];
 	_ctrlVolumeEdit ctrlSetText (str (round (_volume * 100)));
 	_ctrlVolumeEdit ctrlSetTextColor COLOR_WHITE_100;
 	_ctrlVolumeEdit ctrlSetBackgroundColor COLOR_GREY_30;
@@ -513,11 +515,11 @@ private _yOffset = 0;
 	}];
 	_ctrlVolumeEdit setVariable ["radioId", _radioId];
 	
-	_xPos = _xPos + 0.07 + 0.004;
+	_xPos = _xPos + 0.07 * _scale + 0.004 * _scale;
 	
 	// Volume Increase Button
 	private _ctrlVolumeInc = _display ctrlCreate ["ARM_RscButtonGrey40", _baseIDC + 18, _group];
-	_ctrlVolumeInc ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
+	_ctrlVolumeInc ctrlSetPosition [_xPos, _yRow, _btnW, _btnH];
 	_ctrlVolumeInc ctrlSetText "+";
 	_ctrlVolumeInc ctrlSetTextColor COLOR_WHITE_100;
 	_ctrlVolumeInc ctrlSetBackgroundColor COLOR_GREY_40;
@@ -539,7 +541,7 @@ private _yOffset = 0;
 	}];
 	_ctrlVolumeInc setVariable ["radioId", _radioId];
 	
-	_xPos = _xPos + BUTTON_WIDTH + 0.01;
+	_xPos = _xPos + _btnW + 0.01 * _scale;
 	
 	// === POWER DISPLAY ===
 	// Read-only indicator — changing radio power state via the ACRE API is not
@@ -547,7 +549,7 @@ private _yOffset = 0;
 	// Savestates always restore power as ON; the power state field is not persisted.
 	private _powerBtnClass = if (_isOn) then {"ARM_RscButtonGreen"} else {"ARM_RscButtonRed"};
 	private _ctrlPower = _display ctrlCreate [_powerBtnClass, _baseIDC + 19, _group];
-	_ctrlPower ctrlSetPosition [_xPos, _yRow, 0.09, BUTTON_HEIGHT];
+	_ctrlPower ctrlSetPosition [_xPos, _yRow, 0.09 * _scale, _btnH];
 	private _powerColor = if (_isOn) then {COLOR_GREEN} else {COLOR_RED};
 	_ctrlPower ctrlSetText (if (_isOn) then {"ON"} else {"OFF"});
 	_ctrlPower ctrlSetBackgroundColor _powerColor;
@@ -557,7 +559,7 @@ private _yOffset = 0;
 	_ctrlPower ctrlCommit 0;
 	
 	// Move to next radio position
-	_yOffset = _yOffset + ITEM_HEIGHT;
+	_yOffset = _yOffset + _itemH;
 	
 } forEach _radios;
 

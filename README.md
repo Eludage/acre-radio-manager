@@ -46,6 +46,19 @@ The mod provides different levels of functionality depending on the radio type:
 
 **Note**: Radios without channel change support will display "Radio not supported" in the channel section. All other functions remain fully operational. Please let me know if you're using radios from other mods and which mods those are so I can add them to this table.
 
+## Display Compatibility
+
+The UI has been optimized and tested on the following configurations:
+
+| Aspect Ratio | Interface Size |
+|---|---|
+| 16:9 | Small |
+| 16:9 | Normal |
+| 21:9 | Small |
+| 21:9 | Normal |
+
+Other aspect ratios (e.g. 4:3, 16:10) or interface sizes (Large, Very Large) are untested and may result in overlapping or cut-off UI elements.
+
 ## Installation
 
 1. Subscribe to the mod on Steam Workshop
