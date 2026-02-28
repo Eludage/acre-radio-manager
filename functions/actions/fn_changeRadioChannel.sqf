@@ -80,8 +80,12 @@ if ((_baseClass find "ACRE_PRC148" >= 0) || (_baseClass find "ACRE_PRC343" >= 0)
 	private _prefix = if (_baseClass find "ACRE_PRC343" >= 0) then {"Bl"} else {"Gr"};
 	_displayCtrl ctrlSetText format ["%1 %2, Ch %3, %4", _prefix, _blkOrGrp, _localCh, _channelName];
 	
-	[] call AcreRadioManager_fnc_getRadioList;
+	// Update in-memory radio data directly (channel=index 4, channelName=index 5).
+	private _currentRadiosData148 = uiNamespace getVariable ["AcreRadioManager_currentRadios", []];
+	{ if ((_x select 0) == _radioId) then { _x set [4, _newChannel]; _x set [5, _channelName]; }; } forEach _currentRadiosData148;
 	if (uiNamespace getVariable ["AcreRadioManager_previewIsLive", true]) then {
+		private _previewRadiosData148 = uiNamespace getVariable ["AcreRadioManager_previewRadios", []];
+		{ if ((_x select 0) == _radioId) then { _x set [4, _newChannel]; _x set [5, _channelName]; }; } forEach _previewRadiosData148;
 		[] call AcreRadioManager_fnc_updateRadioPreview;
 	};
 	
@@ -144,8 +148,12 @@ if (_newChannel != _currentChannel) then {
 	private _channelName = [_radioId, _newChannel] call AcreRadioManager_fnc_getChannelName;
 	_displayCtrl ctrlSetText format ["%1: %2", _newChannel, _channelName];
 	
-	[] call AcreRadioManager_fnc_getRadioList;
+	// Update in-memory radio data directly (channel=index 4, channelName=index 5).
+	private _currentRadiosData = uiNamespace getVariable ["AcreRadioManager_currentRadios", []];
+	{ if ((_x select 0) == _radioId) then { _x set [4, _newChannel]; _x set [5, _channelName]; }; } forEach _currentRadiosData;
 	if (uiNamespace getVariable ["AcreRadioManager_previewIsLive", true]) then {
+		private _previewRadiosData = uiNamespace getVariable ["AcreRadioManager_previewRadios", []];
+		{ if ((_x select 0) == _radioId) then { _x set [4, _newChannel]; _x set [5, _channelName]; }; } forEach _previewRadiosData;
 		[] call AcreRadioManager_fnc_updateRadioPreview;
 	};
 	

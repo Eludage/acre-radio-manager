@@ -273,7 +273,7 @@ class AcreRadioManager_Dialog
             text = "Radios in Inventory";
             x = 0.16 * safezoneW + safezoneX;
             y = 0.11 * safezoneH + safezoneY;
-            w = 0.1 * safezoneW;
+            w = 0.20 * safezoneW;
             h = 0.025 * safezoneH;
         };
 
@@ -308,7 +308,7 @@ class AcreRadioManager_Dialog
             text = "Radio Preview";
             x = 0.16 * safezoneW + safezoneX;
             y = 0.46 * safezoneH + safezoneY;
-            w = 0.1 * safezoneW;
+            w = 0.20 * safezoneW;
             h = 0.025 * safezoneH;
         };
 
@@ -337,17 +337,17 @@ class AcreRadioManager_Dialog
         };
 
         // ============== Radio Preview Options SECTION ==============
-        class RadioPreviewOptionsTitle: ARM_RscBoxTitle
+        class RadioSavestatesTitle: ARM_RscBoxTitle
         {
             idc = -1;
-            text = "Radio Preview Options";
+            text = "Radio Savestates";
             x = 0.67 * safezoneW + safezoneX;
             y = 0.46 * safezoneH + safezoneY;
-            w = 0.1 * safezoneW;
+            w = 0.17 * safezoneW;
             h = 0.025 * safezoneH;
         };
 
-        class RadioPreviewOptionsBackground: ARM_RscPanel
+        class RadioSavestatesBackground: ARM_RscPanel
         {
             idc = -1;
             x = 0.67 * safezoneW + safezoneX;
@@ -357,7 +357,7 @@ class AcreRadioManager_Dialog
             colorBackground[] = COLOR_GREY_15;
         };
 
-        class RadioPreviewOptionsGroup: ARM_RscControlsGroup
+        class RadioSavestatesGroup: ARM_RscControlsGroup
         {
             idc = 16030;
             x = 0.67 * safezoneW + safezoneX;
@@ -371,7 +371,7 @@ class AcreRadioManager_Dialog
             };
         };
 
-        class RadioPreviewOptionsButtonsBackground: ARM_RscPanel
+        class RadioSavestatesButtonsBackground: ARM_RscPanel
         {
             idc = -1;
             x = 0.67 * safezoneW + safezoneX;

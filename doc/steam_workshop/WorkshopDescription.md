@@ -60,6 +60,7 @@ Radios without channel support show a "Radio not supported" label in the channel
 [*][b]Radio power state[/b] is read-only. See the supported radio types table above.
 [*][b]Maximum 12 radios[/b] are shown in the inventory panel. If you carry more, a hint is displayed and only the first 12 are listed.
 [*][b]Channel support[/b] varies by radio type — see the supported radio types table above.
+[*][b]Display / interface size[/b] — the UI has been optimized and tested on [b]16:9[/b] and [b]21:9[/b] aspect ratios with [b]Small[/b] and [b]Normal[/b] interface sizes. Other aspect ratios or interface sizes are untested and may result in overlapping or cut-off UI elements.
 [/list]
 
 Other than that, there are currently no known issues.

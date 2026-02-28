@@ -7,7 +7,7 @@ This document contains helpful development-oriented references for working on Ac
 This section describes the intended behavior across the key user interactions.
 
 - **Dialog opened**: The preview area mirrors the current inventory state. `previewRadios` is initialized to `currentRadios`.
-- **Inventory changed** (PTT, channel, ear, volume): Changes are applied to ACRE immediately. `currentRadios` and `previewRadios` are both refreshed via `fn_getRadioList`, keeping inventory and preview in sync.
+- **Inventory changed** (PTT, channel, ear, volume): Changes are applied to ACRE immediately. The in-memory `currentRadios` and `previewRadios` arrays are updated directly (index 3 = PTT, 4 = channel, 5 = channelName, 6 = ear, 7 = volume) without re-reading from ACRE, avoiding stale-read issues caused by async API processing. The UI is then rebuilt from the updated arrays.
 - **Dialog closed**: The current **inventory** state (not preview) is saved as "Last Presets" and all pending savestate changes are flushed to disk via `fn_savePresets`.
 - **Savestate added**: A new entry is created and **pre-filled with the current inventory** state so it can immediately be renamed and used.
 - **Savestate loaded**: Settings are overlaid onto the **preview area only**. The actual ACRE radio settings and the inventory are untouched.
@@ -44,6 +44,11 @@ This section lists the main dialog ID (IDD) and the control IDCs used in the Rad
     - 16030 → RadioPreviewOptionsGroup — control group for preset/savestate list
     - 16031 → AddSavestateButton — save current radio settings as preset
     - 16032 → RemoveSavestateButton — delete selected preset
+    - 16700-16799 → Dynamic savestate controls (max 20 savestates, 5 IDCs per entry)
+      - baseIDC + 0 (Edit field): `ARM_RscEdit` — editable name; disabled and non-renameable for "Last Presets"
+      - baseIDC + 1 (Load): `ARM_RscButtonGrey40` — loads savestate into preview area
+      - baseIDC + 2 (Save): `ARM_RscButtonGrey40` — saves current inventory state into this savestate; disabled for "Last Presets"
+      - baseIDC + 3 (Apply): `ARM_RscButtonGrey40` — applies savestate settings to actual ACRE radios
   - Misc controls
     - 16011 → CloseButton — Close dialog button
 
@@ -58,8 +63,8 @@ These classes are defined in `radioSettingsDialog.hpp` and used as the `ctrlCrea
 | `ARM_RscButtonGreen` | `COLOR_GREEN` | `COLOR_GREEN_ACTIVE` | Active PTT/ear selection, ear preview display, copy-target name |
 | `ARM_RscButtonRed` | `COLOR_RED` | `COLOR_RED_ACTIVE` | PTT X (no PTT), power OFF indicator |
 | `ARM_RscButtonTransparent` | `COLOR_BLACK_0` | `COLOR_BLACK_0` | Radio name label (non-copy mode) — invisible, not clickable |
-| `ARM_RscEdit` | `COLOR_GREY_15` | n/a | Left-aligned edit field — channel direct-input (inventory), volume edit |
-| `ARM_RscEditCentered` | `COLOR_GREY_15` | n/a | Centered edit field variant (`style = 66`) — savestate rename input |
+| `ARM_RscEdit` | `COLOR_GREY_15` | n/a | Left-aligned edit field — channel direct-input (inventory), savestate name field |
+| `ARM_RscEditCentered` | `COLOR_GREY_15` | n/a | Centered edit field variant (`style = 66`) — volume edit field |
 
 Notes
 - Access controls in scripts like this:

@@ -117,11 +117,38 @@ if (_conflictingRadio != "") then {
 	};
 };
 
-// Apply the new PTT assignments via ACRE API
-[_pttAssignments] call acre_api_fnc_setMultiPushToTalkAssignment;
+// Apply the new PTT assignments via ACRE API.
+// ACRE requires that all entries are valid radio IDs present on the player — empty strings
+// are not accepted and cause the call to silently fail. Trim trailing empty slots while
+// preserving the positional order (PTT1=index 0, PTT2=index 1, PTT3=index 2).
+private _pttFiltered = +_pttAssignments;
+while {count _pttFiltered > 0 && { (_pttFiltered select (count _pttFiltered - 1)) == "" }} do {
+	_pttFiltered deleteAt (count _pttFiltered - 1);
+};
+[_pttFiltered] call acre_api_fnc_setMultiPushToTalkAssignment;
 
-// Refresh the radio list to update UI with new PTT states
-[] call AcreRadioManager_fnc_getRadioList;
+// Update PTT values directly in the in-memory radio arrays rather than re-reading from ACRE.
+// Reading back from ACRE immediately after a set can return stale data (async processing),
+// which makes swaps appear to do nothing. Index 3 in each radio entry is the PTT number.
+private _currentRadiosData = uiNamespace getVariable ["AcreRadioManager_currentRadios", []];
+{
+	private _entry = _x;
+	private _entryId = _entry select 0;
+	private _newPTTVal = 0;
+	{ if (_x == _entryId) then { _newPTTVal = _forEachIndex + 1; }; } forEach _pttAssignments;
+	_entry set [3, _newPTTVal];
+} forEach _currentRadiosData;
+
+if (uiNamespace getVariable ["AcreRadioManager_previewIsLive", true]) then {
+	private _previewRadiosData = uiNamespace getVariable ["AcreRadioManager_previewRadios", []];
+	{
+		private _entry = _x;
+		private _entryId = _entry select 0;
+		private _newPTTVal = 0;
+		{ if (_x == _entryId) then { _newPTTVal = _forEachIndex + 1; }; } forEach _pttAssignments;
+		_entry set [3, _newPTTVal];
+	} forEach _previewRadiosData;
+};
 
 // Update all radio controls in the UI
 private _display = findDisplay 16000;

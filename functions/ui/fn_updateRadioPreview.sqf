@@ -37,10 +37,13 @@
 #define COLOR_GREEN [0.3, 0.5, 0.3, 1]
 #define COLOR_RED [0.5, 0.2, 0.2, 1]
 
-// Size constants
-#define ITEM_HEIGHT 0.07
-#define BUTTON_WIDTH 0.05
-#define BUTTON_HEIGHT 0.056
+// Size constants (reference: 16:9 small interface, safezoneW ≈ 0.86)
+// _scale is derived from the preview group's usable width (0.50 * safezoneW minus the
+// 0.021 VScrollbar) divided by the sum of all unscaled control widths in a row (1.182).
+private _scale = (0.50 * safezoneW - 0.021) / 1.182;
+private _btnW  = 0.05  * _scale;
+private _btnH  = 0.056 * _scale;
+private _itemH = 0.07  * _scale;
 
 private _display = findDisplay 16000;
 if (isNull _display) exitWith {
@@ -94,35 +97,35 @@ private _yOffset = 0;
 	private _baseIDC = 16400 + (_radioIndex * 25);
 	
 	// All controls on same Y position for single row
-	private _yRow = _yOffset + 0.006;
-	private _xPos = 0.01;
+	private _yRow = _yOffset + 0.006 * _scale;
+	private _xPos = 0.01 * _scale;
 	
 	// === ICON ===
 	private _ctrlIcon = _display ctrlCreate ["RscPicture", _baseIDC + 0, _group];
-	_ctrlIcon ctrlSetPosition [_xPos, _yRow, 0.064, 0.064];
+	_ctrlIcon ctrlSetPosition [_xPos, _yRow, 0.064 * _scale, 0.064 * _scale];
 	_ctrlIcon ctrlSetText _icon;
 	_ctrlIcon ctrlCommit 0;
-	_xPos = _xPos + 0.07;
+	_xPos = _xPos + 0.07 * _scale;
 	
 	// === RADIO NAME ===
 	private _ctrlName = _display ctrlCreate ["ARM_RscTextCentered", _baseIDC + 1, _group];
-	_ctrlName ctrlSetPosition [_xPos, _yRow, 0.20, BUTTON_HEIGHT];
+	_ctrlName ctrlSetPosition [_xPos, _yRow, 0.20 * _scale, _btnH];
 	_ctrlName ctrlSetText _displayName;
 	_ctrlName ctrlSetTextColor COLOR_WHITE_100;
-	_ctrlName ctrlSetFontHeight 0.04;
+	_ctrlName ctrlSetFontHeight (0.04 * _scale);
 	_ctrlName ctrlSetBackgroundColor [0, 0, 0, 0];
 	_ctrlName ctrlCommit 0;
-	_xPos = _xPos + 0.204;
+	_xPos = _xPos + 0.20 * _scale + 0.004 * _scale;
 	
 	// === PTT SECTION ===
 	// PTT Label
 	private _ctrlPTTLabel = _display ctrlCreate ["RscText", _baseIDC + 2, _group];
-	_ctrlPTTLabel ctrlSetPosition [_xPos, _yRow, 0.056, BUTTON_HEIGHT];
+	_ctrlPTTLabel ctrlSetPosition [_xPos, _yRow, 0.056 * _scale, _btnH];
 	_ctrlPTTLabel ctrlSetText "PTT";
 	_ctrlPTTLabel ctrlSetTextColor COLOR_GREY_70;
 	_ctrlPTTLabel ctrlSetBackgroundColor [0, 0, 0, 0];
 	_ctrlPTTLabel ctrlCommit 0;
-	_xPos = _xPos + 0.06;
+	_xPos = _xPos + 0.06 * _scale;
 	
 	// PTT Display - single button showing current value
 	private _pttText = "X";
@@ -134,13 +137,13 @@ private _yOffset = 0;
 	
 	private _pttBtnClass = if (_ptt > 0 && _ptt <= 3) then {"ARM_RscButtonGreen"} else {"ARM_RscButtonRed"};
 	private _ctrlPTTDisplay = _display ctrlCreate [_pttBtnClass, _baseIDC + 3, _group];
-	_ctrlPTTDisplay ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
+	_ctrlPTTDisplay ctrlSetPosition [_xPos, _yRow, _btnW, _btnH];
 	_ctrlPTTDisplay ctrlSetText _pttText;
 	_ctrlPTTDisplay ctrlSetTextColor COLOR_WHITE_100;
 	_ctrlPTTDisplay ctrlSetBackgroundColor _pttColor;
 	_ctrlPTTDisplay ctrlEnable false;
 	_ctrlPTTDisplay ctrlCommit 0;
-	_xPos = _xPos + BUTTON_WIDTH + 0.01;
+	_xPos = _xPos + _btnW + 0.01 * _scale;
 	
 	// === CHANNEL SECTION ===
 	// Determine if radio supports channel changing (PRC-117F, PRC-152, PRC-148, BF-888S and PRC-343)
@@ -150,16 +153,16 @@ private _yOffset = 0;
 	
 	// Channel Label
 	private _ctrlChannelLabel = _display ctrlCreate ["RscText", _baseIDC + 7, _group];
-	_ctrlChannelLabel ctrlSetPosition [_xPos, _yRow, 0.05, BUTTON_HEIGHT];
+	_ctrlChannelLabel ctrlSetPosition [_xPos, _yRow, 0.05 * _scale, _btnH];
 	_ctrlChannelLabel ctrlSetText "CH";
 	_ctrlChannelLabel ctrlSetTextColor COLOR_GREY_70;
 	_ctrlChannelLabel ctrlSetBackgroundColor [0, 0, 0, 0];
 	_ctrlChannelLabel ctrlCommit 0;
-	_xPos = _xPos + 0.054;
+	_xPos = _xPos + 0.054 * _scale;
 	
 	// Channel Display
 	private _ctrlChannelDisplay = _display ctrlCreate ["RscText", _baseIDC + 9, _group];
-	_ctrlChannelDisplay ctrlSetPosition [_xPos, _yRow, 0.26, BUTTON_HEIGHT];
+	_ctrlChannelDisplay ctrlSetPosition [_xPos, _yRow, 0.26 * _scale, _btnH];
 	if (_isRadioSupported) then {
 		if ((_baseClass find "ACRE_PRC148" >= 0) || (_baseClass find "ACRE_PRC343" >= 0)) then {
 			private _blkOrGrp = floor((_channel - 1) / 16) + 1;
@@ -175,17 +178,17 @@ private _yOffset = 0;
 	_ctrlChannelDisplay ctrlSetTextColor COLOR_WHITE_100;
 	_ctrlChannelDisplay ctrlSetBackgroundColor COLOR_GREY_30;
 	_ctrlChannelDisplay ctrlCommit 0;
-	_xPos = _xPos + 0.26 + 0.01;
+	_xPos = _xPos + 0.26 * _scale + 0.01 * _scale;
 	
 	// === EAR SECTION ===
 	// Ear Label
 	private _ctrlEarLabel = _display ctrlCreate ["RscText", _baseIDC + 11, _group];
-	_ctrlEarLabel ctrlSetPosition [_xPos, _yRow, 0.056, BUTTON_HEIGHT];
+	_ctrlEarLabel ctrlSetPosition [_xPos, _yRow, 0.056 * _scale, _btnH];
 	_ctrlEarLabel ctrlSetText "Ear";
 	_ctrlEarLabel ctrlSetTextColor COLOR_GREY_70;
 	_ctrlEarLabel ctrlSetBackgroundColor [0, 0, 0, 0];
 	_ctrlEarLabel ctrlCommit 0;
-	_xPos = _xPos + 0.06;
+	_xPos = _xPos + 0.06 * _scale;
 	
 	// Ear Display - single button showing current value
 	private _earText = "B";
@@ -193,51 +196,51 @@ private _yOffset = 0;
 	if (_ear == "right") then { _earText = "R"; };
 	
 	private _ctrlEarDisplay = _display ctrlCreate ["ARM_RscButtonGreen", _baseIDC + 12, _group];
-	_ctrlEarDisplay ctrlSetPosition [_xPos, _yRow, BUTTON_WIDTH, BUTTON_HEIGHT];
+	_ctrlEarDisplay ctrlSetPosition [_xPos, _yRow, _btnW, _btnH];
 	_ctrlEarDisplay ctrlSetText _earText;
 	_ctrlEarDisplay ctrlSetTextColor COLOR_WHITE_100;
 	_ctrlEarDisplay ctrlSetBackgroundColor COLOR_GREEN;
 	_ctrlEarDisplay ctrlEnable false;
 	_ctrlEarDisplay ctrlCommit 0;
-	_xPos = _xPos + BUTTON_WIDTH + 0.01;
+	_xPos = _xPos + _btnW + 0.01 * _scale;
 	
 	// === VOLUME SECTION ===
 	// Volume Label
 	private _ctrlVolumeLabel = _display ctrlCreate ["RscText", _baseIDC + 15, _group];
-	_ctrlVolumeLabel ctrlSetPosition [_xPos, _yRow, 0.06, BUTTON_HEIGHT];
+	_ctrlVolumeLabel ctrlSetPosition [_xPos, _yRow, 0.06 * _scale, _btnH];
 	_ctrlVolumeLabel ctrlSetText "Vol";
 	_ctrlVolumeLabel ctrlSetTextColor COLOR_GREY_70;
 	_ctrlVolumeLabel ctrlSetBackgroundColor [0, 0, 0, 0];
 	_ctrlVolumeLabel ctrlCommit 0;
-	_xPos = _xPos + 0.064;
+	_xPos = _xPos + 0.064 * _scale;
 	
 	// Volume Display
 	private _ctrlVolumeDisplay = _display ctrlCreate ["ARM_RscTextCentered", _baseIDC + 17, _group];
-	_ctrlVolumeDisplay ctrlSetPosition [_xPos, _yRow, 0.07, BUTTON_HEIGHT];
+	_ctrlVolumeDisplay ctrlSetPosition [_xPos, _yRow, 0.07 * _scale, _btnH];
 	_ctrlVolumeDisplay ctrlSetText (str (round (_volume * 100)));
 	_ctrlVolumeDisplay ctrlSetTextColor COLOR_WHITE_100;
 	_ctrlVolumeDisplay ctrlSetBackgroundColor COLOR_GREY_30;
 	_ctrlVolumeDisplay ctrlCommit 0;
-	_xPos = _xPos + 0.07 + 0.01;
+	_xPos = _xPos + 0.07 * _scale + 0.01 * _scale;
 	
 	// === POWER BUTTON ===
 	// Power Display (read-only button)
 	private _powerBtnClass = if (_isOn) then {"ARM_RscButtonGreen"} else {"ARM_RscButtonRed"};
 	private _ctrlPowerDisplay = _display ctrlCreate [_powerBtnClass, _baseIDC + 19, _group];
-	_ctrlPowerDisplay ctrlSetPosition [_xPos, _yRow, 0.09, BUTTON_HEIGHT];
+	_ctrlPowerDisplay ctrlSetPosition [_xPos, _yRow, 0.09 * _scale, _btnH];
 	private _powerColor = if (_isOn) then {COLOR_GREEN} else {COLOR_RED};
 	_ctrlPowerDisplay ctrlSetText (if (_isOn) then {"ON"} else {"OFF"});
 	_ctrlPowerDisplay ctrlSetBackgroundColor _powerColor;
 	_ctrlPowerDisplay ctrlSetTextColor COLOR_WHITE_100;
 	_ctrlPowerDisplay ctrlEnable false;
 	_ctrlPowerDisplay ctrlCommit 0;
-	_xPos = _xPos + 0.09 + 0.01;
+	_xPos = _xPos + 0.09 * _scale + 0.01 * _scale;
 	
 	// === COPY BUTTON ===
 	// Enters copy mode: highlights matching radio names in the inventory green
 	// so the player can click one to paste these preview settings onto it.
 	private _ctrlCopyButton = _display ctrlCreate ["ARM_RscButtonGrey40", _baseIDC + 21, _group];
-	_ctrlCopyButton ctrlSetPosition [_xPos, _yRow, 0.09, BUTTON_HEIGHT];
+	_ctrlCopyButton ctrlSetPosition [_xPos, _yRow, 0.09 * _scale, _btnH];
 	_ctrlCopyButton ctrlSetText "Copy";
 	_ctrlCopyButton ctrlSetTextColor COLOR_WHITE_100;
 	_ctrlCopyButton ctrlSetBackgroundColor COLOR_GREY_40;
@@ -264,7 +267,7 @@ private _yOffset = 0;
 	}];
 	
 	// Move to next radio position
-	_yOffset = _yOffset + ITEM_HEIGHT;
+	_yOffset = _yOffset + _itemH;
 	
 } forEach _radios;
 

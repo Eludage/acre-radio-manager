@@ -71,8 +71,13 @@ Used for state that persists across game sessions and survives crashes:
    ↓
 3. ACRE API applies setting
    ↓
-4. UI update function
-   - Refreshes display to show current state
+4. Action function updates in-memory arrays directly
+   - Updates the relevant field in AcreRadioManager_currentRadios
+     and AcreRadioManager_previewRadios without re-reading from ACRE
+   - Avoids stale-read bugs caused by async ACRE API processing
+   ↓
+5. UI update function
+   - Rebuilds controls from the now-correct in-memory arrays
 ```
 
 ### Pattern 2: Load Radio Savestate
@@ -131,7 +136,16 @@ The mod interacts with ACRE through their public API:
 - `acre_api_fnc_getCurrentRadioList` - Get radios in inventory
 - `acre_api_fnc_getRadioChannel` - Get current channel
 - `acre_api_fnc_setRadioChannel` - Set channel
-- Additional ACRE API functions for ear and volume control
+- `acre_api_fnc_getRadioSpatial` - Get ear/spatial assignment
+- `acre_api_fnc_setRadioSpatial` - Set ear/spatial assignment
+- `acre_api_fnc_getRadioVolume` - Get volume
+- `acre_api_fnc_setRadioVolume` - Set volume
+- `acre_api_fnc_getMultiPushToTalkAssignment` - Get PTT key assignments (returns array of radio IDs, index = PTT slot)
+- `acre_api_fnc_setMultiPushToTalkAssignment` - Set PTT key assignments (array must contain only valid radio IDs — no empty strings)
+- `acre_api_fnc_getBaseRadio` - Get base class from instance ID
+- `acre_api_fnc_getDisplayName` - Get human-readable radio name
+- `acre_api_fnc_getRadioOnOffState` - Get power state
+- `acre_api_fnc_getPreset` / `acre_api_fnc_getPresetChannelData` - Channel name/count lookup
 
 ## UI Organization
 

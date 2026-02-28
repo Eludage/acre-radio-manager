@@ -57,8 +57,20 @@ if (!isNull _display) then {
 	};
 };
 
-// Refresh radio data and update UI
-[] call AcreRadioManager_fnc_getRadioList;
+// Update in-memory radio data directly to avoid stale reads from ACRE.
+// Volume is stored at index 7 as a 0.0-1.0 fraction.
+private _currentRadiosData = uiNamespace getVariable ["AcreRadioManager_currentRadios", []];
+{
+	if ((_x select 0) == _radioId) then { _x set [7, _acreVolume]; };
+} forEach _currentRadiosData;
+
+if (uiNamespace getVariable ["AcreRadioManager_previewIsLive", true]) then {
+	private _previewRadiosData = uiNamespace getVariable ["AcreRadioManager_previewRadios", []];
+	{
+		if ((_x select 0) == _radioId) then { _x set [7, _acreVolume]; };
+	} forEach _previewRadiosData;
+};
+
 [] call AcreRadioManager_fnc_updateRadioInventory;
 if (uiNamespace getVariable ["AcreRadioManager_previewIsLive", true]) then {
 	[] call AcreRadioManager_fnc_updateRadioPreview;
