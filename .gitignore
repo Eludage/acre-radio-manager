@@ -42,3 +42,6 @@ ehthumbs.db
 *.7z
 *.tar
 *.gz
+
+# Local environment variables (use .env.example as template)
+.env
