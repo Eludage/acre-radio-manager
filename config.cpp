@@ -42,6 +42,7 @@ class CfgFunctions
         {
             file = "AcreRadioManager\functions\core";
             class openRadioSettings {}; // Opens the main dialog
+            class initKeybinds { preInit = 1; };  // Keybind init
         };
         // ===== Actions / User Interactions =====
         class actions
