@@ -34,6 +34,7 @@ This is purely a client-side mod.
  * [] call AcreRadioManager_fnc_openRadioSettings;
  */
  ```
+- If there is another Author besides Eludage, do not change the author name in the comment.
 - When assigining colors or sizes, always use makros or defined constants at the beginning of the function.
 - Each namespace and variable used in it must be defined in the DEVELOPMENT.md file.
 
