@@ -32,3 +32,4 @@ private _action = [
 ["CAManBase", 1, ["ACE_SelfActions", "ACRE_Interact"], _action, true] call ace_interact_menu_fnc_addActionToClass;
 
 true
+
