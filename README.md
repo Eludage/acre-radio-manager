@@ -14,6 +14,7 @@ Acre Radio Manager is a client-side Arma 3 mod that provides an one page interfa
 - **Ear Assignment**: Switch radios between left, center, and right ear (for headsets/earpieces)
 - **Channel Control**: Change radio channels quickly with visual feedback (for supported radios)
 - **Volume Adjustment**: Set individual volume levels for each radio in 10% increments
+- **Configurable Keybind**: Open the Radio Manager directly with a CBA keybind (default: Ctrl + Alt + C)
 - **Real-time Application**: All changes are applied immediately
 - **Copy Settings**: Copy all settings from a previewed radio and apply them to a matching radio in your inventory
 
@@ -72,6 +73,8 @@ Other aspect ratios (e.g. 4:3, 16:10) or interface sizes (Large, Very Large) are
 1. Press the ACE Self-Interact key (default: Left Ctrl + Left Windows)
 2. Navigate to: **ACRE** → **Manage Radio Settings**
 3. The Radio Manager dialog will open
+
+You can also open the dialog directly with the CBA keybind `Open Menu` under `Configure Addons` → `ACRE Radio Manager`. The default shortcut is `Ctrl + Alt + C`.
 
 ### Managing Radio Settings
 1. **View Your Radios**: All radios in your inventory appear in the top section
@@ -136,7 +139,7 @@ When loading a preset:
 ### Required
 - **ACRE2** - Advanced Combat Radio Environment 2
 - **ACE3** - Advanced Combat Environment 3 (for Self-Interact menu)
-- **CBA_A3** - Community Base Addons A3
+- **CBA_A3** - Community Base Addons A3 (includes the configurable keybind system used by the direct open shortcut)
 
 All dependencies are available on Steam Workshop.
 

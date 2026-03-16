@@ -12,6 +12,11 @@
  * [] call AcreRadioManager_fnc_openRadioSettings;
  */
 
+// Prevent duplicate dialog instances from keybind or ACE action spam.
+if !(isNull (findDisplay 16000)) exitWith {
+	false
+};
+
 // Retrieve current radio list and store in uiNamespace
 private _radioList = [] call AcreRadioManager_fnc_getRadioList;
 

@@ -10,6 +10,7 @@ class CfgPatches
         requiredVersion = 1.0;
         requiredAddons[] = {
             "cba_main",
+            "cba_keybinding",
             "ace_interact_menu",
             "acre_main"
         };
@@ -42,6 +43,7 @@ class CfgFunctions
         {
             file = "AcreRadioManager\functions\core";
             class openRadioSettings {}; // Opens the main dialog
+            class initKeybinds { preInit = 1; };  // Registers the ACRE Radio Manager keybind during preInit
         };
         // ===== Actions / User Interactions =====
         class actions
