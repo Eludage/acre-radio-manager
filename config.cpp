@@ -10,24 +10,9 @@ class CfgPatches
         requiredVersion = 1.0;
         requiredAddons[] = {
             "cba_main",
+            "cba_keybinding",
             "ace_interact_menu",
             "acre_main"
-        };
-    };
-};
-
-class CfgVehicles {
-    class Man;
-    class CAManBase: Man {
-        class ACE_SelfActions {
-            class ACRE_Interact {
-                class RadioSettings {
-                    displayName = "Manage Radio Settings";
-                    condition = "true";
-                    statement = "call AcreRadioManager_fnc_openRadioSettings";
-                    exceptions[] = {"isNotInside", "isNotSitting"};
-                };
-            };
         };
     };
 };
@@ -42,6 +27,8 @@ class CfgFunctions
         {
             file = "AcreRadioManager\functions\core";
             class openRadioSettings {}; // Opens the main dialog
+            class initKeybinds { preInit = 1; };  // Registers the ACRE Radio Manager keybind during preInit
+            class registerAceAction { postInit = 1; }; // Adds the self-action under ACRE at runtime
         };
         // ===== Actions / User Interactions =====
         class actions

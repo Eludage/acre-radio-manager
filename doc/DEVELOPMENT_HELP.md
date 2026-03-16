@@ -44,6 +44,15 @@ The script will:
 3. Run AddonBuilder to pack and sign the PBO, using `AddonBuilderIncludes.txt` to determine which file types are copied directly (`.sqf`, `.hpp`, `.cpp`, `.paa`, `.p3d`)
 4. On success: clear the deploy folder and move the new `.pbo` and `.bisign` files into it
 
+## Keybinds
+
+- The Radio Manager registers a CBA keybind during preInit via `AcreRadioManager_fnc_initKeybinds`.
+- Default binding: `Ctrl + Alt + C` (`DIK_C`, modifiers `[false, true, true]`).
+- CBA action category: `ACRE Radio Manager`
+- CBA action id: `Open_Menu_Key`
+- CBA action label: `Open Menu`
+- The keybind calls `[] call AcreRadioManager_fnc_openRadioSettings;` and returns `true`.
+
 ## Business Logic
 
 This section describes the intended behavior across the key user interactions.
