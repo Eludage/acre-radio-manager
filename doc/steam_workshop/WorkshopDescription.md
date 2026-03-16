@@ -15,6 +15,7 @@
 [*][b]Savestate system[/b] — save named radio configurations and restore them at any time. Savestates are matched to radios by type, not position, so they survive inventory reorders.
 [*][b]Copy settings[/b] — copy settings from any preview radio directly onto a matching inventory radio.
 [*][b]Last Presets auto-save[/b] — your radio configuration at dialog close is always preserved and reloadable. (Helpful after a game crash or after reloading your kit in the Arsenal)
+[*][b]Configurable keybind[/b] — open the Radio Manager directly with a CBA keybind (default: Ctrl + Alt + C).
 [*][b]Client-side only[/b] — no server setup or other player requirements.
 [/list]
 
@@ -44,7 +45,7 @@ Radios without channel support show a "Radio not supported" label in the channel
 [*]Subscribe to the mod on Steam Workshop
 [*]Enable the mod in the Arma 3 Launcher
 [*]Ensure ACRE2 and ACE3 are also enabled
-[*]Launch Arma 3, join a mission with ACRE radios, and open the interface via the ACE Self-Interact menu: [b]ACRE → Manage Radio Settings[/b]
+[*]Launch Arma 3, join a mission with ACRE radios
 [/olist]
 
 [b]Requirements:[/b]
@@ -52,6 +53,12 @@ Radios without channel support show a "Radio not supported" label in the channel
 [*]ACRE2
 [*]ACE3
 [*]CBA_A3
+[/list]
+
+[b]Opening the Radio Manager:[/b]
+[list]
+[*][b]Via keybind:[/b] Press Ctrl + Alt + C (configurable in [b]Configure Addons → ACRE Radio Manager[/b])
+[*][b]Via ACE Self-Interact:[/b] Press Left Ctrl + Left Windows, navigate to [b]ACRE → Manage Radio Settings[/b]
 [/list]
 
 [h2]Compatibility / Restrictions[/h2]
